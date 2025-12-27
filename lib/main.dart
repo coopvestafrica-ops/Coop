@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'config/app_config.dart';
 import 'config/theme_config.dart';
+import 'presentation/screens/auth/welcome_screen.dart';
+import 'presentation/screens/auth/login_screen.dart';
+import 'presentation/screens/auth/register_step1_screen.dart';
+import 'presentation/screens/auth/register_step2_screen.dart';
+import 'presentation/screens/auth/salary_deduction_consent_screen.dart';
+import 'presentation/screens/auth/account_activation_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +37,25 @@ class CoopvestApp extends ConsumerWidget {
       darkTheme: CoopvestTheme.darkTheme,
       themeMode: ThemeMode.system, // Will be dynamic later
       home: const SplashScreen(),
+      routes: {
+        '/welcome': (context) => const WelcomeScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterStep1Screen(),
+        '/register-step2': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+          return RegisterStep2Screen(
+            phone: args?['phone'] ?? '',
+            registrationData: args ?? {},
+          );
+        },
+        '/register-step3': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+          return SalaryDeductionConsentScreen(
+            registrationData: args ?? {},
+          );
+        },
+        '/account-activation': (context) => const AccountActivationScreen(),
+      },
     );
   }
 }
