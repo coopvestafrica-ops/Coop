@@ -8,6 +8,9 @@ import 'presentation/screens/auth/register_step1_screen.dart';
 import 'presentation/screens/auth/register_step2_screen.dart';
 import 'presentation/screens/auth/salary_deduction_consent_screen.dart';
 import 'presentation/screens/auth/account_activation_screen.dart';
+import 'presentation/screens/kyc/kyc_employment_details_screen.dart';
+import 'presentation/screens/kyc/kyc_id_upload_screen.dart';
+import 'presentation/screens/kyc/kyc_selfie_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +58,10 @@ class CoopvestApp extends ConsumerWidget {
           );
         },
         '/account-activation': (context) => const AccountActivationScreen(),
+        // KYC Routes
+        '/kyc-employment-details': (context) => const KYCEmploymentDetailsScreen(),
+        '/kyc-id-upload': (context) => const KYCIDUploadScreen(),
+        '/kyc-selfie': (context) => const KYCSelfieScreen(),
       },
     );
   }
