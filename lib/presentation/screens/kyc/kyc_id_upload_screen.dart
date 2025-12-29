@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../config/theme_config.dart';
 import '../../../core/utils/utils.dart';
 import '../../../data/models/kyc_models.dart';
@@ -21,8 +22,10 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
   
   String? _selectedIDType;
   String? _idImagePath;
+  XFile? _idImageFile; // Store the actual XFile for upload
   
   final List<Map<String, dynamic>> _idTypes = IDTypes.types;
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void initState() {
@@ -37,23 +40,159 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
   }
 
   Future<void> _pickIDImage() async {
-    try {
-      // Using image_picker for demo - in production, implement proper file picker
-      // For now, we'll simulate image selection
-      setState(() {
-        _idImagePath = 'id_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('ID image captured successfully'),
-          backgroundColor: CoopvestColors.success,
+    // Show bottom sheet to choose between camera and gallery
+    if (mounted) {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) => Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Choose Image Source',
+                style: CoopvestTypography.headlineSmall.copyWith(
+                  color: CoopvestColors.darkGray,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _pickFromCamera(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        decoration: BoxDecoration(
+                          color: CoopvestColors.veryLightGray,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: const [
+                            Icon(
+                              Icons.camera_alt,
+                              color: CoopvestColors.primary,
+                              size: 48,
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              'Camera',
+                              style: TextStyle(
+                                color: CoopvestColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _pickFromGallery(),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        decoration: BoxDecoration(
+                          color: CoopvestColors.veryLightGray,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: const [
+                            Icon(
+                              Icons.photo_library,
+                              color: CoopvestColors.primary,
+                              size: 48,
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              'Gallery',
+                              style: TextStyle(
+                                color: CoopvestColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
+    }
+  }
+
+  Future<void> _pickFromCamera() async {
+    Navigator.of(context).pop(); // Close the bottom sheet
+    
+    try {
+      final XFile? photo = await _imagePicker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
+      
+      if (photo != null && mounted) {
+        setState(() {
+          _idImageFile = photo;
+          _idImagePath = photo.path;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ID image captured successfully'),
+            backgroundColor: CoopvestColors.success,
+          ),
+        );
+      }
     } catch (e) {
+      _showError('Failed to capture image: $e');
+    }
+  }
+
+  Future<void> _pickFromGallery() async {
+    Navigator.of(context).pop(); // Close the bottom sheet
+    
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
+      
+      if (image != null && mounted) {
+        setState(() {
+          _idImageFile = image;
+          _idImagePath = image.path;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ID image selected successfully'),
+            backgroundColor: CoopvestColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      _showError('Failed to select image: $e');
+    }
+  }
+
+  void _showError(String message) {
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: $e'),
+          content: Text(message),
           backgroundColor: CoopvestColors.error,
         ),
       );
@@ -63,6 +202,7 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
   Future<void> _retakeIDImage() async {
     setState(() {
       _idImagePath = null;
+      _idImageFile = null;
     });
     await _pickIDImage();
   }
