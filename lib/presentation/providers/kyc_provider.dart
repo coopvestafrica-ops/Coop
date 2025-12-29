@@ -122,6 +122,30 @@ class KYCCubit extends StateNotifier<KYCState> {
       submission: current.copyWith(selfiePhotoPath: selfiePath),
     );
   }
+  
+  /// Update bank details
+  void updateBankDetails({
+    String? bankName,
+    String? bankCode,
+    String? accountNumber,
+    String? accountName,
+    String? accountType,
+    String? bvn,
+  }) {
+    final current = state.submission;
+    if (current == null) return;
+    
+    state = state.copyWith(
+      submission: current.copyWith(
+        bankName: bankName ?? current.bankName,
+        bankCode: bankCode ?? current.bankCode,
+        accountNumber: accountNumber,
+        accountName: accountName,
+        accountType: accountType ?? current.accountType,
+        bvn: bvn,
+      ),
+    );
+  }
 
   /// Search organizations
   Future<void> searchOrganizations(String query) async {

@@ -27,6 +27,14 @@ class KYCRSubmission extends Equatable {
   // Selfie
   final String? selfiePhotoPath;
   
+  // Bank Information
+  final String? bankName;
+  final String? bankCode;
+  final String? accountNumber;
+  final String? accountName;
+  final String? accountType;
+  final String? bvn;
+  
   // Status
   final String status; // pending, submitted, approved, rejected
   final DateTime? submittedAt;
@@ -49,6 +57,12 @@ class KYCRSubmission extends Equatable {
     this.idNumber,
     this.idPhotoPath,
     this.selfiePhotoPath,
+    this.bankName,
+    this.bankCode,
+    this.accountNumber,
+    this.accountName,
+    this.accountType,
+    this.bvn,
     this.status = 'draft',
     this.submittedAt,
     this.approvedAt,
@@ -72,6 +86,12 @@ class KYCRSubmission extends Equatable {
       'id_number': idNumber,
       'id_photo_path': idPhotoPath,
       'selfie_photo_path': selfiePhotoPath,
+      'bank_name': bankName,
+      'bank_code': bankCode,
+      'account_number': accountNumber,
+      'account_name': accountName,
+      'account_type': accountType,
+      'bvn': bvn,
       'status': status,
     };
   }
@@ -93,6 +113,12 @@ class KYCRSubmission extends Equatable {
       idNumber: json['id_number'] as String?,
       idPhotoPath: json['id_photo_path'] as String?,
       selfiePhotoPath: json['selfie_photo_path'] as String?,
+      bankName: json['bank_name'] as String?,
+      bankCode: json['bank_code'] as String?,
+      accountNumber: json['account_number'] as String?,
+      accountName: json['account_name'] as String?,
+      accountType: json['account_type'] as String?,
+      bvn: json['bvn'] as String?,
       status: json['status'] as String? ?? 'draft',
       submittedAt: json['submitted_at'] != null
           ? DateTime.parse(json['submitted_at'] as String)
@@ -120,6 +146,12 @@ class KYCRSubmission extends Equatable {
     String? idNumber,
     String? idPhotoPath,
     String? selfiePhotoPath,
+    String? bankName,
+    String? bankCode,
+    String? accountNumber,
+    String? accountName,
+    String? accountType,
+    String? bvn,
     String? status,
     DateTime? submittedAt,
     DateTime? approvedAt,
@@ -141,6 +173,12 @@ class KYCRSubmission extends Equatable {
       idNumber: idNumber ?? this.idNumber,
       idPhotoPath: idPhotoPath ?? this.idPhotoPath,
       selfiePhotoPath: selfiePhotoPath ?? this.selfiePhotoPath,
+      bankName: bankName ?? this.bankName,
+      bankCode: bankCode ?? this.bankCode,
+      accountNumber: accountNumber ?? this.accountNumber,
+      accountName: accountName ?? this.accountName,
+      accountType: accountType ?? this.accountType,
+      bvn: bvn ?? this.bvn,
       status: status ?? this.status,
       submittedAt: submittedAt ?? this.submittedAt,
       approvedAt: approvedAt ?? this.approvedAt,
@@ -158,7 +196,13 @@ class KYCRSubmission extends Equatable {
         idType.isNotEmpty &&
         idNumber != null &&
         idPhotoPath != null &&
-        selfiePhotoPath != null;
+        selfiePhotoPath != null &&
+        bankName != null &&
+        bankCode != null &&
+        accountNumber != null &&
+        accountName != null &&
+        accountType != null &&
+        bvn != null;
   }
 
   @override
@@ -178,6 +222,12 @@ class KYCRSubmission extends Equatable {
     idNumber,
     idPhotoPath,
     selfiePhotoPath,
+    bankName,
+    bankCode,
+    accountNumber,
+    accountName,
+    accountType,
+    bvn,
     status,
     submittedAt,
     approvedAt,
@@ -393,4 +443,58 @@ class KYCState extends Equatable {
     currentStep,
     totalSteps,
   ];
+}
+
+/// Nigerian Banks
+class BankTypes {
+  static const List<Map<String, dynamic>> banks = [
+    {'label': 'Access Bank', 'code': '044'},
+    {'label': 'Ecobank Nigeria', 'code': '050'},
+    {'label': 'Fidelity Bank', 'code': '070'},
+    {'label': 'First Bank of Nigeria', 'code': '011'},
+    {'label': 'First City Monument Bank (FCMB)', 'code': '214'},
+    {'label': 'Guaranty Trust Bank', 'code': '058'},
+    {'label': 'Heritage Bank', 'code': '030'},
+    {'label': 'Keystone Bank', 'code': '082'},
+    {'label': ' Polaris Bank', 'code': '076'},
+    {'label': 'Stanbic IBTC Bank', 'code': '221'},
+    {'label': 'Standard Chartered Bank', 'code': '068'},
+    {'label': 'Sterling Bank', 'code': '232'},
+    {'label': 'Union Bank of Nigeria', 'code': '032'},
+    {'label': 'United Bank for Africa (UBA)', 'code': '033'},
+    {'label': 'Zenith Bank', 'code': '057'},
+  ];
+
+  static String getBankCode(String bankName) {
+    final bank = banks.firstWhere(
+      (b) => b['label'] == bankName,
+      orElse: () => {'code': ''},
+    );
+    return bank['code'] as String;
+  }
+
+  static String getBankName(String bankCode) {
+    final bank = banks.firstWhere(
+      (b) => b['code'] == bankCode,
+      orElse: () => {'label': ''},
+    );
+    return bank['label'] as String;
+  }
+}
+
+/// Bank Account Types
+class BankAccountTypes {
+  static const List<Map<String, dynamic>> types = [
+    {'label': 'Savings Account', 'value': 'savings'},
+    {'label': 'Current Account', 'value': 'current'},
+    {'label': 'Fixed Deposit Account', 'value': 'fixed_deposit'},
+  ];
+
+  static String getLabel(String value) {
+    final type = types.firstWhere(
+      (t) => t['value'] == value,
+      orElse: () => {'label': value},
+    );
+    return type['label'] as String;
+  }
 }
