@@ -1,0 +1,603 @@
+import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
+import '../models/loan_models.dart';
+
+part 'loan_api_service.g.dart';
+
+/// API Service for Loan Operations
+@RestApi(baseUrl: 'https://api.coopvest.africa/v1')
+abstract class LoanApiService {
+  factory LoanApiService(Dio dio, {String baseUrl}) = _LoanApiService;
+
+  /// Apply for a new loan
+  @POST('/loans/apply')
+  Future<LoanResponse> applyForLoan(
+    @Body() LoanApplicationRequest request,
+  );
+
+  /// Get all loans for a user
+  @GET('/users/{userId}/loans')
+  Future<LoansListResponse> getUserLoans(
+    @Path() String userId,
+  );
+
+  /// Get loan details by ID
+  @GET('/loans/{loanId}')
+  Future<LoanDetailsResponse> getLoanDetails(
+    @Path() String loanId,
+  );
+
+  /// Get loan status
+  @GET('/loans/{loanId}/status')
+  Future<LoanStatusResponse> getLoanStatus(
+    @Path() String loanId,
+  );
+
+  /// Get guarantors for a loan
+  @GET('/loans/{loanId}/guarantors')
+  Future<GuarantorsListResponse> getLoanGuarantors(
+    @Path() String loanId,
+  );
+
+  /// Confirm guarantee (guarantor accepts)
+  @POST('/loans/{loanId}/guarantors/confirm')
+  Future<GuarantorConfirmResponse> confirmGuarantee(
+    @Path() String loanId,
+    @Body() GuarantorConfirmRequest request,
+  );
+
+  /// Decline guarantee (guarantor rejects)
+  @POST('/loans/{loanId}/guarantors/decline')
+  Future<GuarantorDeclineResponse> declineGuarantee(
+    @Path() String loanId,
+    @Body() GuarantorDeclineRequest request,
+  );
+
+  /// Cancel loan application
+  @POST('/loans/{loanId}/cancel')
+  Future<LoanCancelResponse> cancelLoan(
+    @Path() String loanId,
+    @Body() LoanCancelRequest request,
+  );
+
+  /// Get loan repayment schedule
+  @GET('/loans/{loanId}/repayment-schedule')
+  Future<RepaymentScheduleResponse> getRepaymentSchedule(
+    @Path() String loanId,
+  );
+
+  /// Make loan repayment
+  @POST('/loans/{loanId}/repay')
+  Future<LoanRepayResponse> makeRepayment(
+    @Path() String loanId,
+    @Body() LoanRepayRequest request,
+  );
+
+  /// Get available loan types
+  @GET('/loans/types')
+  Future<LoanTypesResponse> getLoanTypes();
+}
+
+/// Request/Response Models
+
+@RestSerializable()
+class LoanApplicationRequest {
+  final String userId;
+  final String loanType;
+  final double amount;
+  final String purpose;
+  final double monthlySavings;
+
+  LoanApplicationRequest({
+    required this.userId,
+    required this.loanType,
+    required this.amount,
+    required this.purpose,
+    required this.monthlySavings,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'user_id': userId,
+        'loan_type': loanType,
+        'amount': amount,
+        'purpose': purpose,
+        'monthly_savings': monthlySavings,
+      };
+}
+
+@RestSerializable()
+class LoanResponse {
+  final bool success;
+  final String message;
+  final LoanData? loan;
+
+  LoanResponse({
+    required this.success,
+    required this.message,
+    this.loan,
+  });
+
+  factory LoanResponse.fromJson(Map<String, dynamic> json) {
+    return LoanResponse(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+      loan: json['loan'] != null ? LoanData.fromJson(json['loan']) : null,
+    );
+  }
+}
+
+@RestSerializable()
+class LoanData {
+  final String id;
+  final String userId;
+  final String loanType;
+  final double amount;
+  final int tenure;
+  final double interestRate;
+  final double monthlyRepayment;
+  final String status;
+  final String purpose;
+  final String qrCode;
+  final DateTime createdAt;
+
+  LoanData({
+    required this.id,
+    required this.userId,
+    required this.loanType,
+    required this.amount,
+    required this.tenure,
+    required this.interestRate,
+    required this.monthlyRepayment,
+    required this.status,
+    required this.purpose,
+    required this.qrCode,
+    required this.createdAt,
+  });
+
+  factory LoanData.fromJson(Map<String, dynamic> json) {
+    return LoanData(
+      id: json['id'] as String,
+      userId: json['user_id'] as String,
+      loanType: json['loan_type'] as String,
+      amount: (json['amount'] as num).toDouble(),
+      tenure: json['tenure'] as int,
+      interestRate: (json['interest_rate'] as num).toDouble(),
+      monthlyRepayment: (json['monthly_repayment'] as num).toDouble(),
+      status: json['status'] as String,
+      purpose: json['purpose'] as String,
+      qrCode: json['qr_code'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+    );
+  }
+}
+
+@RestSerializable()
+class LoansListResponse {
+  final bool success;
+  final List<LoanData> loans;
+
+  LoansListResponse({
+    required this.success,
+    required this.loans,
+  });
+
+  factory LoansListResponse.fromJson(Map<String, dynamic> json) {
+    return LoansListResponse(
+      success: json['success'] as bool,
+      loans: (json['loans'] as List)
+          .map((e) => LoanData.fromJson(e))
+          .toList(),
+    );
+  }
+}
+
+@RestSerializable()
+class LoanDetailsResponse {
+  final bool success;
+  final LoanData loan;
+  final List<GuarantorData> guarantors;
+  final RepaymentScheduleData? repaymentSchedule;
+
+  LoanDetailsResponse({
+    required this.success,
+    required this.loan,
+    required this.guarantors,
+    this.repaymentSchedule,
+  });
+
+  factory LoanDetailsResponse.fromJson(Map<String, dynamic> json) {
+    return LoanDetailsResponse(
+      success: json['success'] as bool,
+      loan: LoanData.fromJson(json['loan']),
+      guarantors: (json['guarantors'] as List)
+          .map((e) => GuarantorData.fromJson(e))
+          .toList(),
+      repaymentSchedule: json['repayment_schedule'] != null
+          ? RepaymentScheduleData.fromJson(json['repayment_schedule'])
+          : null,
+    );
+  }
+}
+
+@RestSerializable()
+class LoanStatusResponse {
+  final bool success;
+  final String status;
+  final int guarantorsConfirmed;
+  final int guarantorsRequired;
+  final DateTime? lastUpdated;
+
+  LoanStatusResponse({
+    required this.success,
+    required this.status,
+    required this.guarantorsConfirmed,
+    required this.guarantorsRequired,
+    this.lastUpdated,
+  });
+
+  factory LoanStatusResponse.fromJson(Map<String, dynamic> json) {
+    return LoanStatusResponse(
+      success: json['success'] as bool,
+      status: json['status'] as String,
+      guarantorsConfirmed: json['guarantors_confirmed'] as int,
+      guarantorsRequired: json['guarantors_required'] as int,
+      lastUpdated: json['last_updated'] != null
+          ? DateTime.parse(json['last_updated'] as String)
+          : null,
+    );
+  }
+}
+
+@RestSerializable()
+class GuarantorData {
+  final String id;
+  final String name;
+  final String phone;
+  final String status;
+  final DateTime? confirmedAt;
+
+  GuarantorData({
+    required this.id,
+    required this.name,
+    required this.phone,
+    required this.status,
+    this.confirmedAt,
+  });
+
+  factory GuarantorData.fromJson(Map<String, dynamic> json) {
+    return GuarantorData(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      phone: json['phone'] as String,
+      status: json['status'] as String,
+      confirmedAt: json['confirmed_at'] != null
+          ? DateTime.parse(json['confirmed_at'] as String)
+          : null,
+    );
+  }
+}
+
+@RestSerializable()
+class GuarantorsListResponse {
+  final bool success;
+  final List<GuarantorData> guarantors;
+
+  GuarantorsListResponse({
+    required this.success,
+    required this.guarantors,
+  });
+
+  factory GuarantorsListResponse.fromJson(Map<String, dynamic> json) {
+    return GuarantorsListResponse(
+      success: json['success'] as bool,
+      guarantors: (json['guarantors'] as List)
+          .map((e) => GuarantorData.fromJson(e))
+          .toList(),
+    );
+  }
+}
+
+@RestSerializable()
+class GuarantorConfirmRequest {
+  final String guarantorId;
+  final String guarantorName;
+  final String guarantorPhone;
+  final double savingsBalance;
+
+  GuarantorConfirmRequest({
+    required this.guarantorId,
+    required this.guarantorName,
+    required this.guarantorPhone,
+    required this.savingsBalance,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'guarantor_id': guarantorId,
+        'guarantor_name': guarantorName,
+        'guarantor_phone': guarantorPhone,
+        'savings_balance': savingsBalance,
+      };
+}
+
+@RestSerializable()
+class GuarantorConfirmResponse {
+  final bool success;
+  final String message;
+  final String guarantorStatus;
+  final int guarantorsNowConfirmed;
+
+  GuarantorConfirmResponse({
+    required this.success,
+    required this.message,
+    required this.guarantorStatus,
+    required this.guarantorsNowConfirmed,
+  });
+
+  factory GuarantorConfirmResponse.fromJson(Map<String, dynamic> json) {
+    return GuarantorConfirmResponse(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+      guarantorStatus: json['guarantor_status'] as String,
+      guarantorsNowConfirmed: json['guarantors_now_confirmed'] as int,
+    );
+  }
+}
+
+@RestSerializable()
+class GuarantorDeclineRequest {
+  final String guarantorId;
+  final String reason;
+
+  GuarantorDeclineRequest({
+    required this.guarantorId,
+    required this.reason,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'guarantor_id': guarantorId,
+        'reason': reason,
+      };
+}
+
+@RestSerializable()
+class GuarantorDeclineResponse {
+  final bool success;
+  final String message;
+
+  GuarantorDeclineResponse({
+    required this.success,
+    required this.message,
+  });
+
+  factory GuarantorDeclineResponse.fromJson(Map<String, dynamic> json) {
+    return GuarantorDeclineResponse(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+    );
+  }
+}
+
+@RestSerializable()
+class LoanCancelRequest {
+  final String userId;
+  final String reason;
+
+  LoanCancelRequest({
+    required this.userId,
+    required this.reason,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'user_id': userId,
+        'reason': reason,
+      };
+}
+
+@RestSerializable()
+class LoanCancelResponse {
+  final bool success;
+  final String message;
+
+  LoanCancelResponse({
+    required this.success,
+    required this.message,
+  });
+
+  factory LoanCancelResponse.fromJson(Map<String, dynamic> json) {
+    return LoanCancelResponse(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+    );
+  }
+}
+
+@RestSerializable()
+class RepaymentScheduleData {
+  final String loanId;
+  final List<RepaymentInstallment> installments;
+  final double totalRepaid;
+  final double totalRemaining;
+
+  RepaymentScheduleData({
+    required this.loanId,
+    required this.installments,
+    required this.totalRepaid,
+    required this.totalRemaining,
+  });
+
+  factory RepaymentScheduleData.fromJson(Map<String, dynamic> json) {
+    return RepaymentScheduleData(
+      loanId: json['loan_id'] as String,
+      installments: (json['installments'] as List)
+          .map((e) => RepaymentInstallment.fromJson(e))
+          .toList(),
+      totalRepaid: (json['total_repaid'] as num).toDouble(),
+      totalRemaining: (json['total_remaining'] as num).toDouble(),
+    );
+  }
+}
+
+@RestSerializable()
+class RepaymentInstallment {
+  final int installmentNumber;
+  final double amount;
+  final DateTime dueDate;
+  final String status; // pending, paid, overdue
+  final DateTime? paidAt;
+
+  RepaymentInstallment({
+    required this.installmentNumber,
+    required this.amount,
+    required this.dueDate,
+    required this.status,
+    this.paidAt,
+  });
+
+  factory RepaymentInstallment.fromJson(Map<String, dynamic> json) {
+    return RepaymentInstallment(
+      installmentNumber: json['installment_number'] as int,
+      amount: (json['amount'] as num).toDouble(),
+      dueDate: DateTime.parse(json['due_date'] as String),
+      status: json['status'] as String,
+      paidAt: json['paid_at'] != null
+          ? DateTime.parse(json['paid_at'] as String)
+          : null,
+    );
+  }
+}
+
+@RestSerializable()
+class RepaymentScheduleResponse {
+  final bool success;
+  final RepaymentScheduleData? schedule;
+
+  RepaymentScheduleResponse({
+    required this.success,
+    this.schedule,
+  });
+
+  factory RepaymentScheduleResponse.fromJson(Map<String, dynamic> json) {
+    return RepaymentScheduleResponse(
+      success: json['success'] as bool,
+      schedule: json['schedule'] != null
+          ? RepaymentScheduleData.fromJson(json['schedule'])
+          : null,
+    );
+  }
+}
+
+@RestSerializable()
+class LoanRepayRequest {
+  final String userId;
+  final double amount;
+  final String paymentMethod; // wallet, bank_transfer, card
+
+  LoanRepayRequest({
+    required this.userId,
+    required this.amount,
+    required this.paymentMethod,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'user_id': userId,
+        'amount': amount,
+        'payment_method': paymentMethod,
+      };
+}
+
+@RestSerializable()
+class LoanRepayResponse {
+  final bool success;
+  final String message;
+  final RepaymentReceipt? receipt;
+
+  LoanRepayResponse({
+    required this.success,
+    required this.message,
+    this.receipt,
+  });
+
+  factory LoanRepayResponse.fromJson(Map<String, dynamic> json) {
+    return LoanRepayResponse(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+      receipt: json['receipt'] != null
+          ? RepaymentReceipt.fromJson(json['receipt'])
+          : null,
+    );
+  }
+}
+
+@RestSerializable()
+class RepaymentReceipt {
+  final String transactionId;
+  final double amount;
+  final DateTime timestamp;
+  final String status;
+
+  RepaymentReceipt({
+    required this.transactionId,
+    required this.amount,
+    required this.timestamp,
+    required this.status,
+  });
+
+  factory RepaymentReceipt.fromJson(Map<String, dynamic> json) {
+    return RepaymentReceipt(
+      transactionId: json['transaction_id'] as String,
+      amount: (json['amount'] as num).toDouble(),
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      status: json['status'] as String,
+    );
+  }
+}
+
+@RestSerializable()
+class LoanTypeData {
+  final String name;
+  final String description;
+  final int duration;
+  final double interestRate;
+  final double minAmount;
+  final double maxAmount;
+
+  LoanTypeData({
+    required this.name,
+    required this.description,
+    required this.duration,
+    required this.interestRate,
+    required this.minAmount,
+    required this.maxAmount,
+  });
+
+  factory LoanTypeData.fromJson(Map<String, dynamic> json) {
+    return LoanTypeData(
+      name: json['name'] as String,
+      description: json['description'] as String,
+      duration: json['duration'] as int,
+      interestRate: (json['interest_rate'] as num).toDouble(),
+      minAmount: (json['min_amount'] as num).toDouble(),
+      maxAmount: (json['max_amount'] as num).toDouble(),
+    );
+  }
+}
+
+@RestSerializable()
+class LoanTypesResponse {
+  final bool success;
+  final List<LoanTypeData> loanTypes;
+
+  LoanTypesResponse({
+    required this.success,
+    required this.loanTypes,
+  });
+
+  factory LoanTypesResponse.fromJson(Map<String, dynamic> json) {
+    return LoanTypesResponse(
+      success: json['success'] as bool,
+      loanTypes: (json['loan_types'] as List)
+          .map((e) => LoanTypeData.fromJson(e))
+          .toList(),
+    );
+  }
+}
