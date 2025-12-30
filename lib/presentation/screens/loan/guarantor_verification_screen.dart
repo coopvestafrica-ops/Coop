@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/theme_config.dart';
 import '../../../core/utils/utils.dart';
 import '../../../data/models/loan_models.dart';
@@ -8,21 +8,27 @@ import '../../../presentation/widgets/common/buttons.dart';
 import '../../../presentation/widgets/common/cards.dart';
 import '../../../presentation/widgets/common/inputs.dart';
 
-/// Guarantor Verification Screen - For guarantors to confirm loan guarantees
+/// Guarantor Verification Screen - Complete 3-Guarantor Consent Flow
 class GuarantorVerificationScreen extends StatefulWidget {
   final String loanId;
   final String borrowerName;
   final double loanAmount;
+  final String loanType;
+  final int loanTenor;
   final String guarantorId;
   final String guarantorName;
+  final String? guarantorPhone;
 
   const GuarantorVerificationScreen({
     super.key,
     required this.loanId,
     required this.borrowerName,
     required this.loanAmount,
+    required this.loanType,
+    required this.loanTenor,
     required this.guarantorId,
     required this.guarantorName,
+    this.guarantorPhone,
   });
 
   @override
@@ -32,103 +38,146 @@ class GuarantorVerificationScreen extends StatefulWidget {
 class _GuarantorVerificationScreenState extends State<GuarantorVerificationScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _savingsController = TextEditingController();
+  final TextEditingController _pinController = TextEditingController();
   
-  String _verificationStatus = ''; // '', 'pending', 'accepted', 'declined'
+  String _verificationStatus = ''; // 'login_required', 'review', 'consent', 'confirmed', 'declined'
   bool _isProcessing = false;
-  int _guarantorsNeeded = 3;
-  int _guarantorsConfirmed = 0;
+  bool _agreedToTerms = false;
 
-  // Mock data - in production, this would come from API
-  final Map<String, dynamic> _loanDetails = {
-    'borrowerName': 'John Doe',
-    'loanAmount': 50000.0,
-    'monthlyRepayment': 12500.0,
-    'duration': 4,
-    'purpose': 'Business expansion',
-    'interestRate': 7.5,
-  };
+  // Mock authentication state - in production, use actual auth provider
+  bool _isLoggedIn = false;
+  
+  // Calculate liability (1/3 of loan amount)
+  double get _guarantorLiability => widget.loanAmount / 3;
 
-  Future<void> _confirmGuarantee() async {
+  Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isProcessing = true;
-      _verificationStatus = 'pending';
     });
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-
-      final savings = double.tryParse(_savingsController.text) ?? 0;
-      final loanAmount = widget.loanAmount;
-      final minimumSavings = loanAmount * 0.1;
-
-      // Check if guarantor has sufficient savings
-      if (savings >= minimumSavings) {
+      // Simulate login API call
+      await Future.delayed(const Duration(seconds: 1));
+      
+      // Validate phone and PIN (mock)
+      if (_phoneController.text.length >= 10 && _pinController.text.length == 4) {
         setState(() {
-          _verificationStatus = 'accepted';
-          _guarantorsConfirmed = 1; // This guarantor
-          _isProcessing = false;
+          _isLoggedIn = true;
+          _verificationStatus = 'review';
         });
-        
-        _showAcceptDialog();
       } else {
-        setState(() {
-          _verificationStatus = 'declined';
-          _isProcessing = false;
-        });
-        
-        _showDeclineDialog();
+        throw Exception('Invalid credentials');
       }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login failed: Invalid phone number or PIN'),
+          backgroundColor: CoopvestColors.error,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+  }
 
+  void _proceedToConsent() {
+    setState(() {
+      _verificationStatus = 'consent';
+    });
+  }
+
+  Future<void> _confirmConsent() async {
+    if (!_agreedToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please read and accept the liability terms to proceed'),
+          backgroundColor: CoopvestColors.error,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isProcessing = true;
+      _verificationStatus = 'processing';
+    });
+
+    try {
+      // Simulate API call to confirm guarantee
+      await Future.delayed(const Duration(seconds: 2));
+      
+      setState(() {
+        _verificationStatus = 'confirmed';
+        _isProcessing = false;
+      });
+      
+      _showSuccessDialog();
     } catch (e) {
       setState(() {
-        _verificationStatus = 'declined';
+        _verificationStatus = 'consent';
         _isProcessing = false;
       });
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: $e'),
+          content: Text('Failed to confirm guarantee: $e'),
           backgroundColor: CoopvestColors.error,
         ),
       );
     }
   }
 
-  void _showAcceptDialog() {
+  void _showSuccessDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Row(
           children: const [
-            Icon(Icons.check_circle, color: CoopvestColors.success),
-            SizedBox(width: 8),
-            Text('Guarantee Confirmed!'),
+            Icon(Icons.check_circle, color: CoopvestColors.success, size: 32),
+            SizedBox(width: 12),
+            Text('Guarantee Confirmed'),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'You have successfully confirmed your guarantee for this loan.',
+              'Your guarantee has been successfully recorded.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: CoopvestColors.warning.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                color: CoopvestColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
-                'IMPORTANT: If the borrower defaults on this loan, you will be responsible for ${(widget.loanAmount / 3).toStringAsFixed(2)} (1/3 of the loan amount).',
-                style: CoopvestTypography.bodySmall.copyWith(
-                  color: CoopvestColors.warning,
-                ),
-                textAlign: TextAlign.center,
+              child: Column(
+                children: [
+                  const Text(
+                    'Your Liability Share',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '₦${_guarantorLiability.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: CoopvestColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '(1/3 of ₦${widget.loanAmount.toStringAsFixed(2)})',
+                    style: TextStyle(color: CoopvestColors.mediumGray),
+                  ),
+                ],
               ),
             ),
           ],
@@ -139,44 +188,41 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
-            child: const Text('I Understand'),
+            child: const Text('Done'),
           ),
         ],
       ),
     );
   }
 
-  void _showDeclineDialog() {
+  void _declineGuarantee() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Row(
           children: const [
-            Icon(Icons.cancel, color: CoopvestColors.error),
+            Icon(Icons.warning, color: Colors.orange),
             SizedBox(width: 8),
-            Text('Cannot Confirm Guarantee'),
+            Text('Decline Guarantee'),
           ],
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Your savings balance (₦${_savingsController.text}) is below the required minimum (₦${(widget.loanAmount * 0.1).toStringAsFixed(2)}) to guarantee this loan.',
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Please ensure you have sufficient savings before attempting to guarantee a loan.',
-              textAlign: TextAlign.center,
-            ),
-          ],
+        content: const Text(
+          'Are you sure you want to decline this guarantee request? The borrower will need to find another guarantor.',
         ),
         actions: [
           TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
             onPressed: () {
               Navigator.of(context).pop();
+              Navigator.of(context).pop();
             },
-            child: const Text('OK'),
+            child: const Text(
+              'Decline',
+              style: TextStyle(color: CoopvestColors.error),
+            ),
           ),
         ],
       ),
@@ -184,13 +230,20 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
   }
 
   void _goBack() {
-    Navigator.of(context).pop();
+    if (_isLoggedIn) {
+      setState(() {
+        _isLoggedIn = false;
+        _verificationStatus = 'login_required';
+      });
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
   void dispose() {
     _phoneController.dispose();
-    _savingsController.dispose();
+    _pinController.dispose();
     super.dispose();
   }
 
@@ -206,7 +259,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
           onPressed: _goBack,
         ),
         title: Text(
-          'Guarantee Loan',
+          'Guarantee Consent',
           style: CoopvestTypography.headlineLarge.copyWith(
             color: CoopvestColors.darkGray,
           ),
@@ -218,168 +271,19 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Loan Details Card
-              AppCard(
-                backgroundColor: CoopvestColors.primary.withOpacity(0.05),
-                border: Border.all(color: CoopvestColors.primary.withOpacity(0.2)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.person, color: CoopvestColors.primary),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Loan Details',
-                          style: CoopvestTypography.labelLarge.copyWith(
-                            color: CoopvestColors.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildDetailRow('Borrower:', widget.borrowerName),
-                    _buildDetailRow('Loan Amount:', '₦${widget.loanAmount.toStringAsFixed(2)}'),
-                    _buildDetailRow('Purpose:', _loanDetails['purpose'] as String),
-                    _buildDetailRow('Monthly Repayment:', '₦${_loanDetails['monthlyRepayment'].toStringAsFixed(2)}'),
-                    _buildDetailRow('Duration:', '${_loanDetails['duration']} months'),
-                    _buildDetailRow('Interest:', '${_loanDetails['interestRate']}%'),
-                  ],
-                ),
-              ),
-
+              // Progress Stepper
+              _buildProgressStepper(),
               const SizedBox(height: 24),
 
-              // Warning Card
-              AppCard(
-                backgroundColor: CoopvestColors.warning.withOpacity(0.1),
-                border: Border.all(color: CoopvestColors.warning.withOpacity(0.3)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.warning, color: CoopvestColors.warning),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Responsibility Notice',
-                          style: CoopvestTypography.labelLarge.copyWith(
-                            color: CoopvestColors.warning,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'By confirming this guarantee, you are agreeing to be responsible for ${(widget.loanAmount / 3).toStringAsFixed(2)} (1/3 of the total loan amount) if the borrower defaults on their payments.',
-                      style: CoopvestTypography.bodyMedium.copyWith(
-                        color: CoopvestColors.darkGray,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Verification Form
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    // Your Information
-                    Text(
-                      'Your Information',
-                      style: CoopvestTypography.titleMedium.copyWith(
-                        color: CoopvestColors.darkGray,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Guarantor Name (Read-only)
-                    AppTextField(
-                      label: 'Your Name',
-                      initialValue: widget.guarantorName,
-                      enabled: false,
-                      filledColor: CoopvestColors.veryLightGray,
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Phone Number
-                    AppTextField(
-                      label: 'Phone Number *',
-                      hint: 'Enter your phone number',
-                      controller: _phoneController,
-                      keyboardType: TextInputType.phone,
-                      textInputAction: TextInputAction.next,
-                      prefixText: '+234 ',
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Phone number is required';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Current Savings Balance
-                    AppTextField(
-                      label: 'Current Savings Balance (₦) *',
-                      hint: 'Minimum ${(widget.loanAmount * 0.1).toStringAsFixed(2)} required',
-                      controller: _savingsController,
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.done,
-                      prefixText: '₦ ',
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Savings balance is required';
-                        }
-                        final savings = double.tryParse(value);
-                        if (savings == null) {
-                          return 'Please enter a valid number';
-                        }
-                        if (savings < widget.loanAmount * 0.1) {
-                          return 'Minimum ₦${(widget.loanAmount * 0.1).toStringAsFixed(2)} required';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Confirm Button
-              _isProcessing
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: CoopvestColors.primary,
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        PrimaryButton(
-                          label: 'Confirm Guarantee',
-                          onPressed: _confirmGuarantee,
-                          width: double.infinity,
-                        ),
-                        const SizedBox(height: 12),
-                        SecondaryButton(
-                          label: 'Decline',
-                          onPressed: _goBack,
-                          width: double.infinity,
-                        ),
-                      ],
-                    ),
-
-              // Status Display
-              if (_verificationStatus.isNotEmpty) ...[
-                const SizedBox(height: 24),
-                _buildStatusDisplay(),
-              ],
+              // Show appropriate screen based on status
+              if (_verificationStatus == 'login_required' || _verificationStatus == '')
+                _buildLoginScreen()
+              else if (_verificationStatus == 'review')
+                _buildReviewScreen()
+              else if (_verificationStatus == 'consent')
+                _buildConsentScreen()
+              else if (_verificationStatus == 'processing' || _verificationStatus == 'confirmed')
+                _buildProcessingScreen(),
             ],
           ),
         ),
@@ -387,75 +291,464 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildProgressStepper() {
+    final steps = ['Login', 'Review', 'Consent', 'Confirm'];
+    final currentStep = switch (_verificationStatus) {
+      'login_required' or '' => 0,
+      'review' => 1,
+      'consent' => 2,
+      'processing' or 'confirmed' => 3,
+      _ => 0,
+    };
+
+    return Row(
+      children: List.generate(steps.length * 2 - 1, (index) {
+        if (index.isOdd) {
+          return Expanded(
+            child: Container(
+              height: 2,
+              color: index ~/ 2 < currentStep 
+                  ? CoopvestColors.primary 
+                  : CoopvestColors.lightGray,
+            ),
+          );
+        }
+        
+        final stepIndex = index ~/ 2;
+        final isActive = stepIndex <= currentStep;
+        final isCompleted = stepIndex < currentStep;
+        
+        return Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: isActive ? CoopvestColors.primary : CoopvestColors.lightGray,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Center(
+            child: isCompleted
+                ? const Icon(Icons.check, color: Colors.white, size: 18)
+                : Text(
+                    '${stepIndex + 1}',
+                    style: TextStyle(
+                      color: isActive ? Colors.white : CoopvestColors.mediumGray,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildLoginScreen() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: CoopvestTypography.bodyMedium.copyWith(
-              color: CoopvestColors.mediumGray,
+          // Info Card
+          AppCard(
+            backgroundColor: CoopvestColors.primary.withOpacity(0.05),
+            border: Border.all(color: CoopvestColors.primary.withOpacity(0.2)),
+            child: Column(
+              children: [
+                Row(
+                  children: const [
+                    Icon(Icons.qr_code_scanner, color: CoopvestColors.primary),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Guarantee Request',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'You have received a guarantee request. Please login to view the details and provide your consent.',
+                  style: TextStyle(color: CoopvestColors.mediumGray),
+                ),
+              ],
             ),
           ),
-          Text(
-            value,
-            style: CoopvestTypography.bodyMedium.copyWith(
-              fontWeight: FontWeight.w600,
-              color: CoopvestColors.darkGray,
+
+          const SizedBox(height: 32),
+
+          const Text(
+            'Login to Your Account',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
+          ),
+          const SizedBox(height: 16),
+
+          // Phone Number
+          AppTextField(
+            label: 'Phone Number',
+            hint: 'Enter your phone number',
+            controller: _phoneController,
+            keyboardType: TextInputType.phone,
+            textInputAction: TextInputAction.next,
+            prefixText: '+234 ',
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Phone number is required';
+              }
+              if (value.length < 10) {
+                return 'Please enter a valid phone number';
+              }
+              return null;
+            },
+          ),
+
+          const SizedBox(height: 16),
+
+          // PIN
+          AppTextField(
+            label: 'Transaction PIN',
+            hint: 'Enter your 4-digit PIN',
+            controller: _pinController,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            obscureText: true,
+            maxLength: 4,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'PIN is required';
+              }
+              if (value.length != 4) {
+                return 'PIN must be 4 digits';
+              }
+              return null;
+            },
+          ),
+
+          const SizedBox(height: 24),
+
+          _isProcessing
+              ? const Center(child: CircularProgressIndicator(color: CoopvestColors.primary))
+              : PrimaryButton(
+                  label: 'Login',
+                  onPressed: _login,
+                  width: double.infinity,
+                ),
+
+          const SizedBox(height: 16),
+          SecondaryButton(
+            label: 'Cancel',
+            onPressed: _goBack,
+            width: double.infinity,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStatusDisplay() {
-    final isAccepted = _verificationStatus == 'accepted';
-    final isDeclined = _verificationStatus == 'declined';
-
-    return AppCard(
-      backgroundColor: isAccepted 
-          ? CoopvestColors.success.withOpacity(0.1)
-          : CoopvestColors.error.withOpacity(0.1),
-      border: Border.all(
-        color: isAccepted ? CoopvestColors.success : CoopvestColors.error,
-      ),
-      child: Column(
-        children: [
-          Row(
+  Widget _buildReviewScreen() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Loan Summary Card
+        AppCard(
+          backgroundColor: CoopvestColors.primary.withOpacity(0.05),
+          border: Border.all(color: CoopvestColors.primary.withOpacity(0.2)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                isAccepted ? Icons.check_circle : Icons.cancel,
-                color: isAccepted ? CoopvestColors.success : CoopvestColors.error,
-                size: 32,
+              Row(
+                children: const [
+                  Icon(Icons.description, color: CoopvestColors.primary),
+                  SizedBox(width: 8),
+                  Text(
+                    'Loan Summary',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildSummaryRow('Borrower:', widget.borrowerName),
+              _buildSummaryRow('Loan Type:', widget.loanType),
+              _buildSummaryRow('Amount:', '₦${widget.loanAmount.toStringAsFixed(2)}'),
+              _buildSummaryRow('Tenor:', '${widget.loanTenor} months'),
+              _buildSummaryRow('Monthly Repayment:', '₦${(widget.loanAmount * 1.075 / widget.loanTenor).toStringAsFixed(2)}'),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        // Guarantor Count Info
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.blue[50],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.blue.withOpacity(0.3)),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.info, color: Colors.blue),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '3 Guarantors Required',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Exactly 3 guarantors must consent to this loan. You are 1 of them.',
+                      style: TextStyle(color: Colors.blue[700]),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 32),
+
+        PrimaryButton(
+          label: 'Continue to Liability Review',
+          onPressed: _proceedToConsent,
+          width: double.infinity,
+        ),
+
+        const SizedBox(height: 16),
+        SecondaryButton(
+          label: 'Decline',
+          onPressed: _declineGuarantee,
+          width: double.infinity,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildConsentScreen() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Liability Statement Card
+        AppCard(
+          backgroundColor: CoopvestColors.warning.withOpacity(0.1),
+          border: Border.all(color: CoopvestColors.warning.withOpacity(0.3)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.gavel, color: CoopvestColors.warning),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Legal Liability Statement',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: CoopvestColors.warning,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'By clicking "I Consent" below, I legally agree that:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              _buildLiabilityPoint('If the borrower defaults on this loan, the outstanding balance will be divided equally among the 3 guarantors'),
+              _buildLiabilityPoint('I am liable for exactly 1/3 of the total loan amount:'),
+              const SizedBox(height: 8),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: CoopvestColors.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    '₦${_guarantorLiability.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _buildLiabilityPoint('Coopvest may recover funds from my wallet balance, savings, or salary deductions'),
+              _buildLiabilityPoint('This consent is legally binding and cannot be revoked once all 3 guarantors have consented'),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        // Consent Checkbox
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _agreedToTerms = !_agreedToTerms;
+            });
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: _agreedToTerms ? CoopvestColors.primary : Colors.transparent,
+                  border: Border.all(
+                    color: _agreedToTerms ? CoopvestColors.primary : CoopvestColors.mediumGray,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: _agreedToTerms
+                    ? const Icon(Icons.check, color: Colors.white, size: 16)
+                    : null,
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  isAccepted 
-                      ? 'Your guarantee has been confirmed!' 
-                      : 'Could not confirm guarantee',
-                  style: CoopvestTypography.titleMedium.copyWith(
-                    color: isAccepted ? CoopvestColors.success : CoopvestColors.error,
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: CoopvestColors.darkGray, fontSize: 14),
+                    children: [
+                      const TextSpan(
+                        text: 'I have read and understood the liability statement above. I ',
+                      ),
+                      TextSpan(
+                        text: 'LEGALLY CONSENT',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: CoopvestColors.primary,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' to guarantee this loan and accept full liability for 1/3 of the outstanding balance if the borrower defaults.',
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
-          if (isAccepted) ...[
-            const SizedBox(height: 16),
-            const Divider(),
-            const SizedBox(height: 16),
-            Text(
-              'Thank you for supporting your fellow member. You will be notified if the borrower defaults on their payments.',
-              style: CoopvestTypography.bodyMedium.copyWith(
-                color: CoopvestColors.darkGray,
+        ),
+
+        const SizedBox(height: 32),
+
+        _isProcessing
+            ? const Center(child: CircularProgressIndicator(color: CoopvestColors.primary))
+            : Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: _agreedToTerms ? _confirmConsent : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: CoopvestColors.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'I CONSENT',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: _declineGuarantee,
+                    child: const Text(
+                      'Decline This Request',
+                      style: TextStyle(color: CoopvestColors.error),
+                    ),
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
+      ],
+    );
+  }
+
+  Widget _buildProcessingScreen() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (_verificationStatus == 'confirmed')
+            const Icon(Icons.check_circle, color: CoopvestColors.success, size: 80)
+          else
+            const CircularProgressIndicator(color: CoopvestColors.primary, size: 80),
+          const SizedBox(height: 24),
+          Text(
+            _verificationStatus == 'confirmed'
+                ? 'Guarantee Confirmed!'
+                : 'Processing Your Consent...',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-          ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _verificationStatus == 'confirmed'
+                ? 'Your consent has been recorded successfully.'
+                : 'Please wait while we process your consent...',
+            style: TextStyle(color: CoopvestColors.mediumGray),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(color: CoopvestColors.mediumGray)),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLiabilityPoint(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('• ', style: TextStyle(color: CoopvestColors.warning)),
+          Expanded(child: Text(text)),
         ],
       ),
     );
