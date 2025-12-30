@@ -9,6 +9,7 @@ import '../../../presentation/widgets/common/cards.dart';
 import '../../../presentation/widgets/common/inputs.dart';
 
 /// Guarantor Verification Screen - Complete 3-Guarantor Consent Flow
+/// Flow: QR Scan → Review → Consent (No redundant login needed - user is already authenticated)
 class GuarantorVerificationScreen extends StatefulWidget {
   final String loanId;
   final String borrowerName;
@@ -36,59 +37,12 @@ class GuarantorVerificationScreen extends StatefulWidget {
 }
 
 class _GuarantorVerificationScreenState extends State<GuarantorVerificationScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _pinController = TextEditingController();
-  
-  String _verificationStatus = ''; // 'login_required', 'review', 'consent', 'confirmed', 'declined'
+  String _verificationStatus = 'review'; // Start directly at review - user is already authenticated
   bool _isProcessing = false;
   bool _agreedToTerms = false;
-
-  // Mock authentication state - in production, use actual auth provider
-  bool _isLoggedIn = false;
   
   // Calculate liability (1/3 of loan amount)
   double get _guarantorLiability => widget.loanAmount / 3;
-
-  Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isProcessing = true;
-    });
-
-    try {
-      // Simulate login API call
-      await Future.delayed(const Duration(seconds: 1));
-      
-      // Validate phone and PIN (mock)
-      if (_phoneController.text.length >= 10 && _pinController.text.length == 4) {
-        setState(() {
-          _isLoggedIn = true;
-          _verificationStatus = 'review';
-        });
-      } else {
-        throw Exception('Invalid credentials');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Login failed: Invalid phone number or PIN'),
-          backgroundColor: CoopvestColors.error,
-        ),
-      );
-    } finally {
-      setState(() {
-        _isProcessing = false;
-      });
-    }
-  }
-
-  void _proceedToConsent() {
-    setState(() {
-      _verificationStatus = 'consent';
-    });
-  }
 
   Future<void> _confirmConsent() async {
     if (!_agreedToTerms) {
@@ -180,6 +134,12 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            const Text(
+              'You will be notified if the borrower defaults on this loan.',
+              style: TextStyle(color: CoopvestColors.mediumGray),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
         actions: [
@@ -230,21 +190,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
   }
 
   void _goBack() {
-    if (_isLoggedIn) {
-      setState(() {
-        _isLoggedIn = false;
-        _verificationStatus = 'login_required';
-      });
-    } else {
-      Navigator.of(context).pop();
-    }
-  }
-
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    _pinController.dispose();
-    super.dispose();
+    Navigator.of(context).pop();
   }
 
   @override
@@ -271,14 +217,12 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Progress Stepper
+              // Progress Stepper (Updated - 3 steps instead of 4)
               _buildProgressStepper(),
               const SizedBox(height: 24),
 
               // Show appropriate screen based on status
-              if (_verificationStatus == 'login_required' || _verificationStatus == '')
-                _buildLoginScreen()
-              else if (_verificationStatus == 'review')
+              if (_verificationStatus == 'review')
                 _buildReviewScreen()
               else if (_verificationStatus == 'consent')
                 _buildConsentScreen()
@@ -292,12 +236,11 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
   }
 
   Widget _buildProgressStepper() {
-    final steps = ['Login', 'Review', 'Consent', 'Confirm'];
+    final steps = ['Review', 'Consent', 'Confirm'];
     final currentStep = switch (_verificationStatus) {
-      'login_required' or '' => 0,
-      'review' => 1,
-      'consent' => 2,
-      'processing' or 'confirmed' => 3,
+      'review' => 0,
+      'consent' => 1,
+      'processing' or 'confirmed' => 2,
       _ => 0,
     };
 
@@ -338,115 +281,6 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
           ),
         );
       }),
-    );
-  }
-
-  Widget _buildLoginScreen() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Info Card
-          AppCard(
-            backgroundColor: CoopvestColors.primary.withOpacity(0.05),
-            border: Border.all(color: CoopvestColors.primary.withOpacity(0.2)),
-            child: Column(
-              children: [
-                Row(
-                  children: const [
-                    Icon(Icons.qr_code_scanner, color: CoopvestColors.primary),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Guarantee Request',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'You have received a guarantee request. Please login to view the details and provide your consent.',
-                  style: TextStyle(color: CoopvestColors.mediumGray),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 32),
-
-          const Text(
-            'Login to Your Account',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Phone Number
-          AppTextField(
-            label: 'Phone Number',
-            hint: 'Enter your phone number',
-            controller: _phoneController,
-            keyboardType: TextInputType.phone,
-            textInputAction: TextInputAction.next,
-            prefixText: '+234 ',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Phone number is required';
-              }
-              if (value.length < 10) {
-                return 'Please enter a valid phone number';
-              }
-              return null;
-            },
-          ),
-
-          const SizedBox(height: 16),
-
-          // PIN
-          AppTextField(
-            label: 'Transaction PIN',
-            hint: 'Enter your 4-digit PIN',
-            controller: _pinController,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.done,
-            obscureText: true,
-            maxLength: 4,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'PIN is required';
-              }
-              if (value.length != 4) {
-                return 'PIN must be 4 digits';
-              }
-              return null;
-            },
-          ),
-
-          const SizedBox(height: 24),
-
-          _isProcessing
-              ? const Center(child: CircularProgressIndicator(color: CoopvestColors.primary))
-              : PrimaryButton(
-                  label: 'Login',
-                  onPressed: _login,
-                  width: double.infinity,
-                ),
-
-          const SizedBox(height: 16),
-          SecondaryButton(
-            label: 'Cancel',
-            onPressed: _goBack,
-            width: double.infinity,
-          ),
-        ],
-      ),
     );
   }
 
@@ -524,8 +358,12 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
         const SizedBox(height: 32),
 
         PrimaryButton(
-          label: 'Continue to Liability Review',
-          onPressed: _proceedToConsent,
+          label: 'Review Liability Terms',
+          onPressed: () {
+            setState(() {
+              _verificationStatus = 'consent';
+            });
+          },
           width: double.infinity,
         ),
 
