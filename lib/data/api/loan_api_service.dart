@@ -1,13 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
+import '../../core/network/api_client.dart';
 import '../models/loan_models.dart';
 
 part 'loan_api_service.g.dart';
 
-/// API Service for Loan Operations
-@RestApi(baseUrl: 'https://api.coopvest.africa/v1')
+/// API Service for Loan Operations - Uses official ApiClient
+@RestApi()
 abstract class LoanApiService {
-  factory LoanApiService(Dio dio, {String baseUrl}) = _LoanApiService;
+  factory LoanApiService(Dio dio, {String baseUrl = '/api/v1'}) = _LoanApiService;
 
   /// Apply for a new loan
   @POST('/loans/apply')
@@ -78,9 +80,14 @@ abstract class LoanApiService {
   Future<LoanTypesResponse> getLoanTypes();
 }
 
+/// Loan API Service Provider
+final loanApiServiceProvider = Provider<LoanApiService>((ref) {
+  final apiClient = ref.watch(apiClientProvider);
+  return LoanApiService(apiClient.dio);
+});
+
 /// Request/Response Models
 
-@RestSerializable()
 class LoanApplicationRequest {
   final String userId;
   final String loanType;
@@ -105,7 +112,6 @@ class LoanApplicationRequest {
       };
 }
 
-@RestSerializable()
 class LoanResponse {
   final bool success;
   final String message;
@@ -126,7 +132,6 @@ class LoanResponse {
   }
 }
 
-@RestSerializable()
 class LoanData {
   final String id;
   final String userId;
@@ -171,7 +176,6 @@ class LoanData {
   }
 }
 
-@RestSerializable()
 class LoansListResponse {
   final bool success;
   final List<LoanData> loans;
@@ -191,7 +195,6 @@ class LoansListResponse {
   }
 }
 
-@RestSerializable()
 class LoanDetailsResponse {
   final bool success;
   final LoanData loan;
@@ -219,7 +222,6 @@ class LoanDetailsResponse {
   }
 }
 
-@RestSerializable()
 class LoanStatusResponse {
   final bool success;
   final String status;
@@ -248,7 +250,6 @@ class LoanStatusResponse {
   }
 }
 
-@RestSerializable()
 class GuarantorData {
   final String id;
   final String name;
@@ -277,7 +278,6 @@ class GuarantorData {
   }
 }
 
-@RestSerializable()
 class GuarantorsListResponse {
   final bool success;
   final List<GuarantorData> guarantors;
@@ -297,7 +297,6 @@ class GuarantorsListResponse {
   }
 }
 
-@RestSerializable()
 class GuarantorConfirmRequest {
   final String guarantorId;
   final String guarantorName;
@@ -319,7 +318,6 @@ class GuarantorConfirmRequest {
       };
 }
 
-@RestSerializable()
 class GuarantorConfirmResponse {
   final bool success;
   final String message;
@@ -343,7 +341,6 @@ class GuarantorConfirmResponse {
   }
 }
 
-@RestSerializable()
 class GuarantorDeclineRequest {
   final String guarantorId;
   final String reason;
@@ -359,7 +356,6 @@ class GuarantorDeclineRequest {
       };
 }
 
-@RestSerializable()
 class GuarantorDeclineResponse {
   final bool success;
   final String message;
@@ -377,7 +373,6 @@ class GuarantorDeclineResponse {
   }
 }
 
-@RestSerializable()
 class LoanCancelRequest {
   final String userId;
   final String reason;
@@ -393,7 +388,6 @@ class LoanCancelRequest {
       };
 }
 
-@RestSerializable()
 class LoanCancelResponse {
   final bool success;
   final String message;
@@ -411,7 +405,6 @@ class LoanCancelResponse {
   }
 }
 
-@RestSerializable()
 class RepaymentScheduleData {
   final String loanId;
   final List<RepaymentInstallment> installments;
@@ -437,7 +430,6 @@ class RepaymentScheduleData {
   }
 }
 
-@RestSerializable()
 class RepaymentInstallment {
   final int installmentNumber;
   final double amount;
@@ -466,7 +458,6 @@ class RepaymentInstallment {
   }
 }
 
-@RestSerializable()
 class RepaymentScheduleResponse {
   final bool success;
   final RepaymentScheduleData? schedule;
@@ -486,7 +477,6 @@ class RepaymentScheduleResponse {
   }
 }
 
-@RestSerializable()
 class LoanRepayRequest {
   final String userId;
   final double amount;
@@ -505,7 +495,6 @@ class LoanRepayRequest {
       };
 }
 
-@RestSerializable()
 class LoanRepayResponse {
   final bool success;
   final String message;
@@ -528,7 +517,6 @@ class LoanRepayResponse {
   }
 }
 
-@RestSerializable()
 class RepaymentReceipt {
   final String transactionId;
   final double amount;
@@ -552,7 +540,6 @@ class RepaymentReceipt {
   }
 }
 
-@RestSerializable()
 class LoanTypeData {
   final String name;
   final String description;
@@ -582,7 +569,6 @@ class LoanTypeData {
   }
 }
 
-@RestSerializable()
 class LoanTypesResponse {
   final bool success;
   final List<LoanTypeData> loanTypes;

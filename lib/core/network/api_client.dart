@@ -11,8 +11,15 @@ final apiClientProvider = Provider<ApiClient>((ref) {
 /// API Client Implementation
 class ApiClient {
   late final Dio _dio;
+  bool _initialized = false;
 
   ApiClient() {
+    _initialize();
+  }
+
+  void _initialize() {
+    if (_initialized) return;
+    
     _dio = Dio(
       BaseOptions(
         baseUrl: AppConfig.apiBaseUrl,
@@ -29,9 +36,14 @@ class ApiClient {
     _dio.interceptors.add(LoggingInterceptor());
     _dio.interceptors.add(ErrorInterceptor());
     _dio.interceptors.add(AuthInterceptor());
+    
+    _initialized = true;
   }
 
-  Dio get dio => _dio;
+  Dio get dio {
+    _initialize();
+    return _dio;
+  }
 
   /// GET request
   Future<dynamic> get(
@@ -149,12 +161,130 @@ class ApiClient {
 
   /// Set authorization token
   void setAuthToken(String token) {
+    _initialize();
     _dio.options.headers['Authorization'] = 'Bearer $token';
   }
 
   /// Clear authorization token
   void clearAuthToken() {
+    _initialize();
     _dio.options.headers.remove('Authorization');
+  }
+
+  /// Set custom headers
+  void setHeaders(Map<String, String> headers) {
+    _initialize();
+    _dio.options.headers.addAll(headers);
+  }
+
+  /// Reset client state
+  void reset() {
+    _dio.close();
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: AppConfig.apiBaseUrl,
+        connectTimeout: AppConfig.apiTimeout,
+        receiveTimeout: AppConfig.apiTimeout,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+    _dio.interceptors.add(LoggingInterceptor());
+    _dio.interceptors.add(ErrorInterceptor());
+    _dio.interceptors.add(AuthInterceptor());
+  }
+}
+
+/// API Error Handling
+class ApiException implements Exception {
+  final String message;
+  final int? statusCode;
+  final String? errorCode;
+
+  ApiException({
+    required this.message,
+    this.statusCode,
+    this.errorCode,
+  });
+
+  @override
+  String toString() {
+    return 'ApiException: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
+  }
+}
+
+/// Result wrapper for API responses
+class ApiResult<T> {
+  final T? data;
+  final String? error;
+  final bool isSuccess;
+
+  ApiResult({
+    this.data,
+    this.error,
+    required this.isSuccess,
+  });
+
+  factory ApiResult.success(T data) {
+    return ApiResult(data: data, isSuccess: true);
+  }
+
+  factory ApiResult.error(String error) {
+    return ApiResult(error: error, isSuccess: false);
+  }
+
+  bool get hasData => data != null;
+  bool get hasError => error != null;
+}
+
+/// Extension for handling Dio errors
+extension DioErrorExtension on DioException {
+  ApiException toApiException() {
+    switch (type) {
+      case DioExceptionType.connectionTimeout:
+        return ApiException(
+          message: 'Connection timed out. Please try again.',
+          statusCode: 408,
+        );
+      case DioExceptionType.sendTimeout:
+        return ApiException(
+          message: 'Send timed out. Please try again.',
+          statusCode: 408,
+        );
+      case DioExceptionType.receiveTimeout:
+        return ApiException(
+          message: 'Receive timed out. Please try again.',
+          statusCode: 408,
+        );
+      case DioExceptionType.badCertificate:
+        return ApiException(
+          message: 'Security certificate error.',
+          statusCode: 495,
+        );
+      case DioExceptionType.badResponse:
+        final statusCode = response?.statusCode;
+        final errorMessage = response?.data?['message'] ?? 'Request failed';
+        return ApiException(
+          message: errorMessage,
+          statusCode: statusCode,
+        );
+      case DioExceptionType.cancel:
+        return ApiException(
+          message: 'Request cancelled',
+          statusCode: -1,
+        );
+      case DioExceptionType.connectionError:
+        return ApiException(
+          message: 'No internet connection. Please check your network.',
+          statusCode: -1,
+        );
+      case DioExceptionType.unknown:
+        return ApiException(
+          message: 'An unexpected error occurred. Please try again.',
+        );
+    }
   }
 }
 

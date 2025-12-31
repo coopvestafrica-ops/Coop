@@ -1,301 +1,233 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
-import '../models/loan_models.dart';
+import '../../data/api/loan_api_service.dart';
+import '../../data/models/loan_models.dart';
+import '../repositories/auth_repository.dart';
 
-/// Loan Repository Provider
-final loanRepositoryProvider = Provider<LoanRepository>((ref) {
-  final apiClient = ref.watch(apiClientProvider);
-  return LoanRepository(apiClient);
+/// Loan Provider - Uses official ApiClient through Riverpod
+final loanProvider = StateNotifierProvider<LoanNotifier, LoanState>((ref) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  final loanApiService = ref.watch(loanApiServiceProvider);
+  return LoanNotifier(authRepository, loanApiService);
 });
 
-/// Loan Repository
-class LoanRepository {
-  final ApiClient _apiClient;
+/// Loan Notifier
+class LoanNotifier extends StateNotifier<LoanState> {
+  final AuthRepository _authRepository;
+  final LoanApiService _loanApiService;
 
-  LoanRepository(this._apiClient);
+  LoanNotifier(this._authRepository, this._loanApiService)
+      : super(const LoanState());
 
-  /// Get loans
-  Future<List<Loan>> getLoans({
-    int page = 1,
-    int pageSize = 20,
-    String? status,
+  /// Apply for a loan
+  Future<void> applyForLoan({
+    required String loanType,
+    required double amount,
+    required String purpose,
+    required double monthlySavings,
   }) async {
+    state = state.copyWith(status: LoanStatus.loading);
     try {
-      final response = await _apiClient.get(
-        '/loans',
-        queryParameters: {
-          'page': page,
-          'page_size': pageSize,
-          if (status != null) 'status': status,
-        },
+      final userId = await _authRepository.getUserId();
+      final response = await _loanApiService.applyForLoan(
+        LoanApplicationRequest(
+          userId: userId,
+          loanType: loanType,
+          amount: amount,
+          purpose: purpose,
+          monthlySavings: monthlySavings,
+        ),
       );
 
-      final data = response as Map<String, dynamic>;
-      final loans = (data['data'] as List)
-          .map((item) => Loan.fromJson(item as Map<String, dynamic>))
-          .toList();
+      if (response.success && response.loan != null) {
+        state = state.copyWith(
+          status: LoanStatus.success,
+          currentLoan: response.loan,
+          loans: [...state.loans, response.loan!],
+        );
+      } else {
+        state = state.copyWith(
+          status: LoanStatus.error,
+          error: response.message,
+        );
+      }
+    } catch (e) {
+      logger.e('Apply for loan error: $e');
+      state = state.copyWith(
+        status: LoanStatus.error,
+        error: e.toString(),
+      );
+    }
+  }
 
-      return loans;
+  /// Get all loans
+  Future<void> getLoans() async {
+    state = state.copyWith(status: LoanStatus.loading);
+    try {
+      final userId = await _authRepository.getUserId();
+      final response = await _loanApiService.getUserLoans(userId);
+
+      if (response.success) {
+        state = state.copyWith(
+          status: LoanStatus.success,
+          loans: response.loans,
+        );
+      } else {
+        state = state.copyWith(
+          status: LoanStatus.error,
+          error: 'Failed to fetch loans',
+        );
+      }
     } catch (e) {
       logger.e('Get loans error: $e');
-      rethrow;
+      state = state.copyWith(
+        status: LoanStatus.error,
+        error: e.toString(),
+      );
     }
   }
 
   /// Get loan details
-  Future<Loan> getLoanDetails(String loanId) async {
+  Future<LoanDetailsResponse?> getLoanDetails(String loanId) async {
     try {
-      final response = await _apiClient.get('/loans/$loanId');
-      return Loan.fromJson(response as Map<String, dynamic>);
+      final response = await _loanApiService.getLoanDetails(loanId);
+      if (response.success) {
+        return response;
+      }
+      return null;
     } catch (e) {
       logger.e('Get loan details error: $e');
-      rethrow;
+      return null;
     }
   }
 
-  /// Apply for loan
-  Future<Loan> applyLoan({
-    required double amount,
-    required int tenure,
-    String? purpose,
-  }) async {
+  /// Get loan status
+  Future<LoanStatusResponse?> getLoanStatus(String loanId) async {
     try {
-      final response = await _apiClient.post(
-        '/loans/apply',
-        data: {
-          'amount': amount,
-          'tenure': tenure,
-          'purpose': purpose,
-        },
-      );
-
-      return Loan.fromJson(response as Map<String, dynamic>);
+      final response = await _loanApiService.getLoanStatus(loanId);
+      if (response.success) {
+        return response;
+      }
+      return null;
     } catch (e) {
-      logger.e('Apply loan error: $e');
-      rethrow;
+      logger.e('Get loan status error: $e');
+      return null;
     }
   }
 
-  /// Get guarantors for loan
-  Future<List<Guarantor>> getGuarantors(String loanId) async {
+  /// Get guarantors
+  Future<List<GuarantorData>> getGuarantors(String loanId) async {
     try {
-      final response = await _apiClient.get('/loans/$loanId/guarantors');
-
-      final data = response as Map<String, dynamic>;
-      final guarantors = (data['data'] as List)
-          .map((item) => Guarantor.fromJson(item as Map<String, dynamic>))
-          .toList();
-
-      return guarantors;
+      final response = await _loanApiService.getLoanGuarantors(loanId);
+      if (response.success) {
+        return response.guarantors;
+      }
+      return [];
     } catch (e) {
       logger.e('Get guarantors error: $e');
-      rethrow;
+      return [];
     }
   }
 
-  /// Get guarantor requests (for current user as guarantor)
-  Future<List<Map<String, dynamic>>> getGuarantorRequests() async {
+  /// Confirm guarantee
+  Future<bool> confirmGuarantee({
+    required String loanId,
+    required String guarantorId,
+    required String guarantorName,
+    required String guarantorPhone,
+    required double savingsBalance,
+  }) async {
     try {
-      final response = await _apiClient.get('/loans/guarantor-requests');
-
-      final data = response as Map<String, dynamic>;
-      final requests = (data['data'] as List)
-          .map((item) => item as Map<String, dynamic>)
-          .toList();
-
-      return requests;
-    } catch (e) {
-      logger.e('Get guarantor requests error: $e');
-      rethrow;
-    }
-  }
-
-  /// Approve as guarantor
-  Future<void> approveAsGuarantor(String loanId) async {
-    try {
-      await _apiClient.post(
-        '/loans/$loanId/approve-guarantor',
+      final response = await _loanApiService.confirmGuarantee(
+        loanId,
+        GuarantorConfirmRequest(
+          guarantorId: guarantorId,
+          guarantorName: guarantorName,
+          guarantorPhone: guarantorPhone,
+          savingsBalance: savingsBalance,
+        ),
       );
+      return response.success;
     } catch (e) {
-      logger.e('Approve as guarantor error: $e');
-      rethrow;
+      logger.e('Confirm guarantee error: $e');
+      return false;
     }
   }
 
-  /// Decline as guarantor
-  Future<void> declineAsGuarantor(String loanId) async {
+  /// Decline guarantee
+  Future<bool> declineGuarantee({
+    required String loanId,
+    required String guarantorId,
+    required String reason,
+  }) async {
     try {
-      await _apiClient.post(
-        '/loans/$loanId/decline-guarantor',
+      final response = await _loanApiService.declineGuarantee(
+        loanId,
+        GuarantorDeclineRequest(
+          guarantorId: guarantorId,
+          reason: reason,
+        ),
       );
+      return response.success;
     } catch (e) {
-      logger.e('Decline as guarantor error: $e');
-      rethrow;
+      logger.e('Decline guarantee error: $e');
+      return false;
     }
   }
 
   /// Get repayment schedule
-  Future<List<Map<String, dynamic>>> getRepaymentSchedule(String loanId) async {
+  Future<RepaymentScheduleData?> getRepaymentSchedule(String loanId) async {
     try {
-      final response = await _apiClient.get('/loans/$loanId/repayment-schedule');
-
-      final data = response as Map<String, dynamic>;
-      final schedule = (data['data'] as List)
-          .map((item) => item as Map<String, dynamic>)
-          .toList();
-
-      return schedule;
+      final response = await _loanApiService.getRepaymentSchedule(loanId);
+      if (response.success && response.schedule != null) {
+        return response.schedule;
+      }
+      return null;
     } catch (e) {
       logger.e('Get repayment schedule error: $e');
-      rethrow;
+      return null;
     }
   }
 
   /// Make repayment
-  Future<void> makeRepayment({
+  Future<bool> makeRepayment({
     required String loanId,
     required double amount,
+    required String paymentMethod,
   }) async {
     try {
-      await _apiClient.post(
-        '/loans/$loanId/repay',
-        data: {'amount': amount},
+      final userId = await _authRepository.getUserId();
+      final response = await _loanApiService.makeRepayment(
+        loanId,
+        LoanRepayRequest(
+          userId: userId,
+          amount: amount,
+          paymentMethod: paymentMethod,
+        ),
       );
+      if (response.success) {
+        await getLoans(); // Refresh loans after repayment
+        return true;
+      }
+      return false;
     } catch (e) {
       logger.e('Make repayment error: $e');
-      rethrow;
+      return false;
     }
   }
 
-  /// Generate QR code for loan
-  Future<String> generateQRCode(String loanId) async {
+  /// Get loan types
+  Future<List<LoanTypeData>> getLoanTypes() async {
     try {
-      final response = await _apiClient.get('/loans/$loanId/qr-code');
-      return response['qr_code'] as String;
+      final response = await _loanApiService.getLoanTypes();
+      if (response.success) {
+        return response.loanTypes;
+      }
+      return [];
     } catch (e) {
-      logger.e('Generate QR code error: $e');
-      rethrow;
-    }
-  }
-}
-
-/// Loan Notifier
-class LoanNotifier extends StateNotifier<LoansState> {
-  final LoanRepository _loanRepository;
-
-  LoanNotifier(this._loanRepository) : super(const LoansState());
-
-  /// Load loans
-  Future<void> loadLoans({
-    int page = 1,
-    int pageSize = 20,
-    String? status,
-  }) async {
-    state = state.copyWith(status: LoanStatus.loading);
-    try {
-      final loans = await _loanRepository.getLoans(
-        page: page,
-        pageSize: pageSize,
-        status: status,
-      );
-
-      state = state.copyWith(
-        status: LoanStatus.loaded,
-        loans: loans,
-      );
-    } catch (e) {
-      logger.e('Load loans error: $e');
-      state = state.copyWith(
-        status: LoanStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  /// Load loan details
-  Future<void> loadLoanDetails(String loanId) async {
-    state = state.copyWith(status: LoanStatus.loading);
-    try {
-      final loan = await _loanRepository.getLoanDetails(loanId);
-      final guarantors = await _loanRepository.getGuarantors(loanId);
-
-      state = state.copyWith(
-        status: LoanStatus.loaded,
-        selectedLoan: loan,
-        guarantors: guarantors,
-      );
-    } catch (e) {
-      logger.e('Load loan details error: $e');
-      state = state.copyWith(
-        status: LoanStatus.error,
-        error: e.toString(),
-      );
-    }
-  }
-
-  /// Apply for loan
-  Future<void> applyLoan({
-    required double amount,
-    required int tenure,
-    String? purpose,
-  }) async {
-    state = state.copyWith(status: LoanStatus.loading);
-    try {
-      final loan = await _loanRepository.applyLoan(
-        amount: amount,
-        tenure: tenure,
-        purpose: purpose,
-      );
-
-      state = state.copyWith(
-        status: LoanStatus.loaded,
-        selectedLoan: loan,
-        loans: [loan, ...state.loans],
-      );
-    } catch (e) {
-      logger.e('Apply loan error: $e');
-      state = state.copyWith(
-        status: LoanStatus.error,
-        error: e.toString(),
-      );
-      rethrow;
-    }
-  }
-
-  /// Approve as guarantor
-  Future<void> approveAsGuarantor(String loanId) async {
-    state = state.copyWith(status: LoanStatus.loading);
-    try {
-      await _loanRepository.approveAsGuarantor(loanId);
-
-      // Reload loan details
-      await loadLoanDetails(loanId);
-    } catch (e) {
-      logger.e('Approve as guarantor error: $e');
-      state = state.copyWith(
-        status: LoanStatus.error,
-        error: e.toString(),
-      );
-      rethrow;
-    }
-  }
-
-  /// Decline as guarantor
-  Future<void> declineAsGuarantor(String loanId) async {
-    state = state.copyWith(status: LoanStatus.loading);
-    try {
-      await _loanRepository.declineAsGuarantor(loanId);
-
-      // Reload loan details
-      await loadLoanDetails(loanId);
-    } catch (e) {
-      logger.e('Decline as guarantor error: $e');
-      state = state.copyWith(
-        status: LoanStatus.error,
-        error: e.toString(),
-      );
-      rethrow;
+      logger.e('Get loan types error: $e');
+      return [];
     }
   }
 
@@ -304,41 +236,3 @@ class LoanNotifier extends StateNotifier<LoansState> {
     state = state.copyWith(error: null);
   }
 }
-
-/// Loan Provider
-final loanProvider = StateNotifierProvider<LoanNotifier, LoansState>((ref) {
-  final loanRepository = ref.watch(loanRepositoryProvider);
-  return LoanNotifier(loanRepository);
-});
-
-/// Active loans provider
-final activeLoansProvider = Provider<List<Loan>>((ref) {
-  final loansState = ref.watch(loanProvider);
-  return loansState.loans.where((loan) => loan.status == 'active').toList();
-});
-
-/// Pending loans provider
-final pendingLoansProvider = Provider<List<Loan>>((ref) {
-  final loansState = ref.watch(loanProvider);
-  return loansState.loans
-      .where((loan) => loan.status == 'pending_guarantors')
-      .toList();
-});
-
-/// Selected loan provider
-final selectedLoanProvider = Provider<Loan?>((ref) {
-  final loansState = ref.watch(loanProvider);
-  return loansState.selectedLoan;
-});
-
-/// Guarantors provider
-final guarantorsProvider = Provider<List<Guarantor>>((ref) {
-  final loansState = ref.watch(loanProvider);
-  return loansState.guarantors;
-});
-
-/// Loan error provider
-final loanErrorProvider = Provider<String?>((ref) {
-  final loansState = ref.watch(loanProvider);
-  return loansState.error;
-});
