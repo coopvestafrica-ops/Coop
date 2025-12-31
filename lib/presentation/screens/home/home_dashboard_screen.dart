@@ -22,9 +22,10 @@ class HomeDashboardScreen extends ConsumerWidget {
     final savingsGoals = walletState.savingsGoals.where((g) => g.status == 'active').toList();
     final recentTransactions = walletState.transactions.take(3).toList();
     
-    // Mock user data - in production, get from auth provider
-    const userName = 'John';
-    const userId = 'user_123';
+    // Get user data from auth provider
+    final user = ref.watch(currentUserProvider);
+    final userName = user?.name ?? 'User';
+    final userId = user?.id ?? '';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -34,14 +35,14 @@ class HomeDashboardScreen extends ConsumerWidget {
         leading: IconButton(
           icon: const Icon(Icons.notifications_none, color: CoopvestColors.darkGray),
           onPressed: () {
-            // Navigate to notifications
+            // TODO: Navigate to notifications
           },
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: CoopvestColors.darkGray),
             onPressed: () {
-              // Navigate to settings
+              // TODO: Navigate to settings
             },
           ),
         ],
@@ -74,7 +75,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                   Expanded(
                     child: _buildStatCard(
                       'Total Savings',
-                      '₦${(wallet?.balance ?? 0).formatNumber()}',
+                      '\u20a6${(wallet?.balance ?? 0).formatNumber()}',
                       Icons.savings,
                       CoopvestColors.success,
                     ),
@@ -105,7 +106,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                   Expanded(
                     child: _buildStatCard(
                       'Pending',
-                      '₦${(wallet?.pendingContributions ?? 0).formatNumber()}',
+                      '\u20a6${(wallet?.pendingContributions ?? 0).formatNumber()}',
                       Icons.pending,
                       Colors.blue,
                     ),
@@ -116,7 +117,7 @@ class HomeDashboardScreen extends ConsumerWidget {
               const SizedBox(height: 32),
 
               // Quick Actions Grid
-              _buildQuickActionsGrid(context),
+              _buildQuickActionsGrid(context, userId, userName),
 
               const SizedBox(height: 32),
 
@@ -125,7 +126,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                 _buildSectionHeader('Savings Goals', () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const SavingsGoalsScreen(userId: userId),
+                      builder: (context) => SavingsGoalsScreen(userId: userId),
                     ),
                   );
                 }),
@@ -136,7 +137,7 @@ class HomeDashboardScreen extends ConsumerWidget {
 
               // Recent Activity
               _buildSectionHeader('Recent Activity', () {
-                // View all transactions
+                // TODO: View all transactions
               }),
               const SizedBox(height: 16),
               if (recentTransactions.isEmpty)
@@ -182,9 +183,7 @@ class HomeDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildQuickActionsGrid(BuildContext context) {
-    const userId = 'user_123';
-    
+  Widget _buildQuickActionsGrid(BuildContext context, String userId, String userName) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -206,7 +205,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => WalletDashboardScreen(userId: userId, userName: 'John'),
+                      builder: (context) => WalletDashboardScreen(userId: userId, userName: userName),
                     ),
                   );
                 },
@@ -221,7 +220,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const SavingsGoalsScreen(userId: userId),
+                      builder: (context) => SavingsGoalsScreen(userId: userId),
                     ),
                   );
                 },
@@ -236,7 +235,11 @@ class HomeDashboardScreen extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => LoanDashboardScreen(userId: userId, userName: 'John', userPhone: '+2340000000000'),
+                      builder: (context) => LoanDashboardScreen(
+                        userId: userId, 
+                        userName: userName, 
+                        userPhone: '',
+                      ),
                     ),
                   );
                 },
@@ -323,7 +326,7 @@ class HomeDashboardScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '₦${goal.currentAmount.formatNumber()} of ₦${goal.targetAmount.formatNumber()}',
+              '\u20a6${goal.currentAmount.formatNumber()} of \u20a6${goal.targetAmount.formatNumber()}',
               style: TextStyle(color: CoopvestColors.mediumGray),
             ),
           ],
@@ -382,7 +385,7 @@ class HomeDashboardScreen extends ConsumerWidget {
             ),
           ),
           Text(
-            '${isCredit ? '+' : '-'}₦${txn.amount.formatNumber()}',
+            '${isCredit ? '+' : '-'}\u20a6${txn.amount.formatNumber()}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: isCredit ? CoopvestColors.success : CoopvestColors.error,
