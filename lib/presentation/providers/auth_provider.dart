@@ -7,8 +7,9 @@ import '../repositories/auth_repository.dart';
 /// Auth State Notifier
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _authRepository;
+  final ApiClient _apiClient;
 
-  AuthNotifier(this._authRepository) : super(const AuthState());
+  AuthNotifier(this._authRepository, this._apiClient) : super(const AuthState());
 
   /// Login
   Future<void> login({
@@ -23,8 +24,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
 
       // Set auth token in ApiClient for subsequent API calls
-      final apiClient = ApiClient();
-      apiClient.setAuthToken(response.accessToken);
+      _apiClient.setAuthToken(response.accessToken);
 
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -59,8 +59,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
 
       // Set auth token in ApiClient for subsequent API calls
-      final apiClient = ApiClient();
-      apiClient.setAuthToken(response.accessToken);
+      _apiClient.setAuthToken(response.accessToken);
 
       state = state.copyWith(
         status: AuthStatus.kycPending,
@@ -135,6 +134,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(status: AuthStatus.loading);
     try {
       await _authRepository.logout();
+      // Clear auth token
+      _apiClient.clearAuthToken();
       state = const AuthState(status: AuthStatus.unauthenticated);
     } catch (e) {
       logger.e('Logout error: $e');
@@ -157,8 +158,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final response = await _authRepository.refreshToken(state.refreshToken!);
 
       // Update auth token in ApiClient
-      final apiClient = ApiClient();
-      apiClient.setAuthToken(response.accessToken);
+      _apiClient.setAuthToken(response.accessToken);
 
       state = state.copyWith(
         accessToken: response.accessToken,
@@ -166,6 +166,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
     } catch (e) {
       logger.e('Refresh token error: $e');
+      // Clear token and set unauthenticated on refresh failure
+      _apiClient.clearAuthToken();
       state = const AuthState(status: AuthStatus.unauthenticated);
       rethrow;
     }
@@ -270,7 +272,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
 /// Auth Provider
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
-  return AuthNotifier(authRepository);
+  final apiClient = ref.watch(apiClientProvider);
+  return AuthNotifier(authRepository, apiClient);
 });
 
 /// Is authenticated provider

@@ -8,11 +8,18 @@ import 'presentation/screens/auth/register_step1_screen.dart';
 import 'presentation/screens/auth/register_step2_screen.dart';
 import 'presentation/screens/auth/salary_deduction_consent_screen.dart';
 import 'presentation/screens/auth/account_activation_screen.dart';
+import 'presentation/screens/auth/forgot_password_screen.dart';
 import 'presentation/screens/home/home_dashboard_screen.dart';
 import 'presentation/screens/kyc/kyc_employment_details_screen.dart';
 import 'presentation/screens/kyc/kyc_id_upload_screen.dart';
 import 'presentation/screens/kyc/kyc_selfie_screen.dart';
 import 'presentation/screens/kyc/kyc_bank_info_screen.dart';
+import 'presentation/screens/loan/loan_dashboard_screen.dart';
+import 'presentation/screens/loan/loan_application_screen.dart';
+import 'presentation/screens/loan/guarantor_verification_screen.dart';
+import 'presentation/screens/loan/loan_details_screen.dart';
+import 'presentation/screens/profile/profile_settings_screen.dart';
+import 'presentation/screens/savings/savings_goals_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +50,7 @@ class CoopvestApp extends ConsumerWidget {
       themeMode: ThemeMode.system, // Will be dynamic later
       home: const SplashScreen(),
       routes: {
+        // Auth Routes
         '/welcome': (context) => const WelcomeScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterStep1Screen(),
@@ -60,6 +68,8 @@ class CoopvestApp extends ConsumerWidget {
           );
         },
         '/account-activation': (context) => const AccountActivationScreen(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
+        
         // KYC Routes
         '/kyc-employment-details': (context) => const KYCEmploymentDetailsScreen(),
         '/kyc-id-upload': (context) => const KYCIDUploadScreen(),
@@ -67,8 +77,57 @@ class CoopvestApp extends ConsumerWidget {
         '/kyc-bank-info': (context) => const KYCBankInfoScreen(),
         '/kyc-success': (context) => const KYCSuccessScreen(),
         '/kyc-complete': (context) => const KYCSuccessScreen(),
-        // Home Route
+        
+        // Home & Dashboard Routes
         '/home': (context) => const HomeDashboardScreen(),
+        
+        // Loan Routes
+        '/loan-dashboard': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          return LoanDashboardScreen(
+            userId: args?['userId'] ?? '',
+            userName: args?['userName'] ?? '',
+            userPhone: args?['userPhone'] ?? '',
+          );
+        },
+        '/loan-application': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          return LoanApplicationScreen(
+            userId: args?['userId'] ?? '',
+          );
+        },
+        '/loan-details': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          return LoanDetailsScreen(
+            loanId: args?['loanId'] ?? '',
+          );
+        },
+        '/guarantor-verification': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          return GuarantorVerificationScreen(
+            loanId: args?['loanId'] ?? '',
+            borrowerName: args?['borrowerName'] ?? '',
+            loanAmount: args?['loanAmount']?.toDouble() ?? 0.0,
+            loanType: args?['loanType'] ?? 'Quick Loan',
+            loanTenor: args?['loanTenor'] ?? 4,
+          );
+        },
+        
+        // Profile Routes
+        '/profile': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          return ProfileSettingsScreen(
+            userId: args?['userId'] ?? '',
+          );
+        },
+        
+        // Savings Routes
+        '/savings-goal': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          return SavingsGoalsScreen(
+            userId: args?['userId'] ?? '',
+          );
+        },
       },
     );
   }
