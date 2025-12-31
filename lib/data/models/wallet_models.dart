@@ -217,12 +217,16 @@ class WalletState extends Equatable {
   final WalletStatus status;
   final Wallet? wallet;
   final List<Transaction> transactions;
+  final List<Contribution> contributions;
+  final List<SavingsGoal> savingsGoals;
   final String? error;
 
   const WalletState({
     this.status = WalletStatus.initial,
     this.wallet,
     this.transactions = const [],
+    this.contributions = const [],
+    this.savingsGoals = const [],
     this.error,
   });
 
@@ -233,16 +237,139 @@ class WalletState extends Equatable {
     WalletStatus? status,
     Wallet? wallet,
     List<Transaction>? transactions,
+    List<Contribution>? contributions,
+    List<SavingsGoal>? savingsGoals,
     String? error,
   }) {
     return WalletState(
       status: status ?? this.status,
       wallet: wallet ?? this.wallet,
       transactions: transactions ?? this.transactions,
+      contributions: contributions ?? this.contributions,
+      savingsGoals: savingsGoals ?? this.savingsGoals,
       error: error,
     );
   }
 
   @override
-  List<Object?> get props => [status, wallet, transactions, error];
+  List<Object?> get props => [status, wallet, transactions, contributions, savingsGoals, error];
+}
+
+/// Savings Goal Model
+class SavingsGoal extends Equatable {
+  final String id;
+  final String userId;
+  final String walletId;
+  final String name;
+  final String? description;
+  final double targetAmount;
+  final double currentAmount;
+  final double monthlyContribution;
+  final DateTime targetDate;
+  final DateTime createdAt;
+  final String status; // active, completed, cancelled
+
+  const SavingsGoal({
+    required this.id,
+    required this.userId,
+    required this.walletId,
+    required this.name,
+    this.description,
+    required this.targetAmount,
+    required this.currentAmount,
+    required this.monthlyContribution,
+    required this.targetDate,
+    required this.createdAt,
+    this.status = 'active',
+  });
+
+  factory SavingsGoal.fromJson(Map<String, dynamic> json) {
+    return SavingsGoal(
+      id: json['id'] as String,
+      userId: json['user_id'] as String,
+      walletId: json['wallet_id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      targetAmount: (json['target_amount'] as num).toDouble(),
+      currentAmount: (json['current_amount'] as num).toDouble(),
+      monthlyContribution: (json['monthly_contribution'] as num).toDouble(),
+      targetDate: DateTime.parse(json['target_date'] as String),
+      createdAt: DateTime.parse(json['created_at'] as String),
+      status: json['status'] as String? ?? 'active',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'wallet_id': walletId,
+      'name': name,
+      'description': description,
+      'target_amount': targetAmount,
+      'current_amount': currentAmount,
+      'monthly_contribution': monthlyContribution,
+      'target_date': targetDate.toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
+      'status': status,
+    };
+  }
+
+  SavingsGoal copyWith({
+    String? id,
+    String? userId,
+    String? walletId,
+    String? name,
+    String? description,
+    double? targetAmount,
+    double? currentAmount,
+    double? monthlyContribution,
+    DateTime? targetDate,
+    DateTime? createdAt,
+    String? status,
+  }) {
+    return SavingsGoal(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      walletId: walletId ?? this.walletId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      targetAmount: targetAmount ?? this.targetAmount,
+      currentAmount: currentAmount ?? this.currentAmount,
+      monthlyContribution: monthlyContribution ?? this.monthlyContribution,
+      targetDate: targetDate ?? this.targetDate,
+      createdAt: createdAt ?? this.createdAt,
+      status: status ?? this.status,
+    );
+  }
+
+  double get progressPercentage {
+    if (targetAmount <= 0) return 0;
+    return (currentAmount / targetAmount).clamp(0, 1) * 100;
+  }
+
+  double get remainingAmount => targetAmount - currentAmount;
+
+  int get monthsRemaining {
+    final now = DateTime.now();
+    if (targetDate.isBefore(now)) return 0;
+    return (targetDate.difference(now).inDays / 30).ceil();
+  }
+
+  bool get isCompleted => currentAmount >= targetAmount;
+
+  @override
+  List<Object?> get props => [
+        id,
+        userId,
+        walletId,
+        name,
+        description,
+        targetAmount,
+        currentAmount,
+        monthlyContribution,
+        targetDate,
+        createdAt,
+        status,
+      ];
 }
