@@ -230,50 +230,9 @@ class RegisterRequest extends Equatable {
 }
 
 /// KYC Submission Model
-class KYCSubmission extends Equatable {
-  final String idType;
-  final String idNumber;
-  final String? idPhotoPath;
-  final String? selfiePhotoPath;
-  final String address;
-  final String city;
-  final String state;
-  final String country;
-
-  const KYCSubmission({
-    required this.idType,
-    required this.idNumber,
-    this.idPhotoPath,
-    this.selfiePhotoPath,
-    required this.address,
-    required this.city,
-    required this.state,
-    required this.country,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id_type': idType,
-      'id_number': idNumber,
-      'address': address,
-      'city': city,
-      'state': state,
-      'country': country,
-    };
-  }
-
-  @override
-  List<Object?> get props => [
-    idType,
-    idNumber,
-    idPhotoPath,
-    selfiePhotoPath,
-    address,
-    city,
-    state,
-    country,
-  ];
-}
+/// NOTE: The comprehensive KYCSubmission model is now defined in kyc_models.dart
+/// and includes all fields: employment details, bank info, ID documents, selfie, etc.
+/// Use `import '../models/kyc_models.dart'` for the full KYC submission model.
 
 /// Auth State
 enum AuthStatus {
