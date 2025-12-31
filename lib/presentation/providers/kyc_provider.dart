@@ -269,7 +269,7 @@ final kycStatusProvider = Provider<KYCStatus>((ref) {
 });
 
 /// KYC Submission Provider
-final kycSubmissionProvider = Provider<KYCRSubmission?>((ref) {
+final kycSubmissionProvider = Provider<KYCSubmission?>((ref) {
   final kycState = ref.watch(kycProvider);
   return kycState.submission;
 });

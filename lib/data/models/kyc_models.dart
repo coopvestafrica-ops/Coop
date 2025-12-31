@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// KYC Submission Model
-class KYCRSubmission extends Equatable {
+class KYCSubmission extends Equatable {
   // Personal Information
   final String? dateOfBirth;
   final String? gender;
@@ -41,7 +41,7 @@ class KYCRSubmission extends Equatable {
   final DateTime? approvedAt;
   final String? rejectionReason;
 
-  const KYCRSubmission({
+  const KYCSubmission({
     this.dateOfBirth,
     this.gender,
     required this.employmentType,
@@ -96,8 +96,8 @@ class KYCRSubmission extends Equatable {
     };
   }
 
-  factory KYCRSubmission.fromJson(Map<String, dynamic> json) {
-    return KYCRSubmission(
+  factory KYCSubmission.fromJson(Map<String, dynamic> json) {
+    return KYCSubmission(
       dateOfBirth: json['date_of_birth'] as String?,
       gender: json['gender'] as String?,
       employmentType: json['employment_type'] as String,
@@ -130,7 +130,7 @@ class KYCRSubmission extends Equatable {
     );
   }
 
-  KYCRSubmission copyWith({
+  KYCSubmission copyWith({
     String? dateOfBirth,
     String? gender,
     String? employmentType,
@@ -157,7 +157,7 @@ class KYCRSubmission extends Equatable {
     DateTime? approvedAt,
     String? rejectionReason,
   }) {
-    return KYCRSubmission(
+    return KYCSubmission(
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       gender: gender ?? this.gender,
       employmentType: employmentType ?? this.employmentType,
@@ -395,7 +395,7 @@ enum KYCStatus {
 
 class KYCState extends Equatable {
   final KYCStatus status;
-  final KYCRSubmission? submission;
+  final KYCSubmission? submission;
   final List<Organization> organizations;
   final String? error;
   final int currentStep;
@@ -418,7 +418,7 @@ class KYCState extends Equatable {
 
   KYCState copyWith({
     KYCStatus? status,
-    KYCRSubmission? submission,
+    KYCSubmission? submission,
     List<Organization>? organizations,
     String? error,
     int? currentStep,

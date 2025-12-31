@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
 import '../models/auth_models.dart';
 import '../repositories/auth_repository.dart';
@@ -21,8 +22,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         password: password,
       );
 
-      // Set auth token
-      // TODO: Store token securely
+      // Set auth token in ApiClient for subsequent API calls
+      final apiClient = ApiClient();
+      apiClient.setAuthToken(response.accessToken);
 
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -56,8 +58,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         phone: phone,
       );
 
-      // Set auth token
-      // TODO: Store token securely
+      // Set auth token in ApiClient for subsequent API calls
+      final apiClient = ApiClient();
+      apiClient.setAuthToken(response.accessToken);
 
       state = state.copyWith(
         status: AuthStatus.kycPending,
@@ -152,6 +155,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     try {
       final response = await _authRepository.refreshToken(state.refreshToken!);
+
+      // Update auth token in ApiClient
+      final apiClient = ApiClient();
+      apiClient.setAuthToken(response.accessToken);
 
       state = state.copyWith(
         accessToken: response.accessToken,

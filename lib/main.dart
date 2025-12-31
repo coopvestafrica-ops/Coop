@@ -8,9 +8,11 @@ import 'presentation/screens/auth/register_step1_screen.dart';
 import 'presentation/screens/auth/register_step2_screen.dart';
 import 'presentation/screens/auth/salary_deduction_consent_screen.dart';
 import 'presentation/screens/auth/account_activation_screen.dart';
+import 'presentation/screens/home/home_dashboard_screen.dart';
 import 'presentation/screens/kyc/kyc_employment_details_screen.dart';
 import 'presentation/screens/kyc/kyc_id_upload_screen.dart';
 import 'presentation/screens/kyc/kyc_selfie_screen.dart';
+import 'presentation/screens/kyc/kyc_bank_info_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,6 +64,11 @@ class CoopvestApp extends ConsumerWidget {
         '/kyc-employment-details': (context) => const KYCEmploymentDetailsScreen(),
         '/kyc-id-upload': (context) => const KYCIDUploadScreen(),
         '/kyc-selfie': (context) => const KYCSelfieScreen(),
+        '/kyc-bank-info': (context) => const KYCBankInfoScreen(),
+        '/kyc-success': (context) => const KYCSuccessScreen(),
+        '/kyc-complete': (context) => const KYCSuccessScreen(),
+        // Home Route
+        '/home': (context) => const HomeDashboardScreen(),
       },
     );
   }
@@ -87,9 +94,8 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
-      // Navigate to appropriate screen based on auth state
-      // For now, navigate to login
-      Navigator.of(context).pushReplacementNamed('/login');
+      // Navigate to welcome screen for onboarding flow
+      Navigator.of(context).pushReplacementNamed('/welcome');
     }
   }
 

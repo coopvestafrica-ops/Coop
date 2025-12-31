@@ -16,10 +16,10 @@ class KYCRepository {
   KYCRepository(this._apiClient);
 
   /// Get KYC status
-  Future<KYCRSubmission> getKYCStatus() async {
+  Future<KYCSubmission> getKYCStatus() async {
     try {
       final response = await _apiClient.get('/kyc/status');
-      return KYCRSubmission.fromJson(response as Map<String, dynamic>);
+      return KYCSubmission.fromJson(response as Map<String, dynamic>);
     } catch (e) {
       logger.e('Get KYC status error: $e');
       rethrow;
@@ -27,7 +27,7 @@ class KYCRepository {
   }
 
   /// Submit KYC
-  Future<void> submitKYC(KYCRSubmission submission) async {
+  Future<void> submitKYC(KYCSubmission submission) async {
     try {
       await _apiClient.post(
         '/kyc/submit',
