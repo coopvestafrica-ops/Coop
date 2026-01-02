@@ -18,25 +18,13 @@ class LoanDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Mock loan data - in production, this would come from the provider
-    final _loanDetails = {
-      'id': loanId,
-      'type': 'Quick Loan',
-      'amount': 50000.0,
-      'tenure': 4,
-      'interestRate': 5.0,
-      'monthlyRepayment': 13125.0,
-      'totalRepayment': 52500.0,
-      'status': 'Active',
-      'purpose': 'Business expansion',
-      'guarantorsConfirmed': 3,
-      'guarantorsRequired': 3,
-      'createdAt': DateTime.now().subtract(const Duration(days: 30)),
-      'approvedAt': DateTime.now().subtract(const Duration(days: 25)),
-      'disbursedAt': DateTime.now().subtract(const Duration(days: 24)),
-      'nextRepaymentDate': DateTime.now().add(const Duration(days: 5)),
-    };
+    final loanState = ref.watch(loanProvider);
+    final loan = loanState.loans.firstWhere(
+      (l) => l.id == loanId,
+      orElse: () => _getDemoLoan(loanId),
+    );
 
+    // Mock repayment schedule for demo
     final _repaymentSchedule = [
       {'installment': 1, 'amount': 13125.0, 'dueDate': DateTime.now().subtract(const Duration(days: 25)), 'status': 'Paid'},
       {'installment': 2, 'amount': 13125.0, 'dueDate': DateTime.now().subtract(const Duration(days: 5)), 'status': 'Paid'},
@@ -44,13 +32,14 @@ class LoanDetailsScreen extends ConsumerWidget {
       {'installment': 4, 'amount': 13125.0, 'dueDate': DateTime.now().add(const Duration(days: 35)), 'status': 'Upcoming'},
     ];
 
+    // Mock guarantors for demo
     final _guarantors = [
       {'name': 'John Smith', 'phone': '+2348012345678', 'status': 'Confirmed', 'confirmedAt': DateTime.now().subtract(const Duration(days: 20))},
       {'name': 'Jane Doe', 'phone': '+2348098765432', 'status': 'Confirmed', 'confirmedAt': DateTime.now().subtract(const Duration(days: 18))},
       {'name': 'Bob Wilson', 'phone': '+2348076543210', 'status': 'Confirmed', 'confirmedAt': DateTime.now().subtract(const Duration(days: 15))},
     ];
 
-    final statusColor = _getStatusColor(_loanDetails['status'] as String);
+    final statusColor = _getStatusColor(loan.status);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -84,7 +73,7 @@ class LoanDetailsScreen extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          _loanDetails['type'] as String,
+                          loan.type,
                           style: CoopvestTypography.headlineSmall.copyWith(
                             color: CoopvestColors.darkGray,
                           ),
@@ -96,7 +85,7 @@ class LoanDetailsScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            _loanDetails['status'] as String,
+                            loan.status,
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -109,9 +98,9 @@ class LoanDetailsScreen extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildDetailItem('Loan ID', _loanDetails['id'] as String),
-                        _buildDetailItem('Amount', '\u20a6${(_loanDetails['amount'] as double).formatNumber()}'),
-                        _buildDetailItem('Tenure', '${_loanDetails['tenure']} months'),
+                        _buildDetailItem('Loan ID', loan.id),
+                        _buildDetailItem('Amount', '\u20a6${loan.amount.formatNumber()}'),
+                        _buildDetailItem('Tenure', '${loan.tenure} months'),
                       ],
                     ),
                   ],
@@ -131,13 +120,13 @@ class LoanDetailsScreen extends ConsumerWidget {
               AppCard(
                 child: Column(
                   children: [
-                    _buildSummaryRow('Monthly Repayment', '\u20a6${(_loanDetails['monthlyRepayment'] as double).formatNumber()}'),
+                    _buildSummaryRow('Monthly Repayment', '\u20a6${loan.monthlyRepayment.formatNumber()}'),
                     const Divider(height: 24),
-                    _buildSummaryRow('Total Repayment', '\u20a6${(_loanDetails['totalRepayment'] as double).formatNumber()}'),
+                    _buildSummaryRow('Total Repayment', '\u20a6${loan.totalRepayment.formatNumber()}'),
                     const Divider(height: 24),
-                    _buildSummaryRow('Interest Rate', '${_loanDetails['interestRate']}%'),
+                    _buildSummaryRow('Interest Rate', '${loan.interestRate}%'),
                     const Divider(height: 24),
-                    _buildSummaryRow('Next Payment Due', _formatDate(_loanDetails['nextRepaymentDate'] as DateTime)),
+                    _buildSummaryRow('Next Payment Due', _formatDate(loan.nextRepaymentDate)),
                   ],
                 ),
               ),
@@ -158,7 +147,7 @@ class LoanDetailsScreen extends ConsumerWidget {
 
               // Guarantors Section
               Text(
-                'Guarantors (${_loanDetails['guarantorsConfirmed']}/${_loanDetails['guarantorsRequired']})',
+                'Guarantors (${loan.guarantorsConfirmed}/${loan.guarantorsRequired})',
                 style: CoopvestTypography.titleMedium.copyWith(
                   color: CoopvestColors.darkGray,
                 ),
@@ -169,7 +158,7 @@ class LoanDetailsScreen extends ConsumerWidget {
               const SizedBox(height: 32),
 
               // Make Repayment Button
-              if (_loanDetails['status'] == 'Active' || _loanDetails['status'] == 'Repaying')
+              if (loan.status == 'Active' || loan.status == 'Repaying')
                 PrimaryButton(
                   label: 'Make Repayment',
                   onPressed: () {

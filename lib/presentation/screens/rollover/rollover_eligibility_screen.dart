@@ -5,18 +5,25 @@ import '../../../../core/utils/utils.dart';
 import '../../../../data/models/loan_models.dart';
 import '../../../../data/models/rollover_models.dart';
 import '../../providers/rollover_provider.dart';
+import '../../providers/loan_provider.dart';
 import '../widgets/common/buttons.dart';
 import '../widgets/rollover/rollover_common_widgets.dart';
 
 /// Rollover Eligibility Check Screen
 /// Shows if a member is eligible for loan rollover based on business rules
 class RolloverEligibilityScreen extends ConsumerWidget {
-  final Loan loan;
+  final Loan? loan;
 
-  const RolloverEligibilityScreen({super.key, required this.loan});
+  const RolloverEligibilityScreen({super.key, this.loan});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loanState = ref.watch(loanProvider);
+    final activeLoan = loan ?? loanState.loans.firstWhere(
+      (l) => l.status == 'active' || l.status == 'repaying',
+      orElse: () => _getDemoLoan(),
+    );
+    
     final rolloverState = ref.watch(rolloverProvider);
     final rolloverNotifier = ref.read(rolloverProvider.notifier);
 
@@ -39,19 +46,39 @@ class RolloverEligibilityScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLoanSummaryCard(),
+            _buildLoanSummaryCard(activeLoan),
             const SizedBox(height: 24),
-            _buildEligibilitySection(context, ref, rolloverNotifier),
+            _buildEligibilitySection(context, ref, rolloverNotifier, activeLoan),
             const SizedBox(height: 24),
             if (rolloverState.eligibility != null)
-              _buildActionButtons(context, ref, rolloverNotifier),
+              _buildActionButtons(context, ref, rolloverNotifier, activeLoan),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLoanSummaryCard() {
+  Loan _getDemoLoan() {
+    final now = DateTime.now();
+    return Loan(
+      id: 'LOAN-DEMO',
+      userId: 'user-id',
+      amount: 100000,
+      tenure: 6,
+      interestRate: 7.0,
+      monthlyRepayment: 18333,
+      totalRepayment: 65000,
+      status: 'active',
+      guarantorsAccepted: 3,
+      guarantorsRequired: 3,
+      createdAt: now.subtract(const Duration(days: 90)),
+      updatedAt: now.subtract(const Duration(days: 60)),
+      approvedAt: now.subtract(const Duration(days: 85)),
+      disbursedAt: now.subtract(const Duration(days: 84)),
+    );
+  }
+
+  Widget _buildLoanSummaryCard(Loan loan) {
     final outstandingBalance = loan.amount - (loan.totalRepayment * 0.65);
     final repaymentPercentage = (loan.totalRepayment / loan.amount * 100).clamp(0, 100);
 
@@ -172,6 +199,7 @@ class RolloverEligibilityScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     RolloverNotifier rolloverNotifier,
+    Loan loan,
   ) {
     final eligibility = ref.watch(rolloverProvider).eligibility;
     final isLoading = ref.watch(rolloverProvider).isLoading;
@@ -284,6 +312,7 @@ class RolloverEligibilityScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     RolloverNotifier rolloverNotifier,
+    Loan loan,
   ) {
     final eligibility = ref.watch(rolloverProvider).eligibility;
 

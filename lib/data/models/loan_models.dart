@@ -116,6 +116,34 @@ class Loan extends Equatable {
     );
   }
 
+  DateTime? get nextRepaymentDate {
+    if (disbursedAt == null) return null;
+    final nextPayment = disbursedAt!.add(Duration(days: 30 * 1));
+    return nextPayment;
+  }
+
+  /// Get a demo loan for testing/development
+  static Loan _getDemoLoan(String loanId) {
+    final now = DateTime.now();
+    return Loan(
+      id: loanId,
+      userId: 'demo-user',
+      amount: 50000,
+      tenure: 4,
+      interestRate: 5.0,
+      monthlyRepayment: 13125,
+      totalRepayment: 52500,
+      status: 'Active',
+      purpose: 'Business expansion',
+      guarantorsAccepted: 3,
+      guarantorsRequired: 3,
+      createdAt: now.subtract(const Duration(days: 30)),
+      updatedAt: now.subtract(const Duration(days: 25)),
+      approvedAt: now.subtract(const Duration(days: 25)),
+      disbursedAt: now.subtract(const Duration(days: 24)),
+    );
+  }
+
   @override
   List<Object?> get props => [
     id,

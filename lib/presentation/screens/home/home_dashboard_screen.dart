@@ -484,24 +484,10 @@ class HomeDashboardScreen extends ConsumerWidget {
   }
 
   void _navigateToRolloverEligibility(BuildContext context) {
-    final demoLoan = Loan(
-      id: 'LOAN-DEMO',
-      userId: 'user-id',
-      amount: 100000,
-      tenure: 6,
-      interestRate: 7.0,
-      monthlyRepayment: 18333,
-      totalRepayment: 110000,
-      status: 'active',
-      guarantorsAccepted: 3,
-      guarantorsRequired: 3,
-      createdAt: DateTime.now().subtract(const Duration(days: 60)),
-      updatedAt: DateTime.now(),
-    );
-
+    // Navigate to rollover eligibility - the screen will fetch actual data
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => RolloverEligibilityScreen(loan: demoLoan),
+        builder: (context) => const RolloverEligibilityScreen(),
       ),
     );
   }

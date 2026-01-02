@@ -23,42 +23,19 @@ class LoanDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Mock data - in production, this would come from the provider
-    final List<Map<String, dynamic>> _loanHistory = [
-      {
-        'id': 'COOP-USER123-LOAN-1704067200000',
-        'type': 'Quick Loan',
-        'amount': 50000.0,
-        'monthlyRepayment': 13125.0,
-        'status': 'Active',
-        'createdAt': DateTime.now().subtract(const Duration(days: 30)),
-        'guarantors': 3,
-      },
-      {
-        'id': 'COOP-USER123-LOAN-1703462400000',
-        'type': 'Flexi Loan',
-        'amount': 100000.0,
-        'monthlyRepayment': 18333.33,
-        'status': 'Repaying',
-        'createdAt': DateTime.now().subtract(const Duration(days: 90)),
-        'guarantors': 3,
-      },
-      {
-        'id': 'COOP-USER123-LOAN-1702339200000',
-        'type': 'Quick Loan',
-        'amount': 25000.0,
-        'monthlyRepayment': 6562.5,
-        'status': 'Completed',
-        'createdAt': DateTime.now().subtract(const Duration(days: 180)),
-        'guarantors': 3,
-      },
-    ];
-
+    final loanState = ref.watch(loanProvider);
+    final loans = loanState.loans;
+    
+    // Calculate stats from real data
+    final activeLoans = loans.where((l) => l.status == 'active' || l.status == 'repaying').length;
+    final totalBorrowed = loans.fold(0.0, (sum, l) => sum + l.amount);
+    final totalRepaid = loans.where((l) => l.status == 'completed').fold(0.0, (sum, l) => sum + l.totalRepayment);
+    
     final _quickStats = {
-      'totalLoans': 3,
-      'activeLoans': 1,
-      'totalBorrowed': 175000.0,
-      'totalRepaid': 75000.0,
+      'totalLoans': loans.length,
+      'activeLoans': activeLoans,
+      'totalBorrowed': totalBorrowed,
+      'totalRepaid': totalRepaid,
     };
 
     return Scaffold(
@@ -155,14 +132,14 @@ class LoanDashboardScreen extends ConsumerWidget {
               const SizedBox(height: 16),
 
               // Loan List
-              _loanHistory.isEmpty
+              loans.isEmpty
                   ? _buildEmptyState()
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _loanHistory.length,
+                      itemCount: loans.length,
                       itemBuilder: (context, index) {
-                        final loan = _loanHistory[index];
+                        final loan = loans[index];
                         return _buildLoanCard(context, loan);
                       },
                     ),
@@ -229,8 +206,9 @@ class LoanDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoanCard(BuildContext context, Map<String, dynamic> loan) {
-    final statusColor = _getStatusColor(loan['status'] as String);
+  Widget _buildLoanCard(BuildContext context, Loan loan) {
+    final statusColor = _getStatusColor(loan.status);
+    final loanType = loan.purpose != null ? '${loan.purpose}' : 'Quick Loan';
     
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -250,13 +228,13 @@ class LoanDashboardScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          loan['type'] as String,
+                          loanType,
                           style: CoopvestTypography.titleMedium.copyWith(
                             color: CoopvestColors.darkGray,
                           ),
                         ),
                         Text(
-                          'Loan ID: ${loan['id']}',
+                          'Loan ID: ${loan.id}',
                           style: CoopvestTypography.bodySmall.copyWith(
                             color: CoopvestColors.mediumGray,
                           ),
@@ -271,7 +249,7 @@ class LoanDashboardScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      loan['status'] as String,
+                      loan.status,
                       style: CoopvestTypography.bodySmall.copyWith(
                         color: statusColor,
                         fontWeight: FontWeight.w600,
@@ -284,14 +262,14 @@ class LoanDashboardScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildLoanDetail('Amount', '₦${(loan['amount'] as double).toStringAsFixed(2)}'),
-                  _buildLoanDetail('Monthly', '₦${(loan['monthlyRepayment'] as double).toStringAsFixed(2)}'),
-                  _buildLoanDetail('Guarantors', '${loan['guarantors']}/3'),
+                  _buildLoanDetail('Amount', '\u20a6${loan.amount.formatNumber()}'),
+                  _buildLoanDetail('Monthly', '\u20a6${loan.monthlyRepayment.formatNumber()}'),
+                  _buildLoanDetail('Guarantors', '${loan.guarantorsAccepted}/${loan.guarantorsRequired}'),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
-                'Applied: ${_formatDate(loan['createdAt'] as DateTime)}',
+                'Applied: ${_formatDate(loan.createdAt)}',
                 style: CoopvestTypography.bodySmall.copyWith(
                   color: CoopvestColors.mediumGray,
                 ),
