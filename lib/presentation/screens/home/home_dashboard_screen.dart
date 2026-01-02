@@ -10,6 +10,8 @@ import '../../../presentation/widgets/common/cards.dart';
 import '../loan/loan_dashboard_screen.dart';
 import '../wallet/wallet_dashboard_screen.dart';
 import '../savings/savings_goals_screen.dart';
+import '../rollover/rollover_eligibility_screen.dart';
+import '../../../data/models/loan_models.dart';
 
 /// Main Home Dashboard Screen
 class HomeDashboardScreen extends ConsumerWidget {
@@ -22,7 +24,6 @@ class HomeDashboardScreen extends ConsumerWidget {
     final savingsGoals = walletState.savingsGoals.where((g) => g.status == 'active').toList();
     final recentTransactions = walletState.transactions.take(3).toList();
     
-    // Get user data from auth provider
     final user = ref.watch(currentUserProvider);
     final userName = user?.name ?? 'User';
     final userId = user?.id ?? '';
@@ -34,16 +35,12 @@ class HomeDashboardScreen extends ConsumerWidget {
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.notifications_none, color: CoopvestColors.darkGray),
-          onPressed: () {
-            // TODO: Navigate to notifications
-          },
+          onPressed: () {},
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: CoopvestColors.darkGray),
-            onPressed: () {
-              // TODO: Navigate to settings
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -53,7 +50,6 @@ class HomeDashboardScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Welcome Message
               Text(
                 'Welcome back,',
                 style: CoopvestTypography.bodyMedium.copyWith(
@@ -68,8 +64,6 @@ class HomeDashboardScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Quick Stats Cards
               Row(
                 children: [
                   Expanded(
@@ -113,15 +107,11 @@ class HomeDashboardScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-
               const SizedBox(height: 32),
-
-              // Quick Actions Grid
               _buildQuickActionsGrid(context, userId, userName),
-
               const SizedBox(height: 32),
-
-              // Active Savings Goals
+              _buildRolloverSection(context),
+              const SizedBox(height: 32),
               if (savingsGoals.isNotEmpty) ...[
                 _buildSectionHeader('Savings Goals', () {
                   Navigator.of(context).push(
@@ -134,11 +124,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                 ...savingsGoals.take(2).map((goal) => _buildGoalProgressCard(context, goal)),
                 const SizedBox(height: 32),
               ],
-
-              // Recent Activity
-              _buildSectionHeader('Recent Activity', () {
-                // TODO: View all transactions
-              }),
+              _buildSectionHeader('Recent Activity', () {}),
               const SizedBox(height: 16),
               if (recentTransactions.isEmpty)
                 _buildEmptyActivityCard()
@@ -392,6 +378,130 @@ class HomeDashboardScreen extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildRolloverSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Loan Services',
+              style: CoopvestTypography.titleMedium.copyWith(
+                color: CoopvestColors.darkGray,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        GestureDetector(
+          onTap: () => _navigateToRolloverEligibility(context),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  CoopvestColors.primary,
+                  CoopvestColors.primary.withOpacity(0.8),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: CoopvestColors.primary.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.refresh,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Loan Rollover',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Extend your loan repayment period when you need more time. Eligible if you\'ve repaid at least 50% of your principal.',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text(
+                          'Check Eligibility →',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _navigateToRolloverEligibility(BuildContext context) {
+    final demoLoan = Loan(
+      id: 'LOAN-DEMO',
+      userId: 'user-id',
+      amount: 100000,
+      tenure: 6,
+      interestRate: 7.0,
+      monthlyRepayment: 18333,
+      totalRepayment: 110000,
+      status: 'active',
+      guarantorsAccepted: 3,
+      guarantorsRequired: 3,
+      createdAt: DateTime.now().subtract(const Duration(days: 60)),
+      updatedAt: DateTime.now(),
+    );
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => RolloverEligibilityScreen(loan: demoLoan),
       ),
     );
   }
