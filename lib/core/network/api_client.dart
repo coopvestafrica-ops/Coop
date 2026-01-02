@@ -195,6 +195,18 @@ class ApiClient {
     _dio.interceptors.add(ErrorInterceptor());
     _dio.interceptors.add(AuthInterceptor());
   }
+
+  /// Get Loan API Service
+  dynamic getLoanApiService() {
+    // This will be used with retrofit to create the loan API service
+    return _dio;
+  }
+
+  /// Get Rollover API Service
+  dynamic getRolloverApiService() {
+    // This will be used with retrofit to create the rollover API service
+    return _dio;
+  }
 }
 
 /// API Error Handling
