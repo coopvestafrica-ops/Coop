@@ -6,7 +6,11 @@ import 'rollover_models.dart';
 
 part 'rollover_api_service.g.dart';
 
-/// API Service for Loan Rollover Operations
+/// API Service for Loan Rollover Operations - Member-only functionality
+///
+/// NOTE: Admin operations (approvals, rejections) have been moved to the
+/// dedicated admin web portal. This API service only handles member-facing
+/// operations for rollover requests.
 @RestApi()
 abstract class RolloverApiService {
   factory RolloverApiService(Dio dio, {String baseUrl = '/api/v1'}) =
@@ -37,14 +41,6 @@ abstract class RolloverApiService {
     @Path() String memberId,
   );
 
-  /// Get rollover requests for admin review
-  @GET('/admin/rollover/pending')
-  Future<RolloverListResponse> getPendingRollovers();
-
-  /// Get all rollover requests for admin
-  @GET('/admin/rollover/all')
-  Future<RolloverListResponse> getAllAdminRollovers();
-
   /// Invite a guarantor for rollover
   @POST('/rollover/{rolloverId}/guarantors/invite')
   Future<GuarantorInviteResponse> inviteGuarantor(
@@ -64,20 +60,6 @@ abstract class RolloverApiService {
     @Path() String rolloverId,
     @Path() String guarantorId,
     @Body() GuarantorRespondRequest request,
-  );
-
-  /// Admin approves rollover request
-  @POST('/admin/rollover/{rolloverId}/approve')
-  Future<RolloverActionResponse> approveRollover(
-    @Path() String rolloverId,
-    @Body() AdminActionRequest request,
-  );
-
-  /// Admin rejects rollover request
-  @POST('/admin/rollover/{rolloverId}/reject')
-  Future<RolloverActionResponse> rejectRollover(
-    @Path() String rolloverId,
-    @Body() AdminRejectRequest request,
   );
 
   /// Member cancels rollover request
@@ -175,37 +157,6 @@ class GuarantorRespondRequest {
   Map<String, dynamic> toJson() => {
         'guarantor_id': guarantorId,
         'accepted': accepted,
-        'if': accepted,
-        'reason': reason,
-      };
-}
-
-class AdminActionRequest {
-  final String adminId;
-  final String? notes;
-
-  AdminActionRequest({
-    required this.adminId,
-    this.notes,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'admin_id': adminId,
-        'notes': notes,
-      };
-}
-
-class AdminRejectRequest {
-  final String adminId;
-  final String reason;
-
-  AdminRejectRequest({
-    required this.adminId,
-    required this.reason,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'admin_id': adminId,
         'reason': reason,
       };
 }

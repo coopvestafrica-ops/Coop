@@ -5,7 +5,11 @@ import '../../data/api/rollover_api_service.dart';
 import '../../data/models/rollover_models.dart';
 import '../repositories/auth_repository.dart';
 
-/// Rollover Repository - Handles all rollover operations
+/// Rollover Repository - Handles member-only rollover operations
+///
+/// NOTE: Admin operations (approvals, rejections) have been moved to the
+/// dedicated admin web portal. This repository only handles member-facing
+/// operations for rollover requests.
 class RolloverRepository {
   final RolloverApiService _apiService;
   final AuthRepository _authRepository;
@@ -105,39 +109,6 @@ class RolloverRepository {
     }
   }
 
-  /// Get pending rollover requests for admin
-  Future<ApiResult<List<LoanRollover>>> getPendingRollovers() async {
-    try {
-      final response = await _apiService.getPendingRollovers();
-
-      if (response.success) {
-        return ApiResult.success(response.rollovers);
-      } else {
-        return ApiResult.error(response.message);
-      }
-    } catch (e) {
-      _logger.e('Get pending rollovers error: $e');
-      // Return mock data for demo
-      return ApiResult.success(_getMockPendingRollovers());
-    }
-  }
-
-  /// Get all rollovers for admin
-  Future<ApiResult<List<LoanRollover>>> getAllAdminRollovers() async {
-    try {
-      final response = await _apiService.getAllAdminRollovers();
-
-      if (response.success) {
-        return ApiResult.success(response.rollovers);
-      } else {
-        return ApiResult.error(response.message);
-      }
-    } catch (e) {
-      _logger.e('Get all admin rollovers error: $e');
-      return ApiResult.error('Failed to fetch rollovers: $e');
-    }
-  }
-
   /// Invite a guarantor for rollover
   Future<ApiResult<RolloverGuarantor>> inviteGuarantor({
     required String rolloverId,
@@ -216,48 +187,6 @@ class RolloverRepository {
     } catch (e) {
       _logger.e('Guarantor respond error: $e');
       return ApiResult.error('Failed to process response: $e');
-    }
-  }
-
-  /// Admin approves rollover request
-  Future<ApiResult<LoanRollover>> approveRollover({
-    required String rolloverId,
-    required String adminId,
-    String? notes,
-  }) async {
-    try {
-      final request = AdminActionRequest(adminId: adminId, notes: notes);
-      final response = await _apiService.approveRollover(rolloverId, request);
-
-      if (response.success && response.rollover != null) {
-        return ApiResult.success(response.rollover!);
-      } else {
-        return ApiResult.error(response.message);
-      }
-    } catch (e) {
-      _logger.e('Approve rollover error: $e');
-      return ApiResult.error('Failed to approve rollover: $e');
-    }
-  }
-
-  /// Admin rejects rollover request
-  Future<ApiResult<LoanRollover>> rejectRollover({
-    required String rolloverId,
-    required String adminId,
-    required String reason,
-  }) async {
-    try {
-      final request = AdminRejectRequest(adminId: adminId, reason: reason);
-      final response = await _apiService.rejectRollover(rolloverId, request);
-
-      if (response.success && response.rollover != null) {
-        return ApiResult.success(response.rollover!);
-      } else {
-        return ApiResult.error(response.message);
-      }
-    } catch (e) {
-      _logger.e('Reject rollover error: $e');
-      return ApiResult.error('Failed to reject rollover: $e');
     }
   }
 
@@ -353,53 +282,6 @@ class RolloverRepository {
     );
   }
 
-  List<LoanRollover> _getMockPendingRollovers() {
-    final now = DateTime.now();
-    return [
-      LoanRollover(
-        id: 'ROLLOVER-001',
-        originalLoanId: 'LOAN-001',
-        memberId: 'MEM-001',
-        memberName: 'John Doe',
-        memberPhone: '+2348012345678',
-        originalPrincipal: 100000,
-        outstandingBalance: 35000,
-        totalRepaid: 65000,
-        repaymentPercentage: 65.0,
-        newTenure: 6,
-        newInterestRate: 7.0,
-        newMonthlyRepayment: 6166.67,
-        newTotalRepayment: 37000.02,
-        status: RolloverStatus.pending,
-        requestedAt: now.subtract(const Duration(days: 2)),
-        guarantorConsentDeadline: now.add(const Duration(days: 5)),
-        createdAt: now.subtract(const Duration(days: 2)),
-        updatedAt: now,
-      ),
-      LoanRollover(
-        id: 'ROLLOVER-002',
-        originalLoanId: 'LOAN-002',
-        memberId: 'MEM-002',
-        memberName: 'Jane Smith',
-        memberPhone: '+2348098765432',
-        originalPrincipal: 50000,
-        outstandingBalance: 15000,
-        totalRepaid: 35000,
-        repaymentPercentage: 70.0,
-        newTenure: 4,
-        newInterestRate: 7.5,
-        newMonthlyRepayment: 3937.50,
-        newTotalRepayment: 15750.00,
-        status: RolloverStatus.awaitingAdminApproval,
-        requestedAt: now.subtract(const Duration(days: 5)),
-        guarantorConsentDeadline: now.subtract(const Duration(days: 1)),
-        approvedAt: now,
-        createdAt: now.subtract(const Duration(days: 5)),
-        updatedAt: now,
-      ),
-    ];
-  }
-
   List<RolloverGuarantor> _getMockGuarantors(String rolloverId) {
     final now = DateTime.now();
     return [
@@ -463,7 +345,7 @@ class GuarantorConsentResult {
 class GuarantorReplaceResult {
   final bool success;
   final String message;
-  final RololloverGuarantor? newGuarantor;
+  final RolloverGuarantor? newGuarantor;
   final List<RolloverGuarantor> guarantors;
 
   GuarantorReplaceResult({
@@ -471,23 +353,6 @@ class GuarantorReplaceResult {
     required this.message,
     this.newGuarantor,
     required this.guarantors,
-  });
-}
-
-/// Fix for typo above
-class RololloverGuarantor extends RolloverGuarantor {
-  RololloverGuarantor({
-    required super.id,
-    required super.rolloverId,
-    required super.guarantorId,
-    required super.guarantorName,
-    required super.guarantorPhone,
-    required super.status,
-    super.declineReason,
-    super.invitedAt,
-    super.respondedAt,
-    required super.createdAt,
-    required super.updatedAt,
   });
 }
 

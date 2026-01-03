@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import '../screens/rollover/rollover_eligibility_screen.dart';
 import '../screens/rollover/rollover_request_screen.dart';
 import '../screens/rollover/guarantor_consent_screen.dart';
-import '../screens/admin/admin_rollover_screens.dart';
 import '../../data/models/loan_models.dart';
 import '../../data/models/rollover_models.dart';
 
-/// Rollover Routes
+/// Rollover Routes - Member-only functionality
+/// Admin operations are handled in the dedicated admin web portal
 class RolloverRoutes {
   static const String eligibility = '/rollover/eligibility';
   static const String request = '/rollover/request';
   static const String consent = '/rollover/consent';
   static const String status = '/rollover/status';
-  static const String adminList = '/admin/rollover/list';
-  static const String adminDetail = '/admin/rollover/detail';
 
   static Map<String, Widget Function(BuildContext, dynamic)> get routes {
     return {
@@ -27,10 +25,6 @@ class RolloverRoutes {
             rolloverId: args as String,
           ),
       status: (context, args) => RolloverStatusScreen(
-            rolloverId: args as String,
-          ),
-      adminList: (context, args) => const AdminRolloverListScreen(),
-      adminDetail: (context, args) => AdminRolloverDetailScreen(
             rolloverId: args as String,
           ),
     };
@@ -86,18 +80,6 @@ class RolloverRoutes {
       name: 'Rollover Status',
       description: 'View rollover request status',
       screen: const RolloverStatusScreen(rolloverId: 'demo'),
-    ),
-    RouteInfo(
-      path: adminList,
-      name: 'Admin Rollover List',
-      description: 'View all rollover requests',
-      screen: const AdminRolloverListScreen(),
-    ),
-    RouteInfo(
-      path: adminDetail,
-      name: 'Admin Rollover Detail',
-      description: 'Review and approve/reject rollover',
-      screen: const AdminRolloverDetailScreen(rolloverId: 'demo'),
     ),
   ];
 
@@ -159,23 +141,6 @@ class RolloverNavigator {
     return Navigator.pushNamed(
       context,
       RolloverRoutes.status,
-      arguments: rolloverId,
-    );
-  }
-
-  /// Navigate to admin rollover list
-  static Future<void> toAdminList(BuildContext context) {
-    return Navigator.pushNamed(
-      context,
-      RolloverRoutes.adminList,
-    );
-  }
-
-  /// Navigate to admin rollover detail
-  static Future<void> toAdminDetail(BuildContext context, String rolloverId) {
-    return Navigator.pushNamed(
-      context,
-      RolloverRoutes.adminDetail,
       arguments: rolloverId,
     );
   }

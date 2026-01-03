@@ -1,7 +1,17 @@
-# Coopvest Mobile App - Quick Reference Guide
+# Coopvest Mobile App - Quick Reference Guide (Member Only)
 
-**Last Updated:** December 2025  
-**Status:** Complete Design & Architecture
+**Last Updated:** January 2026  
+**Status:** Complete Design & Architecture - Member Only
+
+---
+
+## ⚠️ Important Note
+
+**Admin functionality has been moved to the dedicated admin web portal.**
+
+All admin operations (loan approvals, rollover reviews, guarantor validation, interest adjustments) are now handled exclusively at **admin.coopvestafrica.org**
+
+The mobile app is now **member-only** for better security and cleaner UX.
 
 ---
 
@@ -52,7 +62,7 @@ Label Large:    14px, 600 weight
 
 ---
 
-## 🔄 User Flows Summary
+## 👤 User Flows Summary (Member Only)
 
 ### Authentication
 ```
@@ -61,7 +71,7 @@ Register → Email Verify → KYC Submit → KYC Approve → Biometric Setup →
 
 ### Loan Application
 ```
-Apply → Fill Form → Calculate → Preview → Submit → Get Guarantors → Share QR → Wait for 3 Guarantors → Admin Review → Approve → Disburse
+Apply → Fill Form → Calculate → Preview → Submit → Get Guarantors → Share QR → Wait for 3 Guarantors → Admin Review (Web) → Approve → Disburse
 ```
 
 ### Guarantor Approval
@@ -74,9 +84,14 @@ Receive Notification → Scan QR → View Details → Biometric Confirm → Reco
 View Balance → Make Contribution → Select Payment → Confirm → Success → Download Receipt
 ```
 
+### Rollover Request (Member)
+```
+Check Eligibility → Submit Request → Wait for 3 Guarantors → Track Status → Admin Approval (Web) → Notified of Result
+```
+
 ---
 
-## 🛠️ Technology Stack
+## 🏗️ Technology Stack
 
 ### Core
 - **Framework:** Flutter 3.16+
@@ -110,15 +125,15 @@ View Balance → Make Contribution → Select Payment → Confirm → Success �
 
 ---
 
-## 📱 App Navigation
+## 📱 App Navigation (Member Only)
 
 ```
-┌─────────────────────────────────────┐
-│         [App Content]               │
-├─────────────────────────────────────┤
+┌────────────────────────────────────────┐
+│         [App Content]                  │
+├────────────────────────────────────────┤
 │ [Home] [Wallet] [Loans] [Invest] [Profile] │
-│   🏠      💰      📋      📈        👤    │
-└─────────────────────────────────────┘
+│   🏠      💰       💳       📈        👤    │
+└────────────────────────────────────────┘
 
 Global: Scan QR (accessible from any tab)
 ```
@@ -132,7 +147,7 @@ Global: Scan QR (accessible from any tab)
 
 ---
 
-## 🔐 Security Checklist
+## 🔒 Security Checklist (Member Focus)
 
 ### Data Security
 - ✅ AES-256 encryption at rest
@@ -194,7 +209,7 @@ Global: Scan QR (accessible from any tab)
 
 ---
 
-## 📈 Performance Targets
+## ⚡ Performance Targets
 
 | Metric | Target | Status |
 |--------|--------|--------|
@@ -224,7 +239,7 @@ Global: Scan QR (accessible from any tab)
 
 ---
 
-## 🚀 12-Week Development Roadmap
+## 🗓️ 12-Week Development Roadmap
 
 ### Week 1-2: Foundation
 - Project setup
@@ -253,123 +268,138 @@ Global: Scan QR (accessible from any tab)
 
 ---
 
-## 📋 Feature Checklist (100+ Features)
+## ✅ Feature Checklist (Member Only - 70+ Features)
 
 ### Authentication (14 features)
-- [ ] Email/phone registration
-- [ ] Email/phone verification
-- [ ] Password creation
-- [ ] Login with credentials
-- [ ] Biometric authentication
-- [ ] PIN backup
-- [ ] Password recovery
-- [ ] Session management
-- [ ] Device binding
-- [ ] MFA
-- [ ] Secure token storage
-- [ ] Token refresh
-- [ ] Session timeout
-- [ ] Logout
+- ✅ Email/phone registration
+- ✅ Email/phone verification
+- ✅ Password creation
+- ✅ Login with credentials
+- ✅ Biometric authentication
+- ✅ PIN backup
+- ✅ Password recovery
+- ✅ Session management
+- ✅ Device binding
+- ✅ MFA setup
+- ✅ Secure token storage
+- ✅ Token refresh
+- ✅ Session timeout
+- ✅ Logout
 
 ### Wallet (12 features)
-- [ ] Balance display
-- [ ] Contribution history
-- [ ] Make contribution
-- [ ] Payment methods
-- [ ] Transaction confirmation
-- [ ] Receipt generation
-- [ ] Statement generation
-- [ ] Statement download
-- [ ] Transaction filtering
-- [ ] Transaction search
-- [ ] Offline queuing
-- [ ] Sync on reconnect
+- ✅ Balance display
+- ✅ Contribution history
+- ✅ Make contribution
+- ✅ Payment methods
+- ✅ Transaction confirmation
+- ✅ Receipt generation
+- ✅ Statement generation
+- ✅ Statement download
+- ✅ Transaction filtering
+- ✅ Transaction search
+- ✅ Offline queuing
+- ✅ Sync on reconnect
 
 ### Loans (12 features)
-- [ ] Loan application
-- [ ] Amount validation
-- [ ] Tenure selection
-- [ ] Interest calculation
-- [ ] Loan preview
-- [ ] Loan submission
-- [ ] Status tracking
-- [ ] Loan history
-- [ ] Loan details
-- [ ] Repayment schedule
-- [ ] Early repayment
-- [ ] Default handling
+- ✅ Loan application
+- ✅ Amount validation
+- ✅ Tenure selection
+- ✅ Interest calculation
+- ✅ Loan preview
+- ✅ Loan submission
+- ✅ Status tracking
+- ✅ Loan history
+- ✅ Loan details
+- ✅ Repayment schedule
+- ✅ Early repayment
+- ✅ Default handling
 
 ### QR & Guarantor (14 features)
-- [ ] QR generation
-- [ ] QR display
-- [ ] QR sharing
-- [ ] QR scanning
-- [ ] QR validation
-- [ ] QR expiry
-- [ ] Guarantor request
-- [ ] Eligibility checks
-- [ ] Biometric confirmation
-- [ ] Commitment recording
-- [ ] Limit tracking
-- [ ] Guarantor history
-- [ ] Progress tracking
-- [ ] Notifications
+- ✅ QR generation
+- ✅ QR display
+- ✅ QR sharing
+- ✅ QR scanning
+- ✅ QR validation
+- ✅ QR expiry
+- ✅ Guarantor request
+- ✅ Eligibility checks
+- ✅ Biometric confirmation
+- ✅ Commitment recording
+- ✅ Limit tracking
+- ✅ Guarantor history
+- ✅ Progress tracking
+- ✅ Notifications
 
 ### Investments (8 features)
-- [ ] Pool display
-- [ ] Project listing
-- [ ] Project details
-- [ ] Project filtering
-- [ ] Participation
-- [ ] Confirmation
-- [ ] Tracking
-- [ ] Performance reporting
+- ✅ Pool display
+- ✅ Project listing
+- ✅ Project details
+- ✅ Project filtering
+- ✅ Participation
+- ✅ Confirmation
+- ✅ Tracking
+- ✅ Performance reporting
 
 ### Profile (15 features)
-- [ ] Profile display
-- [ ] Profile editing
-- [ ] KYC status
-- [ ] Biometric settings
-- [ ] PIN settings
-- [ ] Device management
-- [ ] Session management
-- [ ] Notification preferences
-- [ ] Language selection
-- [ ] Currency selection
-- [ ] Theme selection
-- [ ] Help & support
-- [ ] About
-- [ ] Terms & conditions
-- [ ] Logout
+- ✅ Profile display
+- ✅ Profile editing
+- ✅ KYC status
+- ✅ Biometric settings
+- ✅ PIN settings
+- ✅ Device management
+- ✅ Session management
+- ✅ Notification preferences
+- ✅ Language selection
+- ✅ Currency selection
+- ✅ Theme selection
+- ✅ Help & support
+- ✅ About
+- ✅ Terms & conditions
+- ✅ Logout
 
 ### Notifications (7 features)
-- [ ] Push notifications
-- [ ] In-app notifications
-- [ ] Email notifications
-- [ ] Notification center
-- [ ] Notification filtering
-- [ ] Notification preferences
-- [ ] Notification history
+- ✅ Push notifications
+- ✅ In-app notifications
+- ✅ Email notifications
+- ✅ Notification center
+- ✅ Notification filtering
+- ✅ Notification preferences
+- ✅ Notification history
 
 ### Offline (4 features)
-- [ ] Data caching
-- [ ] Transaction queuing
-- [ ] Action queuing
-- [ ] Sync on reconnect
+- ✅ Data caching
+- ✅ Transaction queuing
+- ✅ Action queuing
+- ✅ Sync on reconnect
 
 ### Accessibility (8 features)
-- [ ] Large fonts
-- [ ] High contrast
-- [ ] Icon labels
-- [ ] Screen reader support
-- [ ] Keyboard navigation
-- [ ] Touch targets (48px)
-- [ ] Focus indicators
-- [ ] Motion preferences
+- ✅ Large fonts
+- ✅ High contrast
+- ✅ Icon labels
+- ✅ Screen reader support
+- ✅ Keyboard navigation
+- ✅ Touch targets (48px)
+- ✅ Focus indicators
+- ✅ Motion preferences
 
 ---
 
-## 💰 Success Metrics
+## 🎯 What's NOT in the App (Admin Portal Only)
+
+| Feature | Platform |
+|---------|----------|
+| Loan approval/rejection | Admin Web Portal |
+| Rollover approval/rejection | Admin Web Portal |
+| Guarantor consent review | Admin Web Portal |
+| Interest rate adjustments | Admin Web Portal |
+| Risk scoring | Admin Web Portal |
+| Member suspension | Admin Web Portal |
+| Compliance monitoring | Admin Web Portal |
+| System configuration | Admin Web Portal |
+
+---
+
+## 📈 Success Metrics
 
 ### Launch (Month 1)
 - 10,000+ downloads
@@ -394,7 +424,7 @@ Global: Scan QR (accessible from any tab)
 
 ---
 
-## 🔗 File References
+## 📁 File References
 
 ### Design & UX
 - `coopvest_design_system.md` - Colors, typography, components
@@ -408,18 +438,24 @@ Global: Scan QR (accessible from any tab)
 - `COOPVEST_IMPLEMENTATION_GUIDE.md` - Roadmap, checklists, deployment
 - `COOPVEST_MOBILE_APP_SUMMARY.md` - Executive summary
 
+### New
+- `README.md` - Updated member-only overview
+- `ARCHITECTURE_NOTES.md` - Admin separation details
+
 ---
 
-## 🎯 Key Takeaways
+## 🔑 Key Takeaways
 
-1. **Complete Design System** - Ready for implementation
-2. **Comprehensive Architecture** - Clean, scalable, secure
-3. **Innovative QR System** - Unique guarantor verification
-4. **12-Week Timeline** - Realistic development schedule
-5. **100+ Features** - Complete feature set
-6. **Production-Ready** - Security, performance, accessibility
-7. **African-Optimized** - Works on low-end devices
-8. **Offline-First** - Works without internet
+1. **Member-Only Focus** - Admin operations moved to web portal
+2. **Complete Design System** - Ready for implementation
+3. **Comprehensive Architecture** - Clean, scalable, secure
+4. **Innovative QR System** - Unique guarantor verification
+5. **12-Week Timeline** - Realistic development schedule
+6. **70+ Features** - Complete member feature set
+7. **Production-Ready** - Security, performance, accessibility
+8. **African-Optimized** - Works on low-end devices
+9. **Offline-First** - Works without internet
+10. **Secure by Design** - Biometric auth, encryption, secure storage
 
 ---
 
@@ -431,9 +467,10 @@ For questions about this design:
 - Refer to the QR system documentation for guarantor flow
 - See the design system for UI/UX specifications
 
+Admin portal questions should be directed to the admin dashboard repository.
+
 ---
 
-**Status:** ✅ Complete & Ready for Development  
-**Version:** 1.0  
-**Date:** December 2025
-
+**Status:** ✅ Complete & Ready for Development - Member Only  
+**Version:** 2.0 (Member Only)  
+**Date:** January 2026

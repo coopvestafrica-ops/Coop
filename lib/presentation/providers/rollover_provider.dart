@@ -5,7 +5,11 @@ import '../../data/models/rollover_models.dart';
 import '../../data/repositories/rollover_repository.dart';
 import '../repositories/auth_repository.dart';
 
-/// Rollover Provider - State management for all rollover operations
+/// Rollover Provider - State management for member-only rollover operations
+///
+/// NOTE: Admin operations (approvals, rejections) have been moved to the
+/// dedicated admin web portal. This provider only handles member-facing
+/// state management for rollover requests.
 final rolloverProvider =
     StateNotifierProvider<RolloverNotifier, RolloverState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
@@ -13,7 +17,7 @@ final rolloverProvider =
   return RolloverNotifier(authRepository, rolloverApiService);
 });
 
-/// Rollover Notifier - Handles all rollover state changes
+/// Rollover Notifier - Handles member-only rollover state changes
 class RolloverNotifier extends StateNotifier<RolloverState> {
   final AuthRepository _authRepository;
   final RolloverApiService _apiService;
@@ -172,129 +176,6 @@ class RolloverNotifier extends StateNotifier<RolloverState> {
         isLoading: false,
       );
       return [];
-    }
-  }
-
-  // ============== Admin Operations ==============
-
-  /// Get pending rollover requests for admin
-  Future<List<LoanRollover>> getPendingRollovers() async {
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      final result = await RolloverRepository(
-        apiService: _apiService,
-        authRepository: _authRepository,
-      ).getPendingRollovers();
-
-      if (result.success && result.data != null) {
-        state = state.copyWith(
-          rolloverHistory: result.data!,
-          isLoading: false,
-        );
-        return result.data!;
-      } else {
-        state = state.copyWith(
-          error: result.error ?? 'Failed to fetch pending rollovers',
-          isLoading: false,
-        );
-        return [];
-      }
-    } catch (e) {
-      _logger.e('Get pending rollovers error: $e');
-      state = state.copyWith(
-        error: 'Error fetching pending rollovers: $e',
-        isLoading: false,
-      );
-      return [];
-    }
-  }
-
-  /// Admin approves rollover request
-  Future<bool> approveRollover({
-    required String rolloverId,
-    String? notes,
-  }) async {
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      final adminId = await _authRepository.getUserId();
-      final result = await RolloverRepository(
-        apiService: _apiService,
-        authRepository: _authRepository,
-      ).approveRollover(
-        rolloverId: rolloverId,
-        adminId: adminId,
-        notes: notes,
-      );
-
-      if (result.success && result.data != null) {
-        state = state.copyWith(
-          currentRollover: result.data,
-          status: RolloverStatus.approved,
-          isLoading: false,
-        );
-        // Refresh the list
-        await getPendingRollovers();
-        return true;
-      } else {
-        state = state.copyWith(
-          error: result.error ?? 'Failed to approve rollover',
-          isLoading: false,
-        );
-        return false;
-      }
-    } catch (e) {
-      _logger.e('Approve rollover error: $e');
-      state = state.copyWith(
-        error: 'Error approving rollover: $e',
-        isLoading: false,
-      );
-      return false;
-    }
-  }
-
-  /// Admin rejects rollover request
-  Future<bool> rejectRollover({
-    required String rolloverId,
-    required String reason,
-  }) async {
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      final adminId = await _authRepository.getUserId();
-      final result = await RolloverRepository(
-        apiService: _apiService,
-        authRepository: _authRepository,
-      ).rejectRollover(
-        rolloverId: rolloverId,
-        adminId: adminId,
-        reason: reason,
-      );
-
-      if (result.success && result.data != null) {
-        state = state.copyWith(
-          currentRollover: result.data,
-          status: RolloverStatus.rejected,
-          isLoading: false,
-        );
-        // Refresh the list
-        await getPendingRollovers();
-        return true;
-      } else {
-        state = state.copyWith(
-          error: result.error ?? 'Failed to reject rollover',
-          isLoading: false,
-        );
-        return false;
-      }
-    } catch (e) {
-      _logger.e('Reject rollover error: $e');
-      state = state.copyWith(
-        error: 'Error rejecting rollover: $e',
-        isLoading: false,
-      );
-      return false;
     }
   }
 

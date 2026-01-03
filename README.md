@@ -1,25 +1,99 @@
-# Coopvest Africa Mobile App
+# Coopvest Africa Mobile App - Member Only
 
-A secure, scalable mobile application for Coopvest Africa cooperative financial services platform. Built with Flutter for both Android and iOS.
+A secure, scalable mobile application for Coopvest Africa cooperative financial services platform. Built with Flutter for Android and iOS.
+
+> **⚠️ IMPORTANT: Admin functionality has been moved to the dedicated web portal**
+> 
+> All admin operations (loan approvals, rollover reviews, guarantor validation, interest adjustments) are now handled exclusively in the admin web portal at **admin.coopvestafrica.org**
+>
+> The mobile app is now **member-only** for better security and cleaner user experience.
 
 ## 🎯 Overview
 
 Coopvest Africa is a national cooperative platform focused on savings, loans, investments, and member-based financial services for salaried workers in African markets.
 
-### Key Features
+### Key Features (Member Only)
 
 - **Secure Authentication** - Email/phone registration, biometric login, KYC verification
 - **Wallet Management** - Track balance, contributions, transactions, and statements
-- **Loan System** - Apply for loans with QR-based three-guarantor model
+- **Loan Application** - Apply for loans with QR-based three-guarantor model
 - **Guarantor System** - Innovative peer-to-peer loan guarantor verification
+- **Rollover Requests** - Request loan rollovers (approval handled via admin portal)
 - **Investment Pool** - Participate in cooperative investment projects
 - **Real-Time Tracking** - WebSocket-based progress updates
 - **Offline Support** - Works seamlessly on low-bandwidth networks
 - **Dark Mode** - Full light and dark theme support
 
-## 🛠️ Technology Stack
+### What's NOT in the Mobile App
 
-### Frontend
+The following admin-only operations have been removed from the mobile app:
+
+- ❌ Loan approval workflows
+- ❌ Rollover approval/rejection
+- ❌ Guarantor consent review
+- ❌ Interest rate adjustments
+- ❌ Risk scoring
+- ❌ Compliance monitoring
+- ❌ Member suspension/activation
+- ❌ System configuration
+
+All these operations are handled in the **Admin Web Portal**.
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Coopvest Africa Platform                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────┐    ┌─────────────────────────────────┐│
+│  │   Mobile App        │    │      Admin Web Portal           ││
+│  │   (Member Only)     │    │   (admin.coopvestafrica.org)    ││
+│  │                     │    │                                 ││
+│  │  • Registration     │    │  • Loan approval                ││
+│  │  • KYC Submission   │    │  • Rollover review              ││
+│  │  • Wallet           │    │  • Guarantor validation         ││
+│  │  • Loan Application │    │  • Interest adjustments         ││
+│  │  • Guarantor Flow   │    │  • Risk management              ││
+│  │  • Investments      │    │  • Compliance & audit           ││
+│  │  • Support          │    │  • Member management            ││
+│  └─────────────────────┘    └─────────────────────────────────┘│
+│            │                           │                        │
+│            └───────────┬───────────────┘                        │
+│                        ▼                                         │
+│              ┌─────────────────────┐                            │
+│              │   Shared Backend    │                            │
+│              │   (Single API)      │                            │
+│              └─────────────────────┘                            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Why This Architecture?
+
+1. **Security & Risk Control**
+   - Admin actions involve sensitive financial decisions
+   - Web portal allows IP restrictions, MFA, session control
+   - Reduces attack surface on mobile devices
+
+2. **Cleaner UX for Members**
+   - Members never see admin controls
+   - Simpler, focused interface
+   - Better performance
+
+3. **Compliance & Audit**
+   - Full audit trails in admin portal
+   - Role segmentation (Reviewer, Approver, Super Admin)
+   - Exportable compliance reports
+
+4. **Faster Development**
+   - Mobile team focuses on member experience
+   - Admin features evolve independently
+   - No dual UI logic
+
+## 💻 Technology Stack
+
+### Frontend (Mobile App)
 - **Framework:** Flutter 3.16+
 - **Language:** Dart 3.2+
 - **State Management:** Riverpod 2.4+
@@ -53,82 +127,42 @@ Coopvest Africa is a national cooperative platform focused on savings, loans, in
 
 ```
 lib/
-├── config/                          # App configuration
-│   ├── app_config.dart             # App constants
-│   └── theme_config.dart           # Design system & themes
-│
-├── core/                            # Core utilities
+├── config/
+│   ├── app_config.dart              # App constants
+│   └── theme_config.dart            # Design system & themes
+├── core/
 │   ├── network/
-│   │   └── api_client.dart         # API client with interceptors
+│   │   └── api_client.dart          # API client with interceptors
 │   └── utils/
-│       └── utils.dart              # Validators, formatters, extensions
-│
-├── data/                            # Data layer
+│       └── utils.dart               # Validators, formatters, extensions
+├── data/
+│   ├── api/
+│   │   └── rollover_api_service.dart # Member-only API calls
 │   ├── models/
-│   │   ├── auth_models.dart        # Authentication models
-│   │   ├── wallet_models.dart      # Wallet models
-│   │   └── loan_models.dart        # Loan models
+│   │   ├── auth_models.dart         # Authentication models
+│   │   ├── wallet_models.dart       # Wallet models
+│   │   ├── loan_models.dart         # Loan models
+│   │   └── rollover_models.dart     # Rollover models
 │   └── repositories/
-│       └── auth_repository.dart    # Authentication repository
-│
-├── presentation/                    # Presentation layer
+│       ├── auth_repository.dart     # Authentication repository
+│       └── rollover_repository.dart # Member-only rollover operations
+├── presentation/
 │   ├── providers/
-│   │   ├── auth_provider.dart      # Auth state management
-│   │   ├── wallet_provider.dart    # Wallet state management
-│   │   └── loan_provider.dart      # Loan state management
-│   └── widgets/
-│       └── common/
-│           ├── buttons.dart        # Button components
-│           ├── cards.dart          # Card components
-│           └── inputs.dart         # Input components
-│
+│   │   ├── auth_provider.dart       # Auth state management
+│   │   ├── wallet_provider.dart     # Wallet state management
+│   │   ├── loan_provider.dart       # Loan state management
+│   │   └── rollover_provider.dart   # Member-only rollover state
+│   └── screens/
+│       ├── auth/                    # Authentication screens
+│       ├── home/                    # Home dashboard
+│       ├── kyc/                     # KYC flow
+│       ├── loan/                    # Loan application & tracking
+│       ├── rollover/                # Rollover request flow
+│       ├── wallet/                  # Wallet management
+│       ├── investments/             # Investment pools
+│       ├── profile/                 # Member profile
+│       └── support/                 # Support & tickets
 └── main.dart                        # App entry point
-```
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Flutter 3.16+ ([Install Flutter](https://flutter.dev/docs/get-started/install))
-- Dart 3.2+
-- Android Studio or Xcode
-- Git
-
-### Installation
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/coopvestafrica-ops/Coop.git
-cd Coop
-```
-
-2. **Install dependencies**
-```bash
-flutter pub get
-```
-
-3. **Generate code**
-```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-```
-
-4. **Run the app**
-```bash
-flutter run
-```
-
-## 📱 Building for Production
-
-### Android
-```bash
-flutter build apk --release
-# or
-flutter build appbundle --release
-```
-
-### iOS
-```bash
-flutter build ios --release
 ```
 
 ## 🔐 Security Features
@@ -142,7 +176,7 @@ flutter build ios --release
 - ✅ Device binding
 - ✅ Jailbreak/root detection
 
-## 📊 Design System
+## 🎨 Design System
 
 ### Colors
 - **Primary:** #1B5E20 (Coopvest Green)
@@ -157,23 +191,51 @@ flutter build ios --release
 - **Scale:** 11-point scale (Display, Headline, Body, Label)
 - **Minimum Size:** 14px for body text
 
-### Components
-- Buttons (Primary, Secondary, Tertiary, Icon)
-- Cards (Standard, Elevated, Outlined)
-- Input Fields (Text, Dropdown, Checkbox, Radio)
-- Modals & Dialogs
-- Navigation (Bottom tabs, Top app bar)
+## 📱 User Roles
 
-## 🧪 Testing
+| Role | Platform | Capabilities |
+|------|----------|--------------|
+| Member | Mobile App | Register, apply for loans, be guarantor, invest, track savings |
+| Guarantor | Mobile App | Accept/reject guarantor requests via QR scan |
+| Support Agent | Admin Web Portal | Handle member inquiries |
+| Loan Officer | Admin Web Portal | Review and approve loans |
+| Risk Officer | Admin Web Portal | Risk assessment, guarantor validation |
+| Super Admin | Admin Web Portal | Full system access |
 
-### Run tests
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Flutter 3.16+ ([Install Flutter](https://flutter.dev/docs/get-started/install))
+- Dart 3.2+
+- Android Studio or Xcode
+- Git
+
+### Installation
+
 ```bash
-flutter test
+# Clone the repository
+git clone https://github.com/coopvestafrica-ops/Coop.git
+cd Coop
+
+# Install dependencies
+flutter pub get
+
+# Generate code
+flutter pub run build_runner build --delete-conflicting-outputs
+
+# Run the app
+flutter run
 ```
 
-### Run with coverage
+### Building for Production
+
 ```bash
-flutter test --coverage
+# Android
+flutter build apk --release
+
+# iOS
+flutter build ios --release
 ```
 
 ## 📚 Documentation
@@ -185,59 +247,17 @@ flutter test --coverage
 - [Implementation Guide](./COOPVEST_IMPLEMENTATION_GUIDE.md)
 - [State Management](./STATE_MANAGEMENT_SETUP.md)
 
-## 🤝 Contributing
+## 🧪 Testing
 
-1. Create a feature branch (`git checkout -b feature/amazing-feature`)
-2. Commit your changes (`git commit -m 'Add amazing feature'`)
-3. Push to the branch (`git push origin feature/amazing-feature`)
-4. Open a Pull Request
+```bash
+# Run tests
+flutter test
 
-## 📝 License
+# Run with coverage
+flutter test --coverage
+```
 
-This project is proprietary and confidential. All rights reserved by Coopvest Africa.
-
-## 👥 Team
-
-- **Product:** Coopvest Africa Team
-- **Development:** Flutter Development Team
-- **Design:** UI/UX Design Team
-
-## 📞 Support
-
-For support, email support@coopvest.com or visit our website at https://coopvest.com
-
-## 🗺️ Roadmap
-
-### Phase 1: Foundation ✅
-- [x] Project setup & design system
-- [x] State management with Riverpod
-- [x] API client & networking
-
-### Phase 2: Authentication (In Progress)
-- [ ] Login & registration screens
-- [ ] KYC submission
-- [ ] Biometric setup
-- [ ] Session management
-
-### Phase 3: Core Features
-- [ ] Wallet & contributions
-- [ ] Loan application
-- [ ] QR-based guarantor system
-- [ ] Real-time tracking
-
-### Phase 4: Advanced Features
-- [ ] Investment system
-- [ ] Profile & settings
-- [ ] Notifications
-- [ ] Analytics
-
-### Phase 5: Optimization
-- [ ] Performance optimization
-- [ ] Security audit
-- [ ] User testing
-- [ ] App store submission
-
-## 📈 Performance Targets
+## 📊 Performance Targets
 
 - **App Startup:** < 2 seconds
 - **Screen Load:** < 1 second
@@ -245,17 +265,23 @@ For support, email support@coopvest.com or visit our website at https://coopvest
 - **Memory Usage:** < 150 MB
 - **Battery Usage:** < 5% per hour
 
-## 🔄 Version History
+## 🤝 Contributing
 
-### v1.0.0 (Current)
-- Initial project setup
-- Design system implementation
-- State management with Riverpod
-- API client with interceptors
-- Reusable component library
+1. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Commit your changes (`git commit -m 'Add amazing feature'`)
+3. Push to the branch (`git push origin feature/amazing-feature`)
+4. Open a Pull Request
+
+## 📄 License
+
+This project is proprietary and confidential. All rights reserved by Coopvest Africa.
+
+## 📞 Support
+
+For support, email support@coopvest.com or visit our website at https://coopvest.com
 
 ---
 
-**Last Updated:** December 2025  
-**Status:** Active Development  
+**Last Updated:** January 2026  
+**Status:** Active Development - Member Only  
 **Maintainer:** Coopvest Africa Development Team
