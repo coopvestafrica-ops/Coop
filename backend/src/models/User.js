@@ -165,6 +165,10 @@ const userSchema = new mongoose.Schema({
     verifiedAt: {
       type: Date,
       default: null
+    },
+    lastResendAt: {
+      type: Date,
+      default: null
     }
   },
 

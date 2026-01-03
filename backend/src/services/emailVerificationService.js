@@ -1,12 +1,16 @@
 /**
  * Email Verification Service
  * 
- * Handles email verification token generation and sending
+ * Handles email verification token generation, sending, and cooldown management
  */
 
 const nodemailer = require('nodemailer');
 const { User } = require('../models');
 const logger = require('../utils/logger');
+
+// Configuration constants
+const RESEND_COOLDOWN_SECONDS = parseInt(process.env.EMAIL_RESEND_COOLDOWN_SECONDS) || 60; // 60 seconds default
+const VERIFICATION_EXPIRY_HOURS = parseInt(process.env.EMAIL_VERIFICATION_EXPIRY_HOURS) || 24;
 
 // Create transporter (configure with your email provider)
 const createTransporter = () => {
@@ -58,7 +62,7 @@ const getVerificationEmailTemplate = (user, token, frontendUrl) => ({
           </p>
           <p>Or copy and paste this verification link into your browser:</p>
           <p style="word-break: break-all; color: #1B5E20;">${frontendUrl}/verify-email?token=${token}&email=${user.email}</p>
-          <p><strong>This link will expire in 24 hours.</strong></p>
+          <p><strong>This link will expire in ${VERIFICATION_EXPIRY_HOURS} hours.</strong></p>
           <p>If you didn't create an account with Coopvest Africa, please ignore this email.</p>
         </div>
         <div class="footer">
@@ -78,7 +82,7 @@ const getVerificationEmailTemplate = (user, token, frontendUrl) => ({
     Click the link below or copy and paste it into your browser:
     ${frontendUrl}/verify-email?token=${token}&email=${user.email}
     
-    This link will expire in 24 hours.
+    This link will expire in ${VERIFICATION_EXPIRY_HOURS} hours.
     
     If you didn't create an account with Coopvest Africa, please ignore this email.
     
@@ -99,12 +103,48 @@ class EmailVerificationService {
   }
 
   /**
+   * Check if user can resend verification email (cooldown check)
+   */
+  canResend(user) {
+    if (!user.emailVerification.lastResendAt) {
+      return { canResend: true, remainingSeconds: 0 };
+    }
+
+    const lastResend = new Date(user.emailVerification.lastResendAt);
+    const cooldownEnd = new Date(lastResend.getTime() + RESEND_COOLDOWN_SECONDS * 1000);
+    const now = new Date();
+
+    if (cooldownEnd > now) {
+      const remainingSeconds = Math.ceil((cooldownEnd - now) / 1000);
+      return { 
+        canResend: false, 
+        remainingSeconds,
+        message: `Please wait ${remainingSeconds} seconds before requesting a new verification email`
+      };
+    }
+
+    return { canResend: true, remainingSeconds: 0 };
+  }
+
+  /**
    * Send verification email to user
    */
   async sendVerificationEmail(user, frontendUrl = process.env.FRONTEND_URL) {
     try {
+      // Check cooldown
+      const cooldownCheck = this.canResend(user);
+      if (!cooldownCheck.canResend) {
+        return {
+          success: false,
+          error: cooldownCheck.message,
+          remainingSeconds: cooldownCheck.remainingSeconds,
+          canResendAt: new Date(Date.now() + cooldownCheck.remainingSeconds * 1000).toISOString()
+        };
+      }
+
       // Generate verification token
       const token = user.generateEmailVerificationToken();
+      user.emailVerification.lastResendAt = new Date();
       await user.save();
 
       const templates = getVerificationEmailTemplate(user, token, frontendUrl);
@@ -115,10 +155,11 @@ class EmailVerificationService {
           email: user.email,
           verificationLink: `${frontendUrl}/verify-email?token=${token}&email=${user.email}`
         });
-        return { 
-          success: true, 
+        return {
+          success: true,
           message: 'Verification link generated (development mode)',
-          devLink: `${frontendUrl}/verify-email?token=${token}&email=${user.email}`
+          devLink: `${frontendUrl}/verify-email?token=${token}&email=${user.email}`,
+          cooldown: RESEND_COOLDOWN_SECONDS
         };
       }
 
@@ -134,9 +175,10 @@ class EmailVerificationService {
 
       logger.info(`Verification email sent to: ${user.email}`);
       
-      return { 
-        success: true, 
-        message: 'Verification email sent successfully' 
+      return {
+        success: true,
+        message: 'Verification email sent successfully',
+        cooldown: RESEND_COOLDOWN_SECONDS
       };
     } catch (error) {
       logger.error('Failed to send verification email:', error);
@@ -167,8 +209,8 @@ class EmailVerificationService {
       
       logger.info(`Email verified successfully for: ${email}`);
       
-      return { 
-        success: true, 
+      return {
+        success: true,
         message: 'Email verified successfully',
         user: {
           userId: user.userId,
@@ -183,7 +225,7 @@ class EmailVerificationService {
   }
 
   /**
-   * Resend verification email
+   * Resend verification email with cooldown
    */
   async resendVerificationEmail(email, frontendUrl = process.env.FRONTEND_URL) {
     try {
@@ -197,8 +239,20 @@ class EmailVerificationService {
         return { success: false, error: 'Email already verified' };
       }
 
+      // Check cooldown before generating new token
+      const cooldownCheck = this.canResend(user);
+      if (!cooldownCheck.canResend) {
+        return {
+          success: false,
+          error: cooldownCheck.message,
+          remainingSeconds: cooldownCheck.remainingSeconds,
+          canResendAt: new Date(Date.now() + cooldownCheck.remainingSeconds * 1000).toISOString()
+        };
+      }
+
       // Generate new token (overwrites old one)
       const token = user.generateEmailVerificationToken();
+      user.emailVerification.lastResendAt = new Date();
       await user.save();
 
       // Send verification email
@@ -218,12 +272,38 @@ class EmailVerificationService {
       if (!user) {
         return { success: false, error: 'User not found' };
       }
-      return { 
-        success: true, 
-        isVerified: user.emailVerification.isVerified 
+      return {
+        success: true,
+        isVerified: user.emailVerification.isVerified
       };
     } catch (error) {
       logger.error('Check email verification status failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get email verification status with cooldown info
+   */
+  async getVerificationStatus(email) {
+    try {
+      const user = await User.findOne({ email: email.toLowerCase() });
+      if (!user) {
+        return { success: false, error: 'User not found' };
+      }
+
+      const cooldownCheck = this.canResend(user);
+      
+      return {
+        success: true,
+        isVerified: user.emailVerification.isVerified,
+        canResend: cooldownCheck.canResend,
+        remainingSeconds: cooldownCheck.remainingSeconds,
+        verifiedAt: user.emailVerification.verifiedAt,
+        lastSentAt: user.emailVerification.lastResendAt
+      };
+    } catch (error) {
+      logger.error('Get verification status failed:', error);
       throw error;
     }
   }

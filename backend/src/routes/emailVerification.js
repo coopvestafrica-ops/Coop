@@ -1,7 +1,7 @@
 /**
  * Email Verification Routes
  * 
- * Endpoints for email verification functionality
+ * Endpoints for email verification functionality with cooldown support
  */
 
 const express = require('express');
@@ -29,8 +29,10 @@ router.post('/send-verification-email', [
     const { email } = req.query;
     const frontendUrl = req.body.frontendUrl || process.env.FRONTEND_URL || 'http://localhost:3000';
 
+    // Create a mock user object for the service
+    const mockUser = { email };
     const result = await emailVerificationService.sendVerificationEmail(
-      { email },
+      mockUser,
       frontendUrl
     );
 
@@ -40,13 +42,24 @@ router.post('/send-verification-email', [
         success: true,
         message: result.message,
         devLink: result.devLink,
+        cooldownSeconds: result.cooldown,
         note: 'This link is only visible in development mode'
+      });
+    }
+
+    if (!result.success) {
+      return res.status(429).json({
+        success: false,
+        error: result.error,
+        remainingSeconds: result.remainingSeconds,
+        canResendAt: result.canResendAt
       });
     }
 
     res.json({
       success: true,
-      message: 'Verification email sent successfully'
+      message: result.message,
+      cooldownSeconds: result.cooldown
     });
   } catch (error) {
     logger.error('Send verification email error:', error);
@@ -93,7 +106,7 @@ router.get('/verify-email', [
 
 /**
  * POST /api/v1/auth/resend-verification-email
- * Resend verification email
+ * Resend verification email with cooldown
  */
 router.post('/resend-verification-email', [
   query('email').isEmail().withMessage('Valid email is required')
@@ -105,9 +118,11 @@ router.post('/resend-verification-email', [
     const result = await emailVerificationService.resendVerificationEmail(email, frontendUrl);
 
     if (!result.success) {
-      return res.status(400).json({
+      return res.status(429).json({
         success: false,
-        error: result.error
+        error: result.error,
+        remainingSeconds: result.remainingSeconds,
+        canResendAt: result.canResendAt
       });
     }
 
@@ -117,13 +132,15 @@ router.post('/resend-verification-email', [
         success: true,
         message: result.message,
         devLink: result.devLink,
+        cooldownSeconds: result.cooldown,
         note: 'This link is only visible in development mode'
       });
     }
 
     res.json({
       success: true,
-      message: 'Verification email sent successfully'
+      message: result.message,
+      cooldownSeconds: result.cooldown
     });
   } catch (error) {
     logger.error('Resend verification email error:', error);
@@ -159,6 +176,38 @@ router.get('/check-email-verification', [
     });
   } catch (error) {
     logger.error('Check email verification error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/v1/auth/email-verification-status
+ * Get detailed verification status including cooldown info
+ */
+router.get('/email-verification-status', [
+  query('email').isEmail().withMessage('Valid email is required')
+], validate, async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    const result = await emailVerificationService.getVerificationStatus(email);
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        error: result.error
+      });
+    }
+
+    res.json({
+      success: true,
+      ...result
+    });
+  } catch (error) {
+    logger.error('Get verification status error:', error);
     res.status(500).json({
       success: false,
       error: error.message
