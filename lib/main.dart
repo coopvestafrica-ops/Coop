@@ -13,6 +13,7 @@ import 'presentation/screens/home/home_dashboard_screen.dart';
 import 'presentation/screens/kyc/kyc_employment_details_screen.dart';
 import 'presentation/screens/kyc/kyc_id_upload_screen.dart';
 import 'presentation/screens/kyc/kyc_selfie_screen.dart';
+import 'presentation/screens/kyc/kyc_success_screen.dart';
 import 'presentation/screens/kyc/kyc_bank_info_screen.dart';
 import 'presentation/screens/loan/loan_dashboard_screen.dart';
 import 'presentation/screens/loan/loan_application_screen.dart';

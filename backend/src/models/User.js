@@ -148,6 +148,26 @@ const userSchema = new mongoose.Schema({
     default: 'member'
   },
 
+  // Email verification
+  emailVerification: {
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    verificationToken: {
+      type: String,
+      default: null
+    },
+    verificationExpires: {
+      type: Date,
+      default: null
+    },
+    verifiedAt: {
+      type: Date,
+      default: null
+    }
+  },
+
   // Timestamps
   createdAt: {
     type: Date,
@@ -169,6 +189,32 @@ userSchema.statics.generateReferralCode = function(userId) {
   const random = Math.random().toString(36).substring(2, 6).toUpperCase();
   const userPart = userId.substring(0, 4).toUpperCase();
   return `${prefix}${userPart}${random}`;
+};
+
+// Generate email verification token
+userSchema.methods.generateEmailVerificationToken = function() {
+  const crypto = require('crypto');
+  const token = crypto.randomBytes(32).toString('hex');
+  this.emailVerification.verificationToken = token;
+  this.emailVerification.verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  return token;
+};
+
+// Check if email verification token is valid
+userSchema.methods.isEmailVerificationTokenValid = function(token) {
+  return (
+    this.emailVerification.verificationToken === token &&
+    this.emailVerification.verificationExpires > new Date()
+  );
+};
+
+// Verify email
+userSchema.methods.verifyEmail = function() {
+  this.emailVerification.isVerified = true;
+  this.emailVerification.verifiedAt = new Date();
+  this.emailVerification.verificationToken = null;
+  this.emailVerification.verificationExpires = null;
+  return this.save();
 };
 
 // Hash password before saving

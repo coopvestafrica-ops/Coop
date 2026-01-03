@@ -19,6 +19,7 @@ const websocketService = require('./services/websocketService');
 
 // Import routes
 const authRoutes = require('./routes/auth');
+const emailVerificationRoutes = require('./routes/emailVerification');
 const referralRoutes = require('./routes/referrals');
 const adminRoutes = require('./routes/admin');
 const loanRoutes = require('./routes/loans');
@@ -94,6 +95,7 @@ app.get('/ws/stats', (req, res) => {
 
 // API Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/auth', emailVerificationRoutes);
 app.use('/api/v1/referrals', referralRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/loans', loanRoutes);

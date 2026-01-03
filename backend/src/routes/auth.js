@@ -87,6 +87,15 @@ router.post('/register', [
       }
     }
 
+    // Send email verification
+    const frontendUrl = req.body.frontendUrl || process.env.FRONTEND_URL || 'http://localhost:3000';
+    try {
+      const { emailVerificationService } = require('../services/emailVerificationService');
+      await emailVerificationService.sendVerificationEmail(user, frontendUrl);
+    } catch (emailError) {
+      logger.warn('Failed to send verification email:', emailError.message);
+    }
+
     const token = generateToken(userId);
 
     res.status(201).json({
@@ -95,10 +104,11 @@ router.post('/register', [
         userId: user.userId,
         email: user.email,
         name: user.name,
-        referralCode: user.referral.myReferralCode
+        referralCode: user.referral.myReferralCode,
+        emailVerified: user.emailVerification.isVerified
       },
       token,
-      message: 'User registered successfully'
+      message: 'User registered successfully. Please verify your email.'
     });
   } catch (error) {
     logger.error('Registration error:', error);
@@ -152,7 +162,8 @@ router.post('/login', [
         email: user.email,
         name: user.name,
         referralCode: user.referral.myReferralCode,
-        kycVerified: user.kyc.verified
+        kycVerified: user.kyc.verified,
+        emailVerified: user.emailVerification.isVerified
       },
       token
     });
@@ -287,6 +298,7 @@ router.get('/me', async (req, res) => {
         phone: user.phone,
         referralCode: user.referral.myReferralCode,
         kycVerified: user.kyc.verified,
+        emailVerified: user.emailVerification.isVerified,
         savings: user.savings,
         createdAt: user.createdAt
       }
