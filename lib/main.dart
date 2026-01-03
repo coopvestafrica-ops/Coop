@@ -10,6 +10,10 @@ import 'presentation/screens/auth/salary_deduction_consent_screen.dart';
 import 'presentation/screens/auth/account_activation_screen.dart';
 import 'presentation/screens/auth/forgot_password_screen.dart';
 import 'presentation/screens/auth/email_verification_screen.dart';
+import 'presentation/screens/support/support_home_screen.dart';
+import 'presentation/screens/support/ticket_creation_screen.dart';
+import 'presentation/screens/support/ticket_list_screen.dart';
+import 'presentation/screens/support/ticket_detail_screen.dart';
 import 'presentation/screens/home/home_dashboard_screen.dart';
 import 'presentation/screens/kyc/kyc_employment_details_screen.dart';
 import 'presentation/screens/kyc/kyc_id_upload_screen.dart';
@@ -72,6 +76,17 @@ class CoopvestApp extends ConsumerWidget {
         '/account-activation': (context) => const AccountActivationScreen(),
         '/forgot-password': (context) => const ForgotPasswordScreen(),
         '/verify-email': (context) => const EmailVerificationScreen(),
+        
+        // Support/Ticket Routes
+        '/support': (context) => const SupportHomeScreen(),
+        '/create-ticket': (context) => const TicketCreationScreen(),
+        '/tickets': (context) => const TicketListScreen(),
+        '/tickets/:id': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          return TicketDetailScreen(
+            ticketId: args?['ticketId'] ?? '',
+          );
+        },
         
         // KYC Routes
         '/kyc-employment-details': (context) => const KYCEmploymentDetailsScreen(),
