@@ -168,7 +168,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initializeApp() async {
     // Simulate initialization delay
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 40));
 
     if (mounted) {
       // Navigate to welcome screen for onboarding flow
