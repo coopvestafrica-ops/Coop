@@ -1,19 +1,24 @@
 {
     "name": "coopvest-referral-api",
     "version": "1.0.0",
-    "description": "Coopvest Africa Referral System Backend API",
+    "description": "Coopvest Africa Referral System Backend API - Secure Cooperative Financial Services Platform",
     "main": "src/server.js",
     "scripts": {
         "start": "node src/server.js",
         "dev": "nodemon src/server.js",
         "test": "jest --coverage",
-        "test:watch": "jest --watch"
+        "test:watch": "jest --watch",
+        "migrate": "node migrate.js migrate",
+        "migrate:status": "node migrate.js status",
+        "migrate:seed-admin": "node migrate.js seed-admin"
     },
     "keywords": [
         "referral",
         "loan",
         "finance",
-        "api"
+        "api",
+        "cooperative",
+        "coopvest"
     ],
     "author": "Coopvest Africa",
     "license": "MIT",

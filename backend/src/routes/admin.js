@@ -2,6 +2,7 @@
  * Admin Routes
  * 
  * Admin-only endpoints for referral management
+ * Protected by JWT authentication + IP whitelist + role verification
  */
 
 const express = require('express');
@@ -10,6 +11,7 @@ const { body, param, validationResult } = require('express-validator');
 const { Referral, User, AuditLog } = require('../models');
 const referralService = require('../services/referralService');
 const logger = require('../utils/logger');
+const { authenticate, requireAdmin } = require('../middleware/auth');
 
 // Validation middleware
 const validate = (req, res, next) => {
@@ -23,19 +25,9 @@ const validate = (req, res, next) => {
   next();
 };
 
-// Middleware to verify admin role (simplified for demo)
-const verifyAdmin = (req, res, next) => {
-  // In production, use proper authentication middleware
-  const adminId = req.headers['x-admin-id'];
-  if (!adminId) {
-    return res.status(403).json({
-      success: false,
-      error: 'Admin access required'
-    });
-  }
-  req.adminId = adminId;
-  next();
-};
+// Apply authentication and admin role check to ALL routes
+router.use(authenticate);
+router.use(requireAdmin);
 
 // ============== ADMIN ENDPOINTS ==============
 
@@ -43,7 +35,7 @@ const verifyAdmin = (req, res, next) => {
  * GET /api/v1/admin/referrals
  * Get all referrals with filtering (admin)
  */
-router.get('/referrals', verifyAdmin, async (req, res) => {
+router.get('/referrals', async (req, res) => {
   try {
     const { status, page = 1, limit = 20, search } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -93,10 +85,10 @@ router.get('/referrals', verifyAdmin, async (req, res) => {
 });
 
 /**
- * GET /api/v1/stats
- * Get/admin/referrals referral statistics (admin)
+ * GET /api/v1/admin/referrals/stats
+ * Get referral statistics (admin)
  */
-router.get('/referrals/stats', verifyAdmin, async (req, res) => {
+router.get('/referrals/stats', async (req, res) => {
   try {
     // Base stats
     const stats = await Referral.aggregate([
@@ -160,7 +152,9 @@ router.get('/referrals/stats', verifyAdmin, async (req, res) => {
  * GET /api/v1/admin/referrals/:referralId
  * Get referral details (admin)
  */
-router.get('/referrals/:referralId', verifyAdmin, async (req, res) => {
+router.get('/referrals/:referralId', [
+  param('referralId').notEmpty()
+], validate, async (req, res) => {
   try {
     const referral = await Referral.findOne({ referralId: req.params.referralId });
     
@@ -188,7 +182,7 @@ router.get('/referrals/:referralId', verifyAdmin, async (req, res) => {
  * POST /api/v1/admin/referrals/:referralId/confirm
  * Manually confirm a referral (admin)
  */
-router.post('/referrals/:referralId/confirm', verifyAdmin, [
+router.post('/referrals/:referralId/confirm', [
   param('referralId').notEmpty(),
   body('notes').optional().isString()
 ], validate, async (req, res) => {
@@ -223,8 +217,9 @@ router.post('/referrals/:referralId/confirm', verifyAdmin, [
       action: 'REFERRAL_CONFIRMED',
       referralId,
       userId: referral.referredId,
-      adminId: req.adminId,
-      details: `Admin confirmed referral. Notes: ${notes || 'None'}. Lock-in: ${lockInDays} days`
+      adminId: req.user.userId,
+      details: `Admin confirmed referral. Notes: ${notes || 'None'}. Lock-in: ${lockInDays} days`,
+      ipAddress: req.ip || req.connection.remoteAddress
     });
 
     res.json({
@@ -245,7 +240,7 @@ router.post('/referrals/:referralId/confirm', verifyAdmin, [
  * POST /api/v1/admin/referrals/:referralId/flag
  * Flag a referral for review (admin)
  */
-router.post('/referrals/:referralId/flag', verifyAdmin, [
+router.post('/referrals/:referralId/flag', [
   param('referralId').notEmpty(),
   body('reason').notEmpty().withMessage('Flag reason is required')
 ], validate, async (req, res) => {
@@ -253,7 +248,7 @@ router.post('/referrals/:referralId/flag', verifyAdmin, [
     const { referralId } = req.params;
     const { reason } = req.body;
 
-    const result = await referralService.flagReferral(referralId, reason, req.adminId);
+    const result = await referralService.flagReferral(referralId, reason, req.user.userId);
 
     res.json({
       success: true,
@@ -278,13 +273,13 @@ router.post('/referrals/:referralId/flag', verifyAdmin, [
  * POST /api/v1/admin/referrals/:referralId/unflag
  * Unflag a referral (admin)
  */
-router.post('/referrals/:referralId/unflag', verifyAdmin, [
+router.post('/referrals/:referralId/unflag', [
   param('referralId').notEmpty()
 ], validate, async (req, res) => {
   try {
     const { referralId } = req.params;
 
-    const result = await referralService.unflagReferral(referralId, req.adminId);
+    const result = await referralService.unflagReferral(referralId, req.user.userId);
 
     res.json({
       success: true,
@@ -309,7 +304,7 @@ router.post('/referrals/:referralId/unflag', verifyAdmin, [
  * POST /api/v1/admin/referrals/:referralId/revoke
  * Revoke referral bonus (admin)
  */
-router.post('/referrals/:referralId/revoke', verifyAdmin, [
+router.post('/referrals/:referralId/revoke', [
   param('referralId').notEmpty(),
   body('reason').notEmpty().withMessage('Revoke reason is required')
 ], validate, async (req, res) => {
@@ -317,7 +312,7 @@ router.post('/referrals/:referralId/revoke', verifyAdmin, [
     const { referralId } = req.params;
     const { reason } = req.body;
 
-    const result = await referralService.revokeBonus(referralId, reason, req.adminId);
+    const result = await referralService.revokeBonus(referralId, reason, req.user.userId);
 
     res.json({
       success: true,
@@ -342,7 +337,7 @@ router.post('/referrals/:referralId/revoke', verifyAdmin, [
  * GET /api/v1/admin/referrals/audit
  * Get audit logs (admin)
  */
-router.get('/referrals/audit', verifyAdmin, async (req, res) => {
+router.get('/referrals/audit', async (req, res) => {
   try {
     const { page = 1, limit = 50, action, userId, referralId } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -380,7 +375,7 @@ router.get('/referrals/audit', verifyAdmin, async (req, res) => {
  * PUT /api/v1/admin/referrals/settings
  * Update referral settings (admin)
  */
-router.put('/referrals/settings', verifyAdmin, [
+router.put('/referrals/settings', [
   body('enabled').isBoolean(),
   body('lockInDays').optional().isInt({ min: 1, max: 90 }),
   body('minimumSavingsMonths').optional().isInt({ min: 1, max: 12 }),
@@ -392,8 +387,9 @@ router.put('/referrals/settings', verifyAdmin, [
     // Log settings change
     await AuditLog.log({
       action: 'SETTINGS_CHANGED',
-      adminId: req.adminId,
-      details: `Settings updated: ${JSON.stringify(settings)}`
+      adminId: req.user.userId,
+      details: `Settings updated: ${JSON.stringify(settings)}`,
+      ipAddress: req.ip || req.connection.remoteAddress
     });
 
     res.json({
@@ -414,7 +410,7 @@ router.put('/referrals/settings', verifyAdmin, [
  * GET /api/v1/admin/referrals/settings
  * Get referral settings (admin)
  */
-router.get('/referrals/settings', verifyAdmin, async (req, res) => {
+router.get('/referrals/settings', async (req, res) => {
   try {
     const settings = {
       enabled: true,
@@ -452,12 +448,12 @@ router.get('/referrals/settings', verifyAdmin, async (req, res) => {
  * GET /api/v1/admin/users/:userId/referrals
  * Get user's referrals (admin)
  */
-router.get('/users/:userId/referrals', verifyAdmin, async (req, res) => {
+router.get('/users/:userId/referrals', async (req, res) => {
   try {
     const { userId } = req.params;
     const { status } = req.query;
 
-    let query = { referrerId: userId };
+    let query = { referral.referrerId: userId };
     if (status === 'confirmed') query.confirmed = true;
     else if (status === 'pending') query.confirmed = false;
 
