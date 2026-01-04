@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'config/app_config.dart';
 import 'config/theme_config.dart';
+import 'core/services/feature_service.dart';
 import 'presentation/screens/auth/welcome_screen.dart';
 import 'presentation/screens/auth/login_screen.dart';
 import 'presentation/screens/auth/register_step1_screen.dart';
@@ -167,8 +168,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initializeApp() async {
+    // Initialize feature service first (connects to admin backend)
+    final featureService = FeatureService();
+    await featureService.init();
+    
     // Simulate initialization delay
-    await Future.delayed(const Duration(seconds: 40));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
       // Navigate to welcome screen for onboarding flow
