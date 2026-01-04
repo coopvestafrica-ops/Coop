@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/theme_config.dart';
 import '../../core/utils/utils.dart';
+import '../../core/services/api_service.dart';
 import '../../presentation/widgets/common/buttons.dart';
 
-/// Salary Deduction & Loan Recovery Consent Screen
+/// Salary Deduction & Loan Recovery Consent Screen - Real API Integration
 class SalaryDeductionConsentScreen extends ConsumerStatefulWidget {
   final Map<String, String> registrationData;
 
@@ -23,7 +24,9 @@ class _SalaryDeductionConsentScreenState
   bool _agreeToConsent = false;
   bool _isSubmitting = false;
 
-  void _submitConsent() async {
+  final ApiService _apiService = ApiService();
+
+  Future<void> _submitConsent() async {
     if (!_agreeToConsent) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -39,17 +42,28 @@ class _SalaryDeductionConsentScreenState
     });
 
     try {
-      // TODO: Call API to submit consent
-      await Future.delayed(const Duration(seconds: 2));
+      // Call API to submit consent
+      final response = await _apiService.post(
+        '/auth/salary-consent',
+        body: {
+          'memberId': widget.registrationData['memberId'] ?? '',
+          'consent': _agreeToConsent,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
 
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/account-activation');
+      if (response['success'] == true) {
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/account-activation');
+        }
+      } else {
+        throw Exception(response['message'] ?? 'Failed to submit consent');
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text('Error: ${e.toString()}'),
             backgroundColor: CoopvestColors.error,
           ),
         );
@@ -202,7 +216,7 @@ class _SalaryDeductionConsentScreenState
               // Accept Button
               PrimaryButton(
                 label: 'Accept & Continue',
-                onPressed: _submitConsent,
+                onPressed: _isSubmitting ? null : _submitConsent,
                 isLoading: _isSubmitting,
                 isEnabled: !_isSubmitting,
                 width: double.infinity,

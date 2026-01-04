@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import '../../config/theme_config.dart';
 import '../../core/utils/utils.dart';
+import '../../core/services/api_service.dart';
 import '../../presentation/widgets/common/buttons.dart';
 import '../../presentation/widgets/common/inputs.dart';
 
-/// Forgot Password Screen
+/// Forgot Password Screen with Real API Integration
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 
@@ -47,14 +49,24 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     });
 
     try {
-      // TODO: Call API to send password reset link
-      await Future.delayed(const Duration(seconds: 2));
-      
-      if (mounted) {
-        setState(() {
-          _emailSent = true;
-          _isLoading = false;
-        });
+      // Call API to send password reset link
+      final apiService = ApiService();
+      final response = await apiService.post(
+        '/auth/forgot-password',
+        body: {
+          'email': _emailController.text.trim(),
+        },
+      );
+
+      if (response['success'] == true) {
+        if (mounted) {
+          setState(() {
+            _emailSent = true;
+            _isLoading = false;
+          });
+        }
+      } else {
+        throw Exception(response['message'] ?? 'Failed to send reset link');
       }
     } catch (e) {
       if (mounted) {
@@ -63,10 +75,50 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to send reset link: $e'),
+            content: Text('Failed to send reset link: ${e.toString()}'),
             backgroundColor: CoopvestColors.error,
           ),
         );
+      }
+    }
+  }
+
+  Future<void> _resendResetLink() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final apiService = ApiService();
+      final response = await apiService.post(
+        '/auth/forgot-password',
+        body: {
+          'email': _emailController.text.trim(),
+        },
+      );
+
+      if (response['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Reset link sent successfully'),
+            backgroundColor: CoopvestColors.success,
+          ),
+        );
+      } else {
+        throw Exception(response['message'] ?? 'Failed to resend reset link');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to resend: ${e.toString()}'),
+          backgroundColor: CoopvestColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -206,7 +258,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       ),
                       const SizedBox(height: 8),
                       GestureDetector(
-                        onTap: _isLoading ? null : _sendResetLink,
+                        onTap: _isLoading ? null : _resendResetLink,
                         child: Text(
                           'Resend Link',
                           style: CoopvestTypography.bodyMedium.copyWith(

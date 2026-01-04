@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/theme_config.dart';
 import '../../core/utils/utils.dart';
+import '../../core/services/api_service.dart';
 import '../../presentation/widgets/common/buttons.dart';
 
-/// Registration Step 2 - Phone Verification with OTP
+/// Registration Step 2 - Phone Verification with OTP - Real API Integration
 class RegisterStep2Screen extends ConsumerStatefulWidget {
   final String phone;
   final Map<String, String> registrationData;
@@ -25,6 +26,9 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
   int _remainingSeconds = 60;
   bool _canResend = false;
   bool _isVerifying = false;
+  bool _isResending = false;
+
+  final ApiService _apiService = ApiService();
 
   @override
   void initState() {
@@ -60,7 +64,7 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
     });
   }
 
-  void _resendOTP() {
+  Future<void> _resendOTP() async {
     setState(() {
       _remainingSeconds = 60;
       _canResend = false;
@@ -69,7 +73,38 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
       }
     });
     _startTimer();
-    // TODO: Call API to resend OTP
+
+    try {
+      // Call API to resend OTP
+      final response = await _apiService.post(
+        '/auth/resend-otp',
+        body: {
+          'phone': widget.phone,
+        },
+      );
+
+      if (response['success'] != true) {
+        throw Exception(response['message'] ?? 'Failed to resend OTP');
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('OTP sent successfully'),
+            backgroundColor: CoopvestColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to resend OTP: ${e.toString()}'),
+            backgroundColor: CoopvestColors.error,
+          ),
+        );
+      }
+    }
   }
 
   void _onOTPFieldChanged(String value, int index) {
@@ -88,7 +123,7 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
     return _otpControllers.map((controller) => controller.text).join();
   }
 
-  void _verifyOTP() async {
+  Future<void> _verifyOTP() async {
     final otp = _getOTP();
     if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -105,20 +140,30 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
     });
 
     try {
-      // TODO: Call API to verify OTP
-      await Future.delayed(const Duration(seconds: 2));
+      // Call API to verify OTP
+      final response = await _apiService.post(
+        '/auth/verify-otp',
+        body: {
+          'phone': widget.phone,
+          'otp': otp,
+        },
+      );
 
-      if (mounted) {
-        Navigator.of(context).pushNamed(
-          '/register-step3',
-          arguments: widget.registrationData,
-        );
+      if (response['success'] == true) {
+        if (mounted) {
+          Navigator.of(context).pushNamed(
+            '/register-step3',
+            arguments: widget.registrationData,
+          );
+        }
+      } else {
+        throw Exception(response['message'] ?? 'Verification failed');
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Verification failed: $e'),
+            content: Text('Verification failed: ${e.toString()}'),
             backgroundColor: CoopvestColors.error,
           ),
         );
@@ -276,9 +321,9 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
                       )
                     else
                       GestureDetector(
-                        onTap: _resendOTP,
+                        onTap: _isResending ? null : _resendOTP,
                         child: Text(
-                          'Resend Code',
+                          _isResending ? 'Sending...' : 'Resend Code',
                           style: CoopvestTypography.bodyMedium.copyWith(
                             color: CoopvestColors.primary,
                             fontWeight: FontWeight.w600,
@@ -293,7 +338,7 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
               // Verify Button
               PrimaryButton(
                 label: 'Verify',
-                onPressed: _verifyOTP,
+                onPressed: _isVerifying ? null : _verifyOTP,
                 isLoading: _isVerifying,
                 isEnabled: !_isVerifying,
                 width: double.infinity,
