@@ -6,12 +6,12 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getValue('flutter.versionCode')
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
     flutterVersionCode = '1'
 }
 
-def flutterVersionName = localProperties.getValue('flutter.versionName')
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
@@ -79,12 +79,4 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:cloud-firestore'
     implementation 'com.google.firebase:firebase-storage'
-}
-
-flutter {
-    source '../..'
-}
-
-dependencies {
-    implementation platform('com.google.firebase:firebase-bom:32.7.0')
 }
