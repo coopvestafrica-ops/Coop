@@ -24,3 +24,6 @@ plugins {
 }
 
 include ":app"
+
+def flutterProjectRoot = rootProject.projectDir.parentFile.absolutePath
+def localPropertiesFile = new File(flutterProjectRoot, ".dart_tool/flutter_build/generated_plugins.json")
