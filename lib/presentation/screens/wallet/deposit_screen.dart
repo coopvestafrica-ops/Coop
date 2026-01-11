@@ -24,7 +24,7 @@ class _DepositScreenState extends ConsumerState<DepositScreen> {
   bool _isProcessing = false;
 
   final List<Map<String, dynamic>> _paymentMethods = [
-    {'value': 'bank_transfer', 'label': 'Bank Transfer', 'icon': Icons.account_balance'},
+    {'value': 'bank_transfer', 'label': 'Bank Transfer', 'icon': Icons.account_balance},
     {'value': 'card', 'label': 'Debit Card', 'icon': Icons.credit_card},
     {'value': 'ussd', 'label': 'USSD', 'icon': Icons.phone_android},
   ];

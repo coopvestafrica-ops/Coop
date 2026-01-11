@@ -33,6 +33,12 @@ class CoopvestColors {
 
 /// Coopvest Typography
 class CoopvestTypography {
+  static const titleSmall = TextStyle(fontSize: 12, fontWeight: FontWeight.w500);
+  static const titleMedium = TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
+  static const titleLarge = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
+}
+
+class CoopvestTypographyOld {
   static const String fontFamily = 'Inter';
 
   // Display Styles

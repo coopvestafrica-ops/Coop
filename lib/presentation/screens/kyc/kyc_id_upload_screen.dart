@@ -451,7 +451,7 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
                         width: 2,
                         style: BorderStyle.solid,
                       ),
-                      borderDash: const BorderSide(
+                      border: Border.all(
                         color: CoopvestColors.primary,
                         width: 2,
                         style: BorderStyle.solid,

@@ -451,7 +451,7 @@ class FaceFramePainter extends CustomPainter {
     _drawCorner(canvas, Offset(40, 80), cornerLength, guidePaint);
     
     // Top-right corner
-    _drawCorner(canvas, Offset(size.width - 40, 80), cornerLength, guidePaint, mirror: true);
+    _drawCorner(canvas, Offset(size.width - 40, 80), cornerLength, guidePaint);
     
     // Bottom-left corner
     _drawCorner(canvas, Offset(40, size.height - 120), cornerLength, guidePaint, mirrorY: true);

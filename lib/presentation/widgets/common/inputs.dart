@@ -25,6 +25,8 @@ class AppTextField extends StatefulWidget {
   final TextCapitalization textCapitalization;
 
   const AppTextField({
+    this.prefixText,
+    this.filledColor,
     Key? key,
     required this.label,
     this.hint,

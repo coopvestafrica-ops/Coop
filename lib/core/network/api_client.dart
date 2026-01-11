@@ -10,6 +10,14 @@ final apiClientProvider = Provider<ApiClient>((ref) {
 
 /// API Client Implementation
 class ApiClient {
+  static late Dio _dio;
+  
+  static Dio get dio => _dio;
+  
+  static void initialize() {
+    _dio = Dio();
+  }
+
   late final Dio _dio;
   bool _initialized = false;
 

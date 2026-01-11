@@ -240,7 +240,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
     final currentStep = switch (_verificationStatus) {
       'review' => 0,
       'consent' => 1,
-      'processing' or 'confirmed' => 2,
+      'processing', 'confirmed' => 2,
       _ => 0,
     };
 
@@ -539,7 +539,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
           if (_verificationStatus == 'confirmed')
             const Icon(Icons.check_circle, color: CoopvestColors.success, size: 80)
           else
-            const CircularProgressIndicator(color: CoopvestColors.primary, size: 80),
+            const CircularProgressIndicator(color: CoopvestColors.primary, strokeWidth: 80),
           const SizedBox(height: 24),
           Text(
             _verificationStatus == 'confirmed'

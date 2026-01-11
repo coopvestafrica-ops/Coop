@@ -4,7 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import '../../core/network/api_client.dart';
 import '../models/loan_models.dart';
 
-part 'loan_api_service.g.dart';
+
 
 /// API Service for Loan Operations - Uses official ApiClient
 @RestApi()

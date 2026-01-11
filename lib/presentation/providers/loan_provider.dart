@@ -1,3 +1,31 @@
+
+class LoanState {
+  final List<dynamic> loans;
+  final LoanStatus status;
+  final String? error;
+
+  LoanState({
+    this.loans = const [],
+    this.status = LoanStatus.initial,
+    this.error,
+  });
+
+  LoanState copyWith({
+    List<dynamic>? loans,
+    LoanStatus? status,
+    String? error,
+  }) {
+    return LoanState(
+      loans: loans ?? this.loans,
+      status: status ?? this.status,
+      error: error ?? this.error,
+    );
+  }
+}
+
+enum LoanStatus { initial, loading, success, error }
+
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';

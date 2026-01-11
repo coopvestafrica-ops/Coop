@@ -4,6 +4,7 @@ import '../../../config/theme_config.dart';
 /// Primary Button Component
 class PrimaryButton extends StatelessWidget {
   final String label;
+  final String text;
   final VoidCallback onPressed;
   final bool isLoading;
   final bool isEnabled;
@@ -15,6 +16,7 @@ class PrimaryButton extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const PrimaryButton({
+    required this.text,
     Key? key,
     required this.label,
     required this.onPressed,
@@ -79,6 +81,7 @@ class PrimaryButton extends StatelessWidget {
 /// Secondary Button Component
 class SecondaryButton extends StatelessWidget {
   final String label;
+  final String text;
   final VoidCallback onPressed;
   final bool isLoading;
   final bool isEnabled;
@@ -156,6 +159,7 @@ class SecondaryButton extends StatelessWidget {
 /// Tertiary Button Component
 class TertiaryButton extends StatelessWidget {
   final String label;
+  final String text;
   final VoidCallback onPressed;
   final bool isLoading;
   final bool isEnabled;
@@ -225,6 +229,7 @@ class TertiaryButton extends StatelessWidget {
 /// Icon Button Component
 class IconButtonWidget extends StatelessWidget {
   final IconData icon;
+  final String text;
   final VoidCallback onPressed;
   final Color? color;
   final Color? backgroundColor;

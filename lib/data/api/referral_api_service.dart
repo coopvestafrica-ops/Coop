@@ -5,7 +5,7 @@ import '../../core/network/api_client.dart';
 import '../../data/models/referral_models.dart';
 import 'referral_models.dart';
 
-part 'referral_api_service.g.dart';
+
 
 /// API Service for Referral Operations
 @RestApi()

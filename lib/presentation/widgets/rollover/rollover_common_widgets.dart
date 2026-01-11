@@ -251,7 +251,7 @@ class RolloverSummaryCard extends StatelessWidget {
 
 /// Guarantor Card for List Display
 class GuarantorCard extends StatelessWidget {
-  final RololloverGuarantor guarantor;
+  final RolloverGuarantor guarantor;
   final bool showActions;
   final VoidCallback? onAccept;
   final VoidCallback? onDecline;
