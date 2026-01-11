@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import '../../config/theme_config.dart';
 import '../../core/network/api_client.dart';
-import '../../presentation/widgets/common/buttons.dart';
-import '../../presentation/widgets/common/inputs.dart';
+import '../widgets/common/buttons.dart';
+import '../widgets/common/inputs.dart';
 
 /// Ticket Detail Screen
 /// Shows ticket details and conversation thread

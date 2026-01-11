@@ -4,8 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../config/theme_config.dart';
 import '../../core/network/api_client.dart';
-import '../../presentation/widgets/common/buttons.dart';
-import '../../presentation/widgets/common/inputs.dart';
+import '../widgets/common/buttons.dart';
+import '../widgets/common/inputs.dart';
 
 /// Ticket Creation Screen
 /// Form to create a new support ticket

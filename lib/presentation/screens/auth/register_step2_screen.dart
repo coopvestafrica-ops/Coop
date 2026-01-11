@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/theme_config.dart';
 import '../../core/utils/utils.dart';
 import '../../core/services/api_service.dart';
-import '../../presentation/widgets/common/buttons.dart';
+import '../widgets/common/buttons.dart';
 
 /// Registration Step 2 - Phone Verification with OTP - Real API Integration
 class RegisterStep2Screen extends ConsumerStatefulWidget {

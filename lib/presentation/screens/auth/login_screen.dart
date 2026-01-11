@@ -4,9 +4,9 @@ import 'package:flutter/gestures.dart';
 import 'package:local_auth/local_auth.dart';
 import '../../config/theme_config.dart';
 import '../../core/utils/utils.dart';
-import '../../presentation/providers/auth_provider.dart';
-import '../../presentation/widgets/common/buttons.dart';
-import '../../presentation/widgets/common/inputs.dart';
+import '../providers/auth_provider.dart';
+import '../widgets/common/buttons.dart';
+import '../widgets/common/inputs.dart';
 
 /// Login Screen with Biometric Authentication
 class LoginScreen extends ConsumerStatefulWidget {

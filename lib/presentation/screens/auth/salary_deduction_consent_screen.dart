@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/theme_config.dart';
 import '../../core/utils/utils.dart';
 import '../../core/services/api_service.dart';
-import '../../presentation/widgets/common/buttons.dart';
+import '../widgets/common/buttons.dart';
 
 /// Salary Deduction & Loan Recovery Consent Screen - Real API Integration
 class SalaryDeductionConsentScreen extends ConsumerStatefulWidget {

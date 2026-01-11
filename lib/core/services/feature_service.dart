@@ -133,8 +133,9 @@ class FeatureService {
 
   /// Get all enabled features
   List<FeatureFlag> getEnabledFeatures() {
+    final priorityOrder = {'high': 0, 'medium': 1, 'low': 2};
     return _features.values.where((f) => f.enabled).toList()
-      ..sort((a, b) => b.priority.index.compareTo(a.priority.index));
+      ..sort((a, b) => (priorityOrder[a.priority] ?? 2).compareTo(priorityOrder[b.priority] ?? 2));
   }
 
   /// Get feature by category

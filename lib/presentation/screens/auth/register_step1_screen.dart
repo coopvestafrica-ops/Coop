@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/theme_config.dart';
 import '../../core/utils/utils.dart';
-import '../../presentation/widgets/common/buttons.dart';
-import '../../presentation/widgets/common/inputs.dart';
+import '../widgets/common/buttons.dart';
+import '../widgets/common/inputs.dart';
 
 /// Registration Step 1 - Basic Account Creation
 class RegisterStep1Screen extends ConsumerStatefulWidget {
