@@ -79,6 +79,13 @@ This error occurs when the Gradle configuration is incompatible with Flutter. So
 2. Clean: `./gradlew clean`
 3. Rebuild: `flutter pub get && flutter build apk`
 
+### Kotlin Compilation Errors
+If you see errors like "Unresolved reference: filePermissions, user, read, write":
+1. Ensure Kotlin version is 1.9.24 or higher (check `android/build.gradle`)
+2. Verify `gradle.properties` has `kotlin.jvm.target=1.8`
+3. Run `flutter clean` and rebuild
+4. If persists, try: `cd android && ./gradlew clean && cd ..`
+
 ### Firebase Configuration
 Ensure `google-services.json` is present in `app/` directory with correct Firebase project configuration.
 
