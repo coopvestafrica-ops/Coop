@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/utils/utils.dart';
-import '../models/kyc_models.dart';
-import '../repositories/kyc_repository.dart';
+import '../../data/models/kyc_models.dart';
+import '../../data/repositories/kyc_repository.dart';
 
 /// KYC Provider
 final kycProvider = StateNotifierProvider<KYCCubit, KYCState>((ref) {

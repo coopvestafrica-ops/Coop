@@ -3,7 +3,7 @@ import '../../core/utils/utils.dart';
 import '../../data/api/rollover_api_service.dart';
 import '../../data/models/rollover_models.dart';
 import '../../data/repositories/rollover_repository.dart';
-import '../repositories/auth_repository.dart';
+import '../../data/repositories/auth_repository.dart';
 
 /// Rollover Provider - State management for member-only rollover operations
 ///

@@ -3,7 +3,7 @@ import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
 import '../../data/api/loan_api_service.dart';
 import '../../data/models/loan_models.dart';
-import '../repositories/auth_repository.dart';
+import '../../data/repositories/auth_repository.dart';
 
 /// Loan Provider - Uses official ApiClient through Riverpod
 final loanProvider = StateNotifierProvider<LoanNotifier, LoanState>((ref) {

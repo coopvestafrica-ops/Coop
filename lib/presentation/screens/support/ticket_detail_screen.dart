@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
-import '../../config/theme_config.dart';
-import '../../core/network/api_client.dart';
-import '../widgets/common/buttons.dart';
-import '../widgets/common/inputs.dart';
+import '../../../config/theme_config.dart';
+import '../../../core/network/api_client.dart';
+import '../../widgets/common/buttons.dart';
+import '../../widgets/common/inputs.dart';
 
 /// Ticket Detail Screen
 /// Shows ticket details and conversation thread

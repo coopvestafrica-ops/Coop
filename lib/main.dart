@@ -113,6 +113,7 @@ class CoopvestApp extends ConsumerWidget {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
           return LoanApplicationScreen(
             userId: args?['userId'] ?? '',
+            userName: args?['userName'] ?? 'User',
           );
         },
         '/loan-details': (context) {
@@ -125,6 +126,7 @@ class CoopvestApp extends ConsumerWidget {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
           return GuarantorVerificationScreen(
             loanId: args?['loanId'] ?? '',
+            guarantorId: args?['guarantorId'] ?? '',
             borrowerName: args?['borrowerName'] ?? '',
             loanAmount: args?['loanAmount']?.toDouble() ?? 0.0,
             loanType: args?['loanType'] ?? 'Quick Loan',
@@ -135,9 +137,7 @@ class CoopvestApp extends ConsumerWidget {
         // Profile Routes
         '/profile': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-          return ProfileSettingsScreen(
-            userId: args?['userId'] ?? '',
-          );
+          return const ProfileSettingsScreen();
         },
         
         // Savings Routes

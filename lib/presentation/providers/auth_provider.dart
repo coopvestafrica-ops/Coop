@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
-import '../models/auth_models.dart';
-import '../models/kyc_models.dart';
-import '../repositories/auth_repository.dart';
+import '../../data/models/auth_models.dart';
+import '../../data/models/kyc_models.dart';
+import '../../data/repositories/auth_repository.dart';
 
 /// Auth State Notifier
 class AuthNotifier extends StateNotifier<AuthState> {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../config/theme_config.dart';
-import '../../core/network/api_client.dart';
+import '../../../config/theme_config.dart';
+import '../../../core/network/api_client.dart';
 import 'ticket_detail_screen.dart';
 
 /// Ticket List Screen

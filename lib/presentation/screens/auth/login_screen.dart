@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/gestures.dart';
 import 'package:local_auth/local_auth.dart';
-import '../../config/theme_config.dart';
-import '../../core/utils/utils.dart';
-import '../providers/auth_provider.dart';
-import '../widgets/common/buttons.dart';
-import '../widgets/common/inputs.dart';
+import '../../../config/theme_config.dart';
+import '../../../core/utils/utils.dart';
+import '../../providers/auth_provider.dart';
+import '../../widgets/common/buttons.dart';
+import '../../widgets/common/inputs.dart';
 
 /// Login Screen with Biometric Authentication
 class LoginScreen extends ConsumerStatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../config/theme_config.dart';
+import '../../../config/theme_config.dart';
 
 /// Welcome Screen - Entry point for new users
 class WelcomeScreen extends StatefulWidget {

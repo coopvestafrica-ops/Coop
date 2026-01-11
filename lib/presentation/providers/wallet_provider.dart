@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
-import '../models/wallet_models.dart';
-import '../repositories/auth_repository.dart';
+import '../../data/models/wallet_models.dart';
+import '../../data/repositories/auth_repository.dart';
 
 /// Wallet Repository Provider
 final walletRepositoryProvider = Provider<WalletRepository>((ref) {

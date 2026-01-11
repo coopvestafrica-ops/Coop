@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../config/theme_config.dart';
-import '../../core/network/api_client.dart';
-import '../widgets/common/buttons.dart';
-import '../widgets/common/inputs.dart';
+import '../../../config/theme_config.dart';
+import '../../../core/network/api_client.dart';
+import '../../widgets/common/buttons.dart';
+import '../../widgets/common/inputs.dart';
 
 /// Email Verification Screen
 /// Shown when user needs to verify their email address

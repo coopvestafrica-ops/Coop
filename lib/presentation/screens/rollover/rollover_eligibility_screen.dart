@@ -6,8 +6,8 @@ import '../../../../data/models/loan_models.dart';
 import '../../../../data/models/rollover_models.dart';
 import '../../providers/rollover_provider.dart';
 import '../../providers/loan_provider.dart';
-import '../widgets/common/buttons.dart';
-import '../widgets/rollover/rollover_common_widgets.dart';
+import '../../widgets/common/buttons.dart';
+import '../../widgets/rollover/rollover_common_widgets.dart';
 
 /// Rollover Eligibility Check Screen
 /// Shows if a member is eligible for loan rollover based on business rules
