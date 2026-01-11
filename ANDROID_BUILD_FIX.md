@@ -21,15 +21,21 @@ This typically occurs when:
 
 ### ✅ Fixed: `android/app/build.gradle`
 
-**BEFORE (Legacy):**
+**CRITICAL FIX:** Gradle 8.x requires `plugins {}` block to be the FIRST statement in the file. No other code (including `def` statements) can appear before it.
+
+**BEFORE (Incorrect Order):**
 ```gradle
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+// ... more def statements ...
+
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 apply plugin: "com.google.gms.google-services"
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 ```
 
-**AFTER (Modern):**
+**AFTER (Correct Order):**
 ```gradle
 plugins {
     id 'com.android.application'
@@ -37,14 +43,19 @@ plugins {
     id 'com.google.gms.google-services'
     id 'dev.flutter.flutter-gradle-plugin'
 }
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+// ... rest of code ...
 ```
 
 ### Key Changes:
-1. ✅ Removed `apply plugin:` statements (legacy syntax)
-2. ✅ Removed `apply from: "$flutterRoot/..."` (no longer needed)
-3. ✅ Added `plugins {}` block with modern plugin declarations
-4. ✅ Added `id 'dev.flutter.flutter-gradle-plugin'` (Flutter's modern integration)
-5. ✅ Removed all manual `flutterRoot` references
+1. ✅ Moved `plugins {}` block to the FIRST line (Gradle 8.x requirement)
+2. ✅ Moved all `def` statements AFTER the `plugins {}` block
+3. ✅ Removed `apply plugin:` statements (legacy syntax)
+4. ✅ Removed `apply from: "$flutterRoot/..."` (no longer needed)
+5. ✅ Added `id 'dev.flutter.flutter-gradle-plugin'` (Flutter's modern integration)
+6. ✅ Removed all manual `flutterRoot` references
 
 ### Verified: `android/settings.gradle`
 - ✅ Already uses modern Flutter plugin loader
