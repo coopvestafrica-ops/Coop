@@ -416,7 +416,7 @@ class _KYCEmploymentDetailsScreenState
                 hint: 'e.g., Administrative Officer',
                 controller: _jobTitleController,
                 textInputAction: TextInputAction.next,
-                validator: Validators.validateNotEmpty,
+                validator: (value) => Validators.validateNotEmpty(value, 'Field'),
               ),
               const SizedBox(height: 20),
 
@@ -483,7 +483,7 @@ class _KYCEmploymentDetailsScreenState
                 controller: _addressController,
                 maxLines: 3,
                 minLines: 2,
-                validator: Validators.validateNotEmpty,
+                validator: (value) => Validators.validateNotEmpty(value, 'Field'),
               ),
               const SizedBox(height: 20),
 

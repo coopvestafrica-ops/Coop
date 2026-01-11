@@ -53,7 +53,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       final apiService = ApiService();
       final response = await apiService.post(
         '/auth/forgot-password',
-        body: {
+        data: {
           'email': _emailController.text.trim(),
         },
       );
@@ -92,7 +92,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       final apiService = ApiService();
       final response = await apiService.post(
         '/auth/forgot-password',
-        body: {
+        data: {
           'email': _emailController.text.trim(),
         },
       );

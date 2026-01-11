@@ -78,7 +78,7 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
       // Call API to resend OTP
       final response = await _apiService.post(
         '/auth/resend-otp',
-        body: {
+        data: {
           'phone': widget.phone,
         },
       );
@@ -143,7 +143,7 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
       // Call API to verify OTP
       final response = await _apiService.post(
         '/auth/verify-otp',
-        body: {
+        data: {
           'phone': widget.phone,
           'otp': otp,
         },
@@ -338,7 +338,7 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
               // Verify Button
               PrimaryButton(
                 label: 'Verify',
-                onPressed: _isVerifying ? null : _verifyOTP,
+                onPressed: _isVerifying ? null : () async => await _verifyOTP(),
                 isLoading: _isVerifying,
                 isEnabled: !_isVerifying,
                 width: double.infinity,

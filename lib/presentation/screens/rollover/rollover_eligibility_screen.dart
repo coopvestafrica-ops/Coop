@@ -35,10 +35,10 @@ class RolloverEligibilityScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBackground,
+      backgroundColor: CoopvestColors.veryLightGray,
       appBar: AppBar(
         title: const Text('Rollover Eligibility'),
-        backgroundColor: AppColors.primary,
+        backgroundColor: CoopvestColors.primary,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -92,14 +92,14 @@ class RolloverEligibilityScreen extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.account_balance, color: AppColors.primary),
+                const Icon(Icons.account_balance, color: CoopvestColors.primary),
                 const SizedBox(width: 8),
                 Text(
                   loan.id,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
+                    color: CoopvestColors.primary,
                   ),
                 ),
               ],
@@ -120,7 +120,7 @@ class RolloverEligibilityScreen extends ConsumerWidget {
 
   Widget _buildSummaryRow(String label, dynamic value) {
     final formattedValue = value is double
-        ? AppCurrencyFormatter.format(value)
+        ? CurrencyFormatter.format(value)
         : value.toString();
 
     return Padding(
@@ -132,7 +132,7 @@ class RolloverEligibilityScreen extends ConsumerWidget {
             label,
             style: const TextStyle(
               fontSize: 13,
-              color: AppColors.textSecondary,
+              color: CoopvestColors.textSecondary,
             ),
           ),
           Text(
@@ -156,14 +156,14 @@ class RolloverEligibilityScreen extends ConsumerWidget {
           children: [
             const Text(
               'Repayment Progress',
-              style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+              style: TextStyle(fontSize: 13, color: CoopvestColors.textSecondary),
             ),
             Text(
               '${percentage.toStringAsFixed(1)}%',
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.primary,
+                color: CoopvestColors.primary,
               ),
             ),
           ],
@@ -187,7 +187,7 @@ class RolloverEligibilityScreen extends ConsumerWidget {
               'Need ${(50 - percentage).toStringAsFixed(1)}% more to be eligible',
               style: const TextStyle(
                 fontSize: 11,
-                color: AppColors.warning,
+                color: CoopvestColors.warning,
               ),
             ),
           ),
@@ -275,7 +275,7 @@ class RolloverEligibilityScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.error.withOpacity(0.1),
+                  color: CoopvestColors.error.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -283,20 +283,20 @@ class RolloverEligibilityScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: const [
-                        Icon(Icons.error, color: AppColors.error, size: 18),
+                        Icon(Icons.error, color: CoopvestColors.error, size: 18),
                         SizedBox(width: 8),
                         Text(
                           'Issues Found',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            color: AppColors.error,
+                            color: CoopvestColors.error,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     ...eligibility.eligibilityErrors.map(
-                      (e) => Text('• $e', style: const TextStyle(color: AppColors.error)),
+                      (e) => Text('• $e', style: const TextStyle(color: CoopvestColors.error)),
                     ),
                   ],
                 ),
@@ -324,7 +324,7 @@ class RolloverEligibilityScreen extends ConsumerWidget {
       return Center(
         child: Text(
           'Please meet all eligibility requirements to request a rollover.',
-          style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+          style: const TextStyle(fontSize: 13, color: CoopvestColors.textSecondary),
           textAlign: TextAlign.center,
         ),
       );

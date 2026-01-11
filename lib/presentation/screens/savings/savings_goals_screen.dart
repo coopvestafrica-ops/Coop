@@ -186,7 +186,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                 _isCreating
                     ? const Center(child: CircularProgressIndicator(color: CoopvestColors.primary))
                     : PrimaryButton(
-                        label: 'Create Goal',
+                        text: 'Create Goal',
                         onPressed: _createGoal,
                         width: double.infinity,
                       ),
@@ -241,7 +241,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                     ),
                     const SizedBox(height: 24),
                     PrimaryButton(
-                      label: '+ Create Your First Goal',
+                        text: '+ Create Your First Goal',
                       onPressed: _showCreateGoalDialog,
                       width: 250,
                     ),

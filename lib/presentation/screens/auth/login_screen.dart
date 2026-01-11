@@ -297,7 +297,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               // Biometric Login - Implemented with local_auth package
               SecondaryButton(
                 label: _isAuthenticating ? 'Authenticating...' : 'Use Biometric',
-                onPressed: _isAuthenticating ? null : _authenticateWithBiometrics,
+                onPressed: _isAuthenticating ? null : () async => await _authenticateWithBiometrics(),
                 isLoading: _isAuthenticating,
                 width: double.infinity,
                 icon: const Icon(Icons.fingerprint),

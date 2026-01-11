@@ -45,7 +45,7 @@ class _SalaryDeductionConsentScreenState
       // Call API to submit consent
       final response = await _apiService.post(
         '/auth/salary-consent',
-        body: {
+        data: {
           'memberId': widget.registrationData['memberId'] ?? '',
           'consent': _agreeToConsent,
           'timestamp': DateTime.now().toIso8601String(),
@@ -216,7 +216,7 @@ class _SalaryDeductionConsentScreenState
               // Accept Button
               PrimaryButton(
                 label: 'Accept & Continue',
-                onPressed: _isSubmitting ? null : _submitConsent,
+                onPressed: _isSubmitting ? null : () async => await _submitConsent(),
                 isLoading: _isSubmitting,
                 isEnabled: !_isSubmitting,
                 width: double.infinity,

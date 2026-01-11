@@ -275,14 +275,14 @@ class _DepositScreenState extends ConsumerState<DepositScreen> {
                 _isProcessing
                     ? const Center(child: CircularProgressIndicator(color: CoopvestColors.primary))
                     : PrimaryButton(
-                        label: 'Deposit ₦${_amountController.text.isEmpty ? '0' : _amountController.text}',
+                        text: 'Deposit ₦${_amountController.text.isEmpty ? '0' : _amountController.text}',
                         onPressed: _processDeposit,
                         width: double.infinity,
                       ),
 
                 const SizedBox(height: 16),
                 SecondaryButton(
-                  label: 'Go Back',
+                  text: 'Go Back',
                   onPressed: _goBack,
                   width: double.infinity,
                 ),

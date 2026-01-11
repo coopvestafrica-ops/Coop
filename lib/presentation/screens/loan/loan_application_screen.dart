@@ -121,7 +121,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
       final monthlySavings = double.tryParse(_monthlySavingsController.text) ?? 0.0;
 
       // Validate amount range
-      if (requestedAmount < loanInfo['minAmount'] as double) {
+      if (requestedAmount < (loanInfo['minAmount'] as num).toDouble()) {
         setState(() {
           _loanStatus = 'Rejected';
           _rejectionReason = 'Minimum amount for ${_selectedLoanType} is \u20a6${loanInfo['minAmount']}';
@@ -130,7 +130,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
         return;
       }
 
-      if (requestedAmount > loanInfo['maxAmount'] as double) {
+      if (requestedAmount > (loanInfo['maxAmount'] as num).toDouble()) {
         setState(() {
           _loanStatus = 'Rejected';
           _rejectionReason = 'Maximum amount for ${_selectedLoanType} is \u20a6${loanInfo['maxAmount']}';
@@ -890,7 +890,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: tiers.map((tier) {
-            final isReached = confirmedCount >= tier['refs'] as int;
+            final isReached = confirmedCount >= (tier['refs'] as num).toInt();
             return Expanded(
               child: Column(
                 children: [
@@ -928,7 +928,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: tiers.map((tier) {
-            final isReached = confirmedCount >= tier['refs'] as int;
+            final isReached = confirmedCount >= (tier['refs'] as num).toInt();
             return Expanded(
               child: Center(
                 child: Text(

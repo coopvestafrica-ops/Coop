@@ -204,7 +204,7 @@ class SupportHomeScreen extends ConsumerWidget {
               const SizedBox(height: 12),
 
               _buildHelpTopic(
-                icon: Icons.referral,
+                icon: Icons.share,
                 title: 'Referrals & Bonuses',
                 description: 'Referral codes, bonus tracking',
                 onTap: () => _createTicketWithCategory(

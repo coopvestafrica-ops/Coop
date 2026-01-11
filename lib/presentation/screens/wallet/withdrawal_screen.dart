@@ -296,7 +296,7 @@ class _WithdrawalScreenState extends ConsumerState<WithdrawalScreen> {
                 _isProcessing
                     ? const Center(child: CircularProgressIndicator(color: CoopvestColors.primary))
                     : PrimaryButton(
-                        label: 'Withdraw ₦${_amountController.text.isEmpty ? '0' : _amountController.text}',
+                        text: 'Withdraw ₦${_amountController.text.isEmpty ? '0' : _amountController.text}',
                         onPressed: _processWithdrawal,
                         width: double.infinity,
                       ),

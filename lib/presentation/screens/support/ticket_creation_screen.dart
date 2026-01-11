@@ -543,7 +543,7 @@ class _TicketCreationScreenState extends ConsumerState<TicketCreationScreen> {
                 // Submit Button
                 PrimaryButton(
                   label: 'Submit Ticket',
-                  onPressed: _isSubmitting ? null : _submitTicket,
+                  onPressed: _isSubmitting ? null : () async => await _submitTicket(),
                   isLoading: _isSubmitting,
                   isEnabled: !_isSubmitting && _errorMessage == null,
                   width: double.infinity,
