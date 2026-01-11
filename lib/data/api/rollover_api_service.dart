@@ -13,8 +13,7 @@ part 'rollover_api_service.g.dart';
 /// operations for rollover requests.
 @RestApi()
 abstract class RolloverApiService {
-  factory RolloverApiService(Dio dio, {String baseUrl = '/api/v1'}) =
-      _RolloverApiService;
+  factory RolloverApiService(Dio dio) = _RolloverApiService;
 
   /// Check eligibility for a loan rollover
   @GET('/loans/{loanId}/rollover/eligibility')

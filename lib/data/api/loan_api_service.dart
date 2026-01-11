@@ -9,7 +9,7 @@ part 'loan_api_service.g.dart';
 /// API Service for Loan Operations - Uses official ApiClient
 @RestApi()
 abstract class LoanApiService {
-  factory LoanApiService(Dio dio, {String baseUrl = '/api/v1'}) = _LoanApiService;
+  factory LoanApiService(Dio dio) = _LoanApiService;
 
   /// Apply for a new loan
   @POST('/loans/apply')

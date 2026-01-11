@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
 import 'kyc_models.dart';
+import 'package:dio/dio.dart';
 
 /// KYC Repository Provider
 final kycRepositoryProvider = Provider<KYCRepository>((ref) {

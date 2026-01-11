@@ -10,8 +10,7 @@ part 'referral_api_service.g.dart';
 /// API Service for Referral Operations
 @RestApi()
 abstract class ReferralApiService {
-  factory ReferralApiService(Dio dio, {String baseUrl = '/api/v1'}) =
-      _ReferralApiService;
+  factory ReferralApiService(Dio dio) = _ReferralApiService;
 
   /// Get user's referral summary
   @GET('/referrals/summary')
