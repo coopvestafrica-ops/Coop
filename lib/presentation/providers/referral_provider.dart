@@ -3,7 +3,7 @@ import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
 import '../../data/api/referral_api_service.dart';
 import '../../data/models/referral_models.dart';
-import '../../data/repositories/referral_repository.dart';
+import '../../data/repositories/referral_repository.dart' hide ShareLinkResponse;
 
 /// Referral State
 class ReferralState {

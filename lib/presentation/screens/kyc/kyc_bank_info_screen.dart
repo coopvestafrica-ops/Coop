@@ -356,7 +356,7 @@ class _KYCBankInfoScreenState extends ConsumerState<KYCBankInfoScreen> {
                 hint: 'Verified account name',
                 controller: _accountNameController,
                 enabled: false,
-                filledColor: CoopvestColors.veryLightGray,
+                fillColor: CoopvestColors.veryLightGray,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Account name is required';
