@@ -9,15 +9,12 @@ import '../repositories/auth_repository.dart';
 class ReferralRepository {
   final ReferralApiService _apiService;
   final AuthRepository _authRepository;
-  final LoggerService _logger;
 
   ReferralRepository({
     ReferralApiService? apiService,
     AuthRepository? authRepository,
-    LoggerService? logger,
-  })  : _apiService = apiService ?? ApiClient().getReferralApiService(),
-        _authRepository = authRepository ?? AuthRepository(),
-        _logger = logger ?? LoggerService();
+  })  : _apiService = apiService ?? ReferralApiService(ApiClient().dio),
+        _authRepository = authRepository ?? AuthRepository(ApiClient());
 
   /// Get user's referral summary
   Future<ApiResult<ReferralSummary>> getReferralSummary() async {
@@ -31,7 +28,6 @@ class ReferralRepository {
         return ApiResult.success(_getMockReferralSummary());
       }
     } catch (e) {
-      _logger.e('Get referral summary error: $e');
       // Return mock data for demo
       return ApiResult.success(_getMockReferralSummary());
     }
@@ -51,7 +47,6 @@ class ReferralRepository {
         return ApiResult.success(mockCode);
       }
     } catch (e) {
-      _logger.e('Get referral code error: $e');
       final userId = await _authRepository.getUserId();
       return ApiResult.success('COOP${userId.substring(0, 6).toUpperCase()}');
     }
@@ -68,7 +63,6 @@ class ReferralRepository {
         return ApiResult.error(response.error ?? 'Failed to fetch referrals');
       }
     } catch (e) {
-      _logger.e('Get referrals error: $e');
       return ApiResult.success(_getMockReferrals());
     }
   }
@@ -98,7 +92,6 @@ class ReferralRepository {
         return ApiResult.error(response.error ?? 'Failed to register referral');
       }
     } catch (e) {
-      _logger.e('Register referral error: $e');
       return ApiResult.error('Failed to register referral: $e');
     }
   }
@@ -116,7 +109,6 @@ class ReferralRepository {
         return ApiResult.error(response.error ?? 'Failed to check status');
       }
     } catch (e) {
-      _logger.e('Check referral status error: $e');
       return ApiResult.error('Failed to check status: $e');
     }
   }
@@ -134,7 +126,6 @@ class ReferralRepository {
         return ApiResult.error(response.error ?? 'Failed to confirm referral');
       }
     } catch (e) {
-      _logger.e('Confirm referral error: $e');
       return ApiResult.error('Failed to confirm referral: $e');
     }
   }
@@ -163,7 +154,6 @@ class ReferralRepository {
         return ApiResult.error(response.error ?? 'Failed to apply bonus');
       }
     } catch (e) {
-      _logger.e('Apply bonus error: $e');
       return ApiResult.error('Failed to apply bonus: $e');
     }
   }
@@ -204,7 +194,6 @@ class ReferralRepository {
         return ApiResult.success(calculation);
       }
     } catch (e) {
-      _logger.e('Calculate interest error: $e');
       // Calculate locally as fallback
       final summaryResult = await getReferralSummary();
       final bonusPercent = summaryResult.data?.currentTierBonus ?? 0;
@@ -238,7 +227,6 @@ class ReferralRepository {
         return ApiResult.error(response.error ?? 'Failed to get share link');
       }
     } catch (e) {
-      _logger.e('Get share link error: $e');
       final code = await getReferralCode();
       return ApiResult.success(ShareLinkResponse(
         success: true,

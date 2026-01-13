@@ -19,9 +19,13 @@ class CoopvestColors {
 
   // Semantic Colors
   static const Color success = Color(0xFF2E7D32);
+  static const Color successLight = Color(0xFFE8F5E9);
   static const Color warning = Color(0xFFF57C00);
+  static const Color warningLight = Color(0xFFFFF3E0);
   static const Color error = Color(0xFFC62828);
+  static const Color errorLight = Color(0xFFFFEBEE);
   static const Color info = Color(0xFF1565C0);
+  static const Color infoLight = Color(0xFFE3F2FD);
 
   // Dark Mode Colors
   static const Color darkBackground = Color(0xFF121212);
@@ -33,12 +37,6 @@ class CoopvestColors {
 
 /// Coopvest Typography
 class CoopvestTypography {
-  static const titleSmall = TextStyle(fontSize: 12, fontWeight: FontWeight.w500);
-  static const titleMedium = TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
-  static const titleLarge = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
-}
-
-class CoopvestTypographyOld {
   static const String fontFamily = 'Inter';
 
   // Display Styles
@@ -89,6 +87,28 @@ class CoopvestTypographyOld {
     fontWeight: FontWeight.w600,
     height: 1.5,
     letterSpacing: 0.15,
+  );
+
+  // Title Styles
+  static const TextStyle titleLarge = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    height: 1.4,
+  );
+
+  static const TextStyle titleMedium = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.43,
+  );
+
+  static const TextStyle titleSmall = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    height: 1.33,
   );
 
   // Body Styles

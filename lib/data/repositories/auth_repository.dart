@@ -134,6 +134,39 @@ class AuthRepository {
     }
   }
 
+  /// Get user ID
+  Future<String> getUserId() async {
+    try {
+      final user = await getCurrentUser();
+      return user.id;
+    } catch (e) {
+      logger.e('Get user ID error: $e');
+      rethrow;
+    }
+  }
+
+  /// Get user name
+  Future<String> getUserName() async {
+    try {
+      final user = await getCurrentUser();
+      return user.name;
+    } catch (e) {
+      logger.e('Get user name error: $e');
+      rethrow;
+    }
+  }
+
+  /// Get user phone
+  Future<String?> getUserPhone() async {
+    try {
+      final user = await getCurrentUser();
+      return user.phone;
+    } catch (e) {
+      logger.e('Get user phone error: $e');
+      rethrow;
+    }
+  }
+
   /// Verify email
   Future<void> verifyEmail(String code) async {
     try {

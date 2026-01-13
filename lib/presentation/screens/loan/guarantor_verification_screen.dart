@@ -240,7 +240,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
     final currentStep = switch (_verificationStatus) {
       'review' => 0,
       'consent' => 1,
-      'processing', 'confirmed' => 2,
+      'processing' || 'confirmed' => 2,
       _ => 0,
     };
 

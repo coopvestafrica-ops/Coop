@@ -1,10 +1,17 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/network/api_client.dart';
+import '../../core/utils/utils.dart';
+import '../../data/api/loan_api_service.dart';
+import '../../data/models/loan_models.dart';
+import '../../data/repositories/auth_repository.dart';
 
+/// Loan State
 class LoanState {
   final List<dynamic> loans;
   final LoanStatus status;
   final String? error;
 
-  LoanState({
+  const LoanState({
     this.loans = const [],
     this.status = LoanStatus.initial,
     this.error,
@@ -24,14 +31,6 @@ class LoanState {
 }
 
 enum LoanStatus { initial, loading, success, error }
-
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/network/api_client.dart';
-import '../../core/utils/utils.dart';
-import '../../data/api/loan_api_service.dart';
-import '../../data/models/loan_models.dart';
-import '../../data/repositories/auth_repository.dart';
 
 /// Loan Provider - Uses official ApiClient through Riverpod
 final loanProvider = StateNotifierProvider<LoanNotifier, LoanState>((ref) {
@@ -71,7 +70,6 @@ class LoanNotifier extends StateNotifier<LoanState> {
       if (response.success && response.loan != null) {
         state = state.copyWith(
           status: LoanStatus.success,
-          currentLoan: response.loan,
           loans: [...state.loans, response.loan!],
         );
       } else {
@@ -235,7 +233,7 @@ class LoanNotifier extends StateNotifier<LoanState> {
         ),
       );
       if (response.success) {
-        await getLoans(); // Refresh loans after repayment
+        await getLoans();
         return true;
       }
       return false;

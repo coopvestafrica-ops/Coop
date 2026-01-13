@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../core/network/api_client.dart';
 part 'rollover_models.dart';
+part 'rollover_api_service.g.dart';
 
 
 
