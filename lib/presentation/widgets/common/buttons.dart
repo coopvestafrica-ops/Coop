@@ -4,7 +4,6 @@ import '../../../config/theme_config.dart';
 /// Primary Button Component
 class PrimaryButton extends StatelessWidget {
   final String label;
-  final String text;
   final VoidCallback onPressed;
   final bool isLoading;
   final bool isEnabled;
@@ -16,8 +15,6 @@ class PrimaryButton extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const PrimaryButton({
-    required this.text,
-    Key? key,
     required this.label,
     required this.onPressed,
     this.isLoading = false,
@@ -28,6 +25,7 @@ class PrimaryButton extends StatelessWidget {
     this.textStyle,
     this.icon,
     this.mainAxisAlignment = MainAxisAlignment.center,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -81,7 +79,6 @@ class PrimaryButton extends StatelessWidget {
 /// Secondary Button Component
 class SecondaryButton extends StatelessWidget {
   final String label;
-  final String text;
   final VoidCallback onPressed;
   final bool isLoading;
   final bool isEnabled;
@@ -93,7 +90,6 @@ class SecondaryButton extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const SecondaryButton({
-    Key? key,
     required this.label,
     required this.onPressed,
     this.isLoading = false,
@@ -104,6 +100,7 @@ class SecondaryButton extends StatelessWidget {
     this.textStyle,
     this.icon,
     this.mainAxisAlignment = MainAxisAlignment.center,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -159,7 +156,6 @@ class SecondaryButton extends StatelessWidget {
 /// Tertiary Button Component
 class TertiaryButton extends StatelessWidget {
   final String label;
-  final String text;
   final VoidCallback onPressed;
   final bool isLoading;
   final bool isEnabled;
@@ -171,7 +167,6 @@ class TertiaryButton extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const TertiaryButton({
-    Key? key,
     required this.label,
     required this.onPressed,
     this.isLoading = false,
@@ -182,6 +177,7 @@ class TertiaryButton extends StatelessWidget {
     this.textStyle,
     this.icon,
     this.mainAxisAlignment = MainAxisAlignment.center,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -229,7 +225,6 @@ class TertiaryButton extends StatelessWidget {
 /// Icon Button Component
 class IconButtonWidget extends StatelessWidget {
   final IconData icon;
-  final String text;
   final VoidCallback onPressed;
   final Color? color;
   final Color? backgroundColor;
@@ -238,7 +233,6 @@ class IconButtonWidget extends StatelessWidget {
   final String? tooltip;
 
   const IconButtonWidget({
-    Key? key,
     required this.icon,
     required this.onPressed,
     this.color,
@@ -246,6 +240,7 @@ class IconButtonWidget extends StatelessWidget {
     this.size = 48,
     this.iconSize = 24,
     this.tooltip,
+    Key? key,
   }) : super(key: key);
 
   @override

@@ -159,7 +159,7 @@ app.*.map.json
 .env.*.local
 
 # Generated files
-*.g.dart
+# *.g.dart  <-- Removed to allow tracking of generated retrofit files
 *.config.dart
 
 # Coverage

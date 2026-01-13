@@ -10,14 +10,6 @@ final apiClientProvider = Provider<ApiClient>((ref) {
 
 /// API Client Implementation
 class ApiClient {
-  static late Dio _dio;
-  
-  static Dio get dio => _dio;
-  
-  static void initialize() {
-    _dio = Dio();
-  }
-
   late final Dio _dio;
   bool _initialized = false;
 
@@ -40,7 +32,6 @@ class ApiClient {
       ),
     );
 
-    // Add interceptors
     _dio.interceptors.add(LoggingInterceptor());
     _dio.interceptors.add(ErrorInterceptor());
     _dio.interceptors.add(AuthInterceptor());
@@ -48,23 +39,10 @@ class ApiClient {
     _initialized = true;
   }
 
-  Dio get dio {
-    _initialize();
-    return _dio;
-  }
-
   /// GET request
-  Future<dynamic> get(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+  Future<dynamic> get(String path, {Map<String, dynamic>? queryParameters, Options? options}) async {
     try {
-      final response = await _dio.get(
-        path,
-        queryParameters: queryParameters,
-        options: options,
-      );
+      final response = await _dio.get(path, queryParameters: queryParameters, options: options);
       return response.data;
     } on DioException catch (e) {
       throw _handleError(e);
@@ -72,19 +50,9 @@ class ApiClient {
   }
 
   /// POST request
-  Future<dynamic> post(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+  Future<dynamic> post(String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options}) async {
     try {
-      final response = await _dio.post(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-      );
+      final response = await _dio.post(path, data: data, queryParameters: queryParameters, options: options);
       return response.data;
     } on DioException catch (e) {
       throw _handleError(e);
@@ -92,19 +60,9 @@ class ApiClient {
   }
 
   /// PUT request
-  Future<dynamic> put(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+  Future<dynamic> put(String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options}) async {
     try {
-      final response = await _dio.put(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-      );
+      final response = await _dio.put(path, data: data, queryParameters: queryParameters, options: options);
       return response.data;
     } on DioException catch (e) {
       throw _handleError(e);
@@ -112,19 +70,9 @@ class ApiClient {
   }
 
   /// DELETE request
-  Future<dynamic> delete(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
+  Future<dynamic> delete(String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options}) async {
     try {
-      final response = await _dio.delete(
-        path,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-      );
+      final response = await _dio.delete(path, data: data, queryParameters: queryParameters, options: options);
       return response.data;
     } on DioException catch (e) {
       throw _handleError(e);
@@ -134,36 +82,22 @@ class ApiClient {
   /// Handle errors
   Exception _handleError(DioException error) {
     logger.e('API Error: ${error.message}', error: error, stackTrace: error.stackTrace);
-
     if (error.response != null) {
       final statusCode = error.response!.statusCode;
       final data = error.response!.data;
-
       switch (statusCode) {
-        case 400:
-          return ValidationException(data['message'] ?? 'Bad request');
-        case 401:
-          return AuthException('Unauthorized. Please login again.');
-        case 403:
-          return AuthException('Access forbidden');
-        case 404:
-          return ServerException('Resource not found', statusCode: statusCode);
-        case 500:
-          return ServerException('Server error. Please try again later.', statusCode: statusCode);
-        default:
-          return ServerException(
-            data['message'] ?? 'An error occurred',
-            statusCode: statusCode,
-          );
+        case 400: return ValidationException(data['message'] ?? 'Bad request');
+        case 401: return AuthException('Unauthorized. Please login again.');
+        case 403: return AuthException('Access forbidden');
+        case 404: return ServerException('Resource not found', statusCode: statusCode);
+        case 500: return ServerException('Server error. Please try again later.', statusCode: statusCode);
+        default: return ServerException(data['message'] ?? 'An error occurred', statusCode: statusCode);
       }
     } else if (error.type == DioExceptionType.connectionTimeout) {
       return NetworkException('Connection timeout. Please check your internet.');
     } else if (error.type == DioExceptionType.receiveTimeout) {
       return NetworkException('Request timeout. Please try again.');
-    } else if (error.type == DioExceptionType.unknown) {
-      return NetworkException('Network error. Please check your connection.');
     }
-
     return NetworkException(error.message ?? 'An error occurred');
   }
 
@@ -178,187 +112,51 @@ class ApiClient {
     _initialize();
     _dio.options.headers.remove('Authorization');
   }
-
-  /// Set custom headers
-  void setHeaders(Map<String, String> headers) {
-    _initialize();
-    _dio.options.headers.addAll(headers);
-  }
-
-  /// Reset client state
-  void reset() {
-    _dio.close();
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: AppConfig.apiBaseUrl,
-        connectTimeout: AppConfig.apiTimeout,
-        receiveTimeout: AppConfig.apiTimeout,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      ),
-    );
-    _dio.interceptors.add(LoggingInterceptor());
-    _dio.interceptors.add(ErrorInterceptor());
-    _dio.interceptors.add(AuthInterceptor());
-  }
-
-  /// Get Loan API Service
-  dynamic getLoanApiService() {
-    // This will be used with retrofit to create the loan API service
-    return _dio;
-  }
-
-  /// Get Rollover API Service
-  dynamic getRolloverApiService() {
-    // This will be used with retrofit to create the rollover API service
-    return _dio;
-  }
 }
 
-/// API Error Handling
 class ApiException implements Exception {
   final String message;
   final int? statusCode;
-  final String? errorCode;
-
-  ApiException({
-    required this.message,
-    this.statusCode,
-    this.errorCode,
-  });
-
-  @override
-  String toString() {
-    return 'ApiException: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
-  }
+  ApiException({required this.message, this.statusCode});
+  @override String toString() => 'ApiException: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
 }
 
-/// Result wrapper for API responses
 class ApiResult<T> {
   final T? data;
   final String? error;
   final bool isSuccess;
-
-  ApiResult({
-    this.data,
-    this.error,
-    required this.isSuccess,
-  });
-
-  factory ApiResult.success(T data) {
-    return ApiResult(data: data, isSuccess: true);
-  }
-
-  factory ApiResult.error(String error) {
-    return ApiResult(error: error, isSuccess: false);
-  }
-
-  bool get hasData => data != null;
-  bool get hasError => error != null;
+  ApiResult({this.data, this.error, required this.isSuccess});
+  factory ApiResult.success(T data) => ApiResult(data: data, isSuccess: true);
+  factory ApiResult.error(String error) => ApiResult(error: error, isSuccess: false);
 }
 
-/// Extension for handling Dio errors
-extension DioErrorExtension on DioException {
-  ApiException toApiException() {
-    switch (type) {
-      case DioExceptionType.connectionTimeout:
-        return ApiException(
-          message: 'Connection timed out. Please try again.',
-          statusCode: 408,
-        );
-      case DioExceptionType.sendTimeout:
-        return ApiException(
-          message: 'Send timed out. Please try again.',
-          statusCode: 408,
-        );
-      case DioExceptionType.receiveTimeout:
-        return ApiException(
-          message: 'Receive timed out. Please try again.',
-          statusCode: 408,
-        );
-      case DioExceptionType.badCertificate:
-        return ApiException(
-          message: 'Security certificate error.',
-          statusCode: 495,
-        );
-      case DioExceptionType.badResponse:
-        final statusCode = response?.statusCode;
-        final errorMessage = response?.data?['message'] ?? 'Request failed';
-        return ApiException(
-          message: errorMessage,
-          statusCode: statusCode,
-        );
-      case DioExceptionType.cancel:
-        return ApiException(
-          message: 'Request cancelled',
-          statusCode: -1,
-        );
-      case DioExceptionType.connectionError:
-        return ApiException(
-          message: 'No internet connection. Please check your network.',
-          statusCode: -1,
-        );
-      case DioExceptionType.unknown:
-        return ApiException(
-          message: 'An unexpected error occurred. Please try again.',
-        );
-    }
-  }
-}
-
-/// Logging Interceptor
 class LoggingInterceptor extends Interceptor {
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  @override void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (AppConfig.enableRequestLogging) {
-      logger.i(
-        'API Request: ${options.method} ${options.path}',
-        error: 'Headers: ${options.headers}',
-      );
-      if (options.data != null) {
-        logger.i('Request Data: ${options.data}');
-      }
+      logger.i('API Request: ${options.method} ${options.path}');
     }
     handler.next(options);
   }
-
-  @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  @override void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (AppConfig.enableResponseLogging) {
-      logger.i(
-        'API Response: ${response.statusCode} ${response.requestOptions.path}',
-        error: 'Data: ${response.data}',
-      );
+      logger.i('API Response: ${response.statusCode} ${response.requestOptions.path}');
     }
     handler.next(response);
   }
-
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
-    logger.e(
-      'API Error: ${err.message}',
-      error: err.response?.data,
-      stackTrace: err.stackTrace,
-    );
+  @override void onError(DioException err, ErrorInterceptorHandler handler) {
+    logger.e('API Error: ${err.message}');
     handler.next(err);
   }
 }
 
-/// Auth Interceptor
 class AuthInterceptor extends Interceptor {
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // Token will be set by auth provider
+  @override void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     handler.next(options);
   }
 }
 
-/// Error Interceptor
 class ErrorInterceptor extends Interceptor {
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
+  @override void onError(DioException err, ErrorInterceptorHandler handler) {
     handler.next(err);
   }
 }

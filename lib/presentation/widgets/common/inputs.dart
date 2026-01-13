@@ -25,9 +25,6 @@ class AppTextField extends StatefulWidget {
   final TextCapitalization textCapitalization;
 
   const AppTextField({
-    this.prefixText,
-    this.filledColor,
-    Key? key,
     required this.label,
     this.hint,
     this.initialValue,
@@ -48,6 +45,7 @@ class AppTextField extends StatefulWidget {
     this.errorText,
     this.showCounter = false,
     this.textCapitalization = TextCapitalization.none,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -68,7 +66,6 @@ class _AppTextFieldState extends State<AppTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label
         Text(
           widget.label,
           style: CoopvestTypography.labelLarge.copyWith(
@@ -78,7 +75,6 @@ class _AppTextFieldState extends State<AppTextField> {
           ),
         ),
         const SizedBox(height: 8),
-        // Input Field
         TextFormField(
           controller: widget.controller,
           initialValue: widget.initialValue,
@@ -170,7 +166,6 @@ class AppDropdown<T> extends StatelessWidget {
   final Widget? prefixIcon;
 
   const AppDropdown({
-    Key? key,
     required this.label,
     required this.items,
     this.value,
@@ -179,6 +174,7 @@ class AppDropdown<T> extends StatelessWidget {
     this.hint,
     this.enabled = true,
     this.prefixIcon,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -186,7 +182,6 @@ class AppDropdown<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label
         Text(
           label,
           style: CoopvestTypography.labelLarge.copyWith(
@@ -194,7 +189,6 @@ class AppDropdown<T> extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        // Dropdown
         DropdownButtonFormField<T>(
           value: value,
           items: items,
@@ -240,11 +234,11 @@ class AppCheckbox extends StatelessWidget {
   final bool enabled;
 
   const AppCheckbox({
-    Key? key,
     required this.value,
     required this.onChanged,
     required this.label,
     this.enabled = true,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -278,52 +272,6 @@ class AppCheckbox extends StatelessWidget {
   }
 }
 
-/// Radio Button Component
-class AppRadio<T> extends StatelessWidget {
-  final T value;
-  final T? groupValue;
-  final void Function(T?)? onChanged;
-  final String label;
-  final bool enabled;
-
-  const AppRadio({
-    Key? key,
-    required this.value,
-    required this.groupValue,
-    required this.onChanged,
-    required this.label,
-    this.enabled = true,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: enabled ? () => onChanged?.call(value) : null,
-      child: Row(
-        children: [
-          Radio<T>(
-            value: value,
-            groupValue: groupValue,
-            onChanged: enabled ? onChanged : null,
-            activeColor: CoopvestColors.primary,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              label,
-              style: CoopvestTypography.bodyMedium.copyWith(
-                color: enabled
-                    ? CoopvestColors.darkGray
-                    : CoopvestColors.mediumGray,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// Amount Input Field Component
 class AmountInputField extends StatelessWidget {
   final String label;
@@ -335,7 +283,6 @@ class AmountInputField extends StatelessWidget {
   final double maxAmount;
 
   const AmountInputField({
-    Key? key,
     required this.label,
     this.initialValue,
     this.controller,
@@ -343,20 +290,21 @@ class AmountInputField extends StatelessWidget {
     this.validator,
     this.minAmount = 0,
     this.maxAmount = double.infinity,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppTextField(
       label: label,
-      hint: '₦0.00',
+      hint: '\u20a60.00',
       initialValue: initialValue?.toStringAsFixed(2),
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       prefixIcon: const Padding(
         padding: EdgeInsets.only(left: 12),
         child: Text(
-          '₦',
+          '\u20a6',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -375,10 +323,10 @@ class AmountInputField extends StatelessWidget {
               return 'Please enter a valid amount';
             }
             if (amount < minAmount) {
-              return 'Minimum amount is ₦${minAmount.toStringAsFixed(2)}';
+              return 'Minimum amount is \u20a6${minAmount.toStringAsFixed(2)}';
             }
             if (amount > maxAmount) {
-              return 'Maximum amount is ₦${maxAmount.toStringAsFixed(2)}';
+              return 'Maximum amount is \u20a6${maxAmount.toStringAsFixed(2)}';
             }
             return null;
           },
