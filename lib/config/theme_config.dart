@@ -246,7 +246,7 @@ class CoopvestTheme {
         color: CoopvestColors.mediumGray,
       ),
     ),
-    cardTheme: CardThemeData(
+    cardTheme: CardTheme(
       color: CoopvestColors.white,
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -303,7 +303,7 @@ class CoopvestTheme {
       unselectedItemColor: CoopvestColors.darkTextSecondary,
       elevation: 8,
     ),
-    cardTheme: CardThemeData(
+    cardTheme: CardTheme(
       color: CoopvestColors.darkSurface,
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

@@ -112,6 +112,12 @@ class ApiClient {
     _initialize();
     _dio.options.headers.remove('Authorization');
   }
+
+  /// Get Dio instance for API services
+  Dio get dio {
+    _initialize();
+    return _dio;
+  }
 }
 
 class ApiException implements Exception {

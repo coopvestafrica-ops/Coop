@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Connection Status Enum
 enum ConnectionStatus {
@@ -126,7 +127,7 @@ enum SyncStatus {
 /// Sync Notifier
 class SyncNotifier extends StateNotifier<SyncStatus> {
   final OfflineDataManager _offlineDataManager;
-  final Function _syncCallback;
+  final Future Function(Map<String, dynamic> operation) _syncCallback;
 
   SyncNotifier(this._offlineDataManager, this._syncCallback) : super(SyncStatus.idle);
 
