@@ -24,11 +24,13 @@ class NetworkNotifier extends StateNotifier<ConnectionStatus> {
     _updateStatus(result);
 
     // Listen for changes
-    _connectivity.onConnectivityChanged.listen(_updateStatus);
+    _connectivity.onConnectivityChanged.listen((result) {
+      _updateStatus(result);
+    });
   }
 
-  void _updateStatus(List<ConnectivityResult> results) {
-    if (results.contains(ConnectivityResult.none)) {
+  void _updateStatus(ConnectivityResult result) {
+    if (result == ConnectivityResult.none) {
       state = ConnectionStatus.offline;
     } else {
       state = ConnectionStatus.online;
@@ -37,7 +39,7 @@ class NetworkNotifier extends StateNotifier<ConnectionStatus> {
 
   Future<bool> checkInternetConnection() async {
     final result = await _connectivity.checkConnectivity();
-    return !result.contains(ConnectivityResult.none);
+    return result != ConnectivityResult.none;
   }
 }
 
