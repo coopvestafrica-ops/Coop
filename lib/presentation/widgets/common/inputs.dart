@@ -25,27 +25,27 @@ class AppTextField extends StatefulWidget {
   final TextCapitalization textCapitalization;
 
   const AppTextField({
-    required this.label,
-    this.hint,
-    this.initialValue,
-    this.controller,
-    this.keyboardType = TextInputType.text,
-    this.textInputAction = TextInputAction.next,
-    this.maxLines = 1,
-    this.minLines = 1,
-    this.maxLength,
-    this.obscureText = false,
-    this.readOnly = false,
-    this.enabled = true,
-    this.validator,
-    this.onChanged,
-    this.onTap,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.errorText,
-    this.showCounter = false,
-    this.textCapitalization = TextCapitalization.none,
-    Key? key,
+  required this.label,
+  this.hint,
+  this.initialValue,
+  this.controller,
+  this.keyboardType = TextInputType.text,
+  this.textInputAction = TextInputAction.next,
+  this.maxLines = 1,
+  this.minLines = 1,
+  this.maxLength,
+  this.obscureText = false,
+  this.readOnly = false,
+  this.enabled = true,
+  this.validator,
+  this.onChanged,
+  this.onTap,
+  this.prefixIcon,
+  this.suffixIcon,
+  this.errorText,
+  this.showCounter = false,
+  this.textCapitalization = TextCapitalization.none,
+  Key? key,
   }) : super(key: key);
 
   @override
@@ -57,100 +57,100 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   void initState() {
-    super.initState();
-    _obscureText = widget.obscureText;
+  super.initState();
+  _obscureText = widget.obscureText;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.label,
-          style: CoopvestTypography.labelLarge.copyWith(
-            color: widget.enabled
-                ? CoopvestColors.darkGray
-                : CoopvestColors.mediumGray,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: widget.controller,
-          initialValue: widget.initialValue,
-          keyboardType: widget.keyboardType,
-          textInputAction: widget.textInputAction,
-          maxLines: _obscureText ? 1 : widget.maxLines,
-          minLines: widget.minLines,
-          maxLength: widget.maxLength,
-          obscureText: _obscureText,
-          readOnly: widget.readOnly,
-          enabled: widget.enabled,
-          textCapitalization: widget.textCapitalization,
-          validator: widget.validator,
-          onChanged: widget.onChanged,
-          onTap: widget.onTap,
-          style: CoopvestTypography.bodyMedium,
-          decoration: InputDecoration(
-            hintText: widget.hint,
-            hintStyle: CoopvestTypography.bodyMedium.copyWith(
-              color: CoopvestColors.mediumGray,
-            ),
-            prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.obscureText
-                ? GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                    child: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
-                      color: CoopvestColors.mediumGray,
-                    ),
-                  )
-                : widget.suffixIcon,
-            counterText: widget.showCounter ? null : '',
-            filled: true,
-            fillColor: widget.enabled
-                ? CoopvestColors.veryLightGray
-                : CoopvestColors.lightGray,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: CoopvestColors.lightGray),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: CoopvestColors.lightGray),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: CoopvestColors.primary,
-                width: 2,
-              ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: CoopvestColors.error),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: CoopvestColors.error,
-                width: 2,
-              ),
-            ),
-            errorText: widget.errorText,
-            errorStyle: CoopvestTypography.bodySmall.copyWith(
-              color: CoopvestColors.error,
-            ),
-          ),
-        ),
-      ],
-    );
+  return Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+  Text(
+  widget.label,
+  style: CoopvestTypography.labelLarge.copyWith(
+  color: widget.enabled
+  ? CoopvestColors.darkGray
+  : CoopvestColors.mediumGray,
+ ),
+ ),
+  const SizedBox(height: 8),
+  TextFormField(
+  controller: widget.controller,
+  initialValue: widget.initialValue,
+  keyboardType: widget.keyboardType,
+  textInputAction: widget.textInputAction,
+  maxLines: _obscureText ? 1 : widget.maxLines,
+  minLines: widget.minLines,
+  maxLength: widget.maxLength,
+  obscureText: _obscureText,
+  readOnly: widget.readOnly,
+  enabled: widget.enabled,
+  textCapitalization: widget.textCapitalization,
+  validator: widget.validator,
+  onChanged: widget.onChanged,
+  onTap: widget.onTap,
+  style: CoopvestTypography.bodyMedium,
+  decoration: InputDecoration(
+  hintText: widget.hint,
+  hintStyle: CoopvestTypography.bodyMedium.copyWith(
+  color: CoopvestColors.mediumGray,
+ ),
+  prefixIcon: widget.prefixIcon,
+  suffixIcon: widget.obscureText
+  ? GestureDetector(
+  onTap: () {
+  setState(() {
+  _obscureText = !_obscureText;
+  });
+  },
+  child: Icon(
+  _obscureText ? Icons.visibility_off : Icons.visibility,
+  color: CoopvestColors.mediumGray,
+ ),
+ )
+  : widget.suffixIcon,
+  counterText: widget.showCounter ? null : '',
+  filled: true,
+  fillColor: widget.enabled
+  ? CoopvestColors.veryLightGray
+  : CoopvestColors.lightGray,
+  contentPadding:
+  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  border: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(8),
+  borderSide: const BorderSide(color: CoopvestColors.lightGray),
+ ),
+  enabledBorder: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(8),
+  borderSide: const BorderSide(color: CoopvestColors.lightGray),
+ ),
+  focusedBorder: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(8),
+  borderSide: const BorderSide(
+  color: CoopvestColors.primary,
+  width: 2,
+ ),
+ ),
+  errorBorder: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(8),
+  borderSide: const BorderSide(color: CoopvestColors.error),
+ ),
+  focusedErrorBorder: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(8),
+  borderSide: const BorderSide(
+  color: CoopvestColors.error,
+  width: 2,
+ ),
+ ),
+  errorText: widget.errorText,
+  errorStyle: CoopvestTypography.bodySmall.copyWith(
+  color: CoopvestColors.error,
+ ),
+ ),
+ ),
+  ],
+ );
   }
 }
 
@@ -166,63 +166,63 @@ class AppDropdown<T> extends StatelessWidget {
   final Widget? prefixIcon;
 
   const AppDropdown({
-    required this.label,
-    required this.items,
-    this.value,
-    this.onChanged,
-    this.validator,
-    this.hint,
-    this.enabled = true,
-    this.prefixIcon,
-    Key? key,
+  required this.label,
+  required this.items,
+  this.value,
+  this.onChanged,
+  this.validator,
+  this.hint,
+  this.enabled = true,
+  this.prefixIcon,
+  Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: CoopvestTypography.labelLarge.copyWith(
-            color: enabled ? CoopvestColors.darkGray : CoopvestColors.mediumGray,
-          ),
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<T>(
-          value: value,
-          items: items,
-          onChanged: enabled ? onChanged : null,
-          validator: validator,
-          style: CoopvestTypography.bodyMedium,
-          decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: prefixIcon,
-            filled: true,
-            fillColor: enabled
-                ? CoopvestColors.veryLightGray
-                : CoopvestColors.lightGray,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: CoopvestColors.lightGray),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: CoopvestColors.lightGray),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: CoopvestColors.primary,
-                width: 2,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+  return Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+  Text(
+  label,
+  style: CoopvestTypography.labelLarge.copyWith(
+  color: enabled ? CoopvestColors.darkGray : CoopvestColors.mediumGray,
+ ),
+ ),
+  const SizedBox(height: 8),
+  DropdownButtonFormField<T>(
+  value: value,
+  items: items,
+  onChanged: enabled ? onChanged : null,
+  validator: validator,
+  style: CoopvestTypography.bodyMedium,
+  decoration: InputDecoration(
+  hintText: hint,
+  prefixIcon: prefixIcon,
+  filled: true,
+  fillColor: enabled
+  ? CoopvestColors.veryLightGray
+  : CoopvestColors.lightGray,
+  contentPadding:
+  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  border: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(8),
+  borderSide: const BorderSide(color: CoopvestColors.lightGray),
+ ),
+  enabledBorder: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(8),
+  borderSide: const BorderSide(color: CoopvestColors.lightGray),
+ ),
+  focusedBorder: OutlineInputBorder(
+  borderRadius: BorderRadius.circular(8),
+  borderSide: const BorderSide(
+  color: CoopvestColors.primary,
+  width: 2,
+ ),
+ ),
+ ),
+ ),
+  ],
+ );
   }
 }
 
@@ -234,41 +234,41 @@ class AppCheckbox extends StatelessWidget {
   final bool enabled;
 
   const AppCheckbox({
-    required this.value,
-    required this.onChanged,
-    required this.label,
-    this.enabled = true,
-    Key? key,
+  required this.value,
+  required this.onChanged,
+  required this.label,
+  this.enabled = true,
+  Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: enabled ? () => onChanged?.call(!value) : null,
-      child: Row(
-        children: [
-          Checkbox(
-            value: value,
-            onChanged: enabled ? onChanged : null,
-            activeColor: CoopvestColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              label,
-              style: CoopvestTypography.bodyMedium.copyWith(
-                color: enabled
-                    ? CoopvestColors.darkGray
-                    : CoopvestColors.mediumGray,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  return GestureDetector(
+  onTap: enabled ? () => onChanged?.call(!value) : null,
+  child: Row(
+  children: [
+  Checkbox(
+  value: value,
+  onChanged: enabled ? onChanged : null,
+  activeColor: CoopvestColors.primary,
+  shape: RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(4),
+ ),
+ ),
+  const SizedBox(width: 8),
+  Expanded(
+  child: Text(
+  label,
+  style: CoopvestTypography.bodyMedium.copyWith(
+  color: enabled
+  ? CoopvestColors.darkGray
+  : CoopvestColors.mediumGray,
+ ),
+ ),
+ ),
+  ],
+ ),
+ );
   }
 }
 
@@ -283,53 +283,53 @@ class AmountInputField extends StatelessWidget {
   final double maxAmount;
 
   const AmountInputField({
-    required this.label,
-    this.initialValue,
-    this.controller,
-    this.onChanged,
-    this.validator,
-    this.minAmount = 0,
-    this.maxAmount = double.infinity,
-    Key? key,
+  required this.label,
+  this.initialValue,
+  this.controller,
+  this.onChanged,
+  this.validator,
+  this.minAmount = 0,
+  this.maxAmount = double.infinity,
+  Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return AppTextField(
-      label: label,
-      hint: '\u20a60.00',
-      initialValue: initialValue?.toStringAsFixed(2),
-      controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      prefixIcon: const Padding(
-        padding: EdgeInsets.only(left: 12),
-        child: Text(
-          '\u20a6',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: CoopvestColors.primary,
-          ),
-        ),
-      ),
-      onChanged: onChanged,
-      validator: validator ??
-          (value) {
-            if (value == null || value.isEmpty) {
-              return 'Amount is required';
-            }
-            final amount = double.tryParse(value);
-            if (amount == null) {
-              return 'Please enter a valid amount';
-            }
-            if (amount < minAmount) {
-              return 'Minimum amount is \u20a6${minAmount.toStringAsFixed(2)}';
-            }
-            if (amount > maxAmount) {
-              return 'Maximum amount is \u20a6${maxAmount.toStringAsFixed(2)}';
-            }
-            return null;
-          },
-    );
+  return AppTextField(
+  label: label,
+  hint: '\u20a60.00',
+  initialValue: initialValue?.toStringAsFixed(2),
+  controller: controller,
+  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+  prefixIcon: const Padding(
+  padding: EdgeInsets.only(left: 12),
+  child: Text(
+  '\u20a6',
+  style: TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+  color: CoopvestColors.primary,
+ ),
+ ),
+ ),
+  onChanged: onChanged,
+  validator: validator ??
+  (value) {
+  if (value == null || value.isEmpty) {
+  return 'Amount is required';
+  }
+  final amount = double.tryParse(value);
+  if (amount == null) {
+  return 'Please enter a valid amount';
+  }
+  if (amount < minAmount) {
+  return 'Minimum amount is \u20a6${minAmount.toStringAsFixed(2)}';
+  }
+  if (amount > maxAmount) {
+  return 'Maximum amount is \u20a6${maxAmount.toStringAsFixed(2)}';
+  }
+  return null;
+  },
+ );
   }
 }

@@ -27,38 +27,38 @@ abstract class ReferralApiService {
   /// Get referral by ID
   @GET('/referrals/{referralId}')
   Future<ReferralDetailResponse> getReferralById(
-    @Path() String referralId,
-  );
+  @Path() String referralId,
+ );
 
   /// Register a new referral (when new user registers with code)
   @POST('/referrals/register')
   Future<ReferralDetailResponse> registerReferral(
-    @Body() ReferralRegisterRequest request,
-  );
+  @Body() ReferralRegisterRequest request,
+ );
 
   /// Check referral status and qualification
   @GET('/referrals/{referralId}/status')
   Future<ReferralStatusResponse> checkReferralStatus(
-    @Path() String referralId,
-  );
+  @Path() String referralId,
+ );
 
   /// Trigger referral confirmation process (after qualification met)
   @POST('/referrals/{referralId}/confirm')
   Future<ReferralDetailResponse> confirmReferral(
-    @Path() String referralId,
-  );
+  @Path() String referralId,
+ );
 
   /// Apply referral bonus to a loan
   @POST('/referrals/apply-bonus')
   Future<ApplyBonusResponse> applyBonusToLoan(
-    @Body() ApplyBonusRequest request,
-  );
+  @Body() ApplyBonusRequest request,
+ );
 
   /// Get loan interest calculation with referral bonus
   @POST('/referrals/calculate-interest')
   Future<InterestCalculationResponse> calculateInterestWithBonus(
-    @Body() InterestCalculationRequest request,
-  );
+  @Body() InterestCalculationRequest request,
+ );
 
   /// Share referral link
   @GET('/referrals/share-link')
@@ -69,9 +69,9 @@ abstract class ReferralApiService {
   /// Get all referrals (admin)
   @GET('/admin/referrals')
   Future<ReferralListResponse> getAllReferralsAdmin({
-    @Query('status') String? status,
-    @Query('page') int? page,
-    @Query('limit') int? limit,
+  @Query('status') String? status,
+  @Query('page') int? page,
+  @Query('limit') int? limit,
   });
 
   /// Get referral statistics (admin)
@@ -81,42 +81,42 @@ abstract class ReferralApiService {
   /// Manually confirm a referral (admin)
   @POST('/admin/referrals/{referralId}/confirm')
   Future<ReferralDetailResponse> adminConfirmReferral(
-    @Path() String referralId,
-    @Body() AdminConfirmRequest request,
-  );
+  @Path() String referralId,
+  @Body() AdminConfirmRequest request,
+ );
 
   /// Flag a referral for review (admin)
   @POST('/admin/referrals/{referralId}/flag')
   Future<ReferralDetailResponse> adminFlagReferral(
-    @Path() String referralId,
-    @Body() FlagReferralRequest request,
-  );
+  @Path() String referralId,
+  @Body() FlagReferralRequest request,
+ );
 
   /// Unflag a referral (admin)
   @POST('/admin/referrals/{referralId}/unflag')
   Future<ReferralDetailResponse> adminUnflagReferral(
-    @Path() String referralId,
-  );
+  @Path() String referralId,
+ );
 
   /// Revoke referral bonus (admin)
   @POST('/admin/referrals/{referralId}/revoke')
   Future<ReferralDetailResponse> adminRevokeBonus(
-    @Path() String referralId,
-    @Body() RevokeBonusRequest request,
-  );
+  @Path() String referralId,
+  @Body() RevokeBonusRequest request,
+ );
 
   /// Get audit logs (admin)
   @GET('/admin/referrals/audit')
   Future<AuditLogResponse> getAuditLogs({
-    @Query('page') int? page,
-    @Query('limit') int? limit,
+  @Query('page') int? page,
+  @Query('limit') int? limit,
   });
 
   /// Update referral settings (admin)
   @PUT('/admin/referrals/settings')
   Future<SettingsResponse> updateReferralSettings(
-    @Body() ReferralSettingsRequest request,
-  );
+  @Body() ReferralSettingsRequest request,
+ );
 
   /// Get referral settings (admin)
   @GET('/admin/referrals/settings')
@@ -136,14 +136,14 @@ class ReferralRegisterRequest {
   final String referredUserId;
 
   ReferralRegisterRequest({
-    required this.referralCode,
-    required this.referredUserId,
+  required this.referralCode,
+  required this.referredUserId,
   });
 
   Map<String, dynamic> toJson() => {
-        'referral_code': referralCode,
-        'referred_user_id': referredUserId,
-      };
+  'referral_code': referralCode,
+  'referred_user_id': referredUserId,
+  };
 }
 
 class ApplyBonusRequest {
@@ -151,14 +151,14 @@ class ApplyBonusRequest {
   final String userId;
 
   ApplyBonusRequest({
-    required this.loanId,
-    required this.userId,
+  required this.loanId,
+  required this.userId,
   });
 
   Map<String, dynamic> toJson() => {
-        'loan_id': loanId,
-        'user_id': userId,
-      };
+  'loan_id': loanId,
+  'user_id': userId,
+  };
 }
 
 class InterestCalculationRequest {
@@ -168,18 +168,18 @@ class InterestCalculationRequest {
   final String? userId;
 
   InterestCalculationRequest({
-    required this.loanType,
-    required this.loanAmount,
-    required this.tenureMonths,
-    this.userId,
+  required this.loanType,
+  required this.loanAmount,
+  required this.tenureMonths,
+  this.userId,
   });
 
   Map<String, dynamic> toJson() => {
-        'loan_type': loanType,
-        'loan_amount': loanAmount,
-        'tenure_months': tenureMonths,
-        'user_id': userId,
-      };
+  'loan_type': loanType,
+  'loan_amount': loanAmount,
+  'tenure_months': tenureMonths,
+  'user_id': userId,
+  };
 }
 
 class AdminConfirmRequest {
@@ -187,14 +187,14 @@ class AdminConfirmRequest {
   final String? notes;
 
   AdminConfirmRequest({
-    required this.adminId,
-    this.notes,
+  required this.adminId,
+  this.notes,
   });
 
   Map<String, dynamic> toJson() => {
-        'admin_id': adminId,
-        'notes': notes,
-      };
+  'admin_id': adminId,
+  'notes': notes,
+  };
 }
 
 class FlagReferralRequest {
@@ -202,14 +202,14 @@ class FlagReferralRequest {
   final String adminId;
 
   FlagReferralRequest({
-    required this.reason,
-    required this.adminId,
+  required this.reason,
+  required this.adminId,
   });
 
   Map<String, dynamic> toJson() => {
-        'reason': reason,
-        'admin_id': adminId,
-      };
+  'reason': reason,
+  'admin_id': adminId,
+  };
 }
 
 class RevokeBonusRequest {
@@ -217,14 +217,14 @@ class RevokeBonusRequest {
   final String adminId;
 
   RevokeBonusRequest({
-    required this.reason,
-    required this.adminId,
+  required this.reason,
+  required this.adminId,
   });
 
   Map<String, dynamic> toJson() => {
-        'reason': reason,
-        'admin_id': adminId,
-      };
+  'reason': reason,
+  'admin_id': adminId,
+  };
 }
 
 class ReferralSettingsRequest {
@@ -235,20 +235,20 @@ class ReferralSettingsRequest {
   final Map<String, double>? minimumInterestFloors;
 
   ReferralSettingsRequest({
-    required this.enabled,
-    required this.lockInDays,
-    required this.minimumSavingsMonths,
-    this.minimumSavingsAmount,
-    this.minimumInterestFloors,
+  required this.enabled,
+  required this.lockInDays,
+  required this.minimumSavingsMonths,
+  this.minimumSavingsAmount,
+  this.minimumInterestFloors,
   });
 
   Map<String, dynamic> toJson() => {
-        'enabled': enabled,
-        'lock_in_days': lockInDays,
-        'minimum_savings_months': minimumSavingsMonths,
-        'minimum_savings_amount': minimumSavingsAmount,
-        'minimum_interest_floors': minimumInterestFloors,
-      };
+  'enabled': enabled,
+  'lock_in_days': lockInDays,
+  'minimum_savings_months': minimumSavingsMonths,
+  'minimum_savings_amount': minimumSavingsAmount,
+  'minimum_interest_floors': minimumInterestFloors,
+  };
 }
 
 // ============== Response Models ==============
@@ -259,19 +259,19 @@ class ReferralSummaryResponse {
   final ReferralSummary? summary;
 
   ReferralSummaryResponse({
-    required this.success,
-    this.error,
-    this.summary,
+  required this.success,
+  this.error,
+  this.summary,
   });
 
   factory ReferralSummaryResponse.fromJson(Map<String, dynamic> json) {
-    return ReferralSummaryResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      summary: json['summary'] != null
-          ? ReferralSummary.fromJson(json['summary'] as Map<String, dynamic>)
-          : null,
-    );
+  return ReferralSummaryResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  summary: json['summary'] != null
+  ? ReferralSummary.fromJson(json['summary'] as Map<String, dynamic>)
+  : null,
+ );
   }
 }
 
@@ -282,19 +282,19 @@ class ReferralCodeResponse {
   final String? qrCodeUrl;
 
   ReferralCodeResponse({
-    required this.success,
-    this.error,
-    this.referralCode,
-    this.qrCodeUrl,
+  required this.success,
+  this.error,
+  this.referralCode,
+  this.qrCodeUrl,
   });
 
   factory ReferralCodeResponse.fromJson(Map<String, dynamic> json) {
-    return ReferralCodeResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      referralCode: json['referral_code'] as String?,
-      qrCodeUrl: json['qr_code_url'] as String?,
-    );
+  return ReferralCodeResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  referralCode: json['referral_code'] as String?,
+  qrCodeUrl: json['qr_code_url'] as String?,
+ );
   }
 }
 
@@ -307,25 +307,25 @@ class ReferralListResponse {
   final int limit;
 
   ReferralListResponse({
-    required this.success,
-    this.error,
-    required this.referrals,
-    required this.total,
-    required this.page,
-    required this.limit,
+  required this.success,
+  this.error,
+  required this.referrals,
+  required this.total,
+  required this.page,
+  required this.limit,
   });
 
   factory ReferralListResponse.fromJson(Map<String, dynamic> json) {
-    return ReferralListResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      referrals: (json['referrals'] as List<dynamic>)
-          .map((e) => Referral.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      total: json['total'] as int? ?? 0,
-      page: json['page'] as int? ?? 1,
-      limit: json['limit'] as int? ?? 20,
-    );
+  return ReferralListResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  referrals: (json['referrals'] as List<dynamic>)
+  .map((e) => Referral.fromJson(e as Map<String, dynamic>))
+  .toList(),
+  total: json['total'] as int? ?? 0,
+  page: json['page'] as int? ?? 1,
+  limit: json['limit'] as int? ?? 20,
+ );
   }
 }
 
@@ -335,19 +335,19 @@ class ReferralDetailResponse {
   final Referral? referral;
 
   ReferralDetailResponse({
-    required this.success,
-    this.error,
-    this.referral,
+  required this.success,
+  this.error,
+  this.referral,
   });
 
   factory ReferralDetailResponse.fromJson(Map<String, dynamic> json) {
-    return ReferralDetailResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      referral: json['referral'] != null
-          ? Referral.fromJson(json['referral'] as Map<String, dynamic>)
-          : null,
-    );
+  return ReferralDetailResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  referral: json['referral'] != null
+  ? Referral.fromJson(json['referral'] as Map<String, dynamic>)
+  : null,
+ );
   }
 }
 
@@ -364,31 +364,31 @@ class ReferralStatusResponse {
   final String? message;
 
   ReferralStatusResponse({
-    required this.success,
-    this.error,
-    required this.qualified,
-    required this.kycVerified,
-    required this.savingsCriteriaMet,
-    required this.consecutiveSavingsMonths,
-    required this.requiredSavingsMonths,
-    required this.isFlagged,
-    this.flagReason,
-    this.message,
+  required this.success,
+  this.error,
+  required this.qualified,
+  required this.kycVerified,
+  required this.savingsCriteriaMet,
+  required this.consecutiveSavingsMonths,
+  required this.requiredSavingsMonths,
+  required this.isFlagged,
+  this.flagReason,
+  this.message,
   });
 
   factory ReferralStatusResponse.fromJson(Map<String, dynamic> json) {
-    return ReferralStatusResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      qualified: json['qualified'] as bool? ?? false,
-      kycVerified: json['kyc_verified'] as bool? ?? false,
-      savingsCriteriaMet: json['savings_criteria_met'] as bool? ?? false,
-      consecutiveSavingsMonths: json['consecutive_savings_months'] as int? ?? 0,
-      requiredSavingsMonths: json['required_savings_months'] as int? ?? 3,
-      isFlagged: json['is_flagged'] as bool? ?? false,
-      flagReason: json['flag_reason'] as String?,
-      message: json['message'] as String?,
-    );
+  return ReferralStatusResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  qualified: json['qualified'] as bool? ?? false,
+  kycVerified: json['kyc_verified'] as bool? ?? false,
+  savingsCriteriaMet: json['savings_criteria_met'] as bool? ?? false,
+  consecutiveSavingsMonths: json['consecutive_savings_months'] as int? ?? 0,
+  requiredSavingsMonths: json['required_savings_months'] as int? ?? 3,
+  isFlagged: json['is_flagged'] as bool? ?? false,
+  flagReason: json['flag_reason'] as String?,
+  message: json['message'] as String?,
+ );
   }
 }
 
@@ -400,23 +400,23 @@ class ApplyBonusResponse {
   final DateTime? appliedAt;
 
   ApplyBonusResponse({
-    required this.success,
-    this.error,
-    required this.bonusPercent,
-    required this.loanId,
-    this.appliedAt,
+  required this.success,
+  this.error,
+  required this.bonusPercent,
+  required this.loanId,
+  this.appliedAt,
   });
 
   factory ApplyBonusResponse.fromJson(Map<String, dynamic> json) {
-    return ApplyBonusResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      bonusPercent: (json['bonus_percent'] as num).toDouble(),
-      loanId: json['loan_id'] as String,
-      appliedAt: json['applied_at'] != null
-          ? DateTime.parse(json['applied_at'] as String)
-          : null,
-    );
+  return ApplyBonusResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  bonusPercent: (json['bonus_percent'] as num).toDouble(),
+  loanId: json['loan_id'] as String,
+  appliedAt: json['applied_at'] != null
+  ? DateTime.parse(json['applied_at'] as String)
+  : null,
+ );
   }
 }
 
@@ -426,19 +426,19 @@ class InterestCalculationResponse {
   final LoanInterestCalculation? calculation;
 
   InterestCalculationResponse({
-    required this.success,
-    this.error,
-    this.calculation,
+  required this.success,
+  this.error,
+  this.calculation,
   });
 
   factory InterestCalculationResponse.fromJson(Map<String, dynamic> json) {
-    return InterestCalculationResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      calculation: json['calculation'] != null
-          ? LoanInterestCalculation.fromJson(json['calculation'] as Map<String, dynamic>)
-          : null,
-    );
+  return InterestCalculationResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  calculation: json['calculation'] != null
+  ? LoanInterestCalculation.fromJson(json['calculation'] as Map<String, dynamic>)
+  : null,
+ );
   }
 }
 
@@ -450,21 +450,21 @@ class ShareLinkResponse {
   final String? qrCodeUrl;
 
   ShareLinkResponse({
-    required this.success,
-    this.error,
-    this.shareLink,
-    this.referralCode,
-    this.qrCodeUrl,
+  required this.success,
+  this.error,
+  this.shareLink,
+  this.referralCode,
+  this.qrCodeUrl,
   });
 
   factory ShareLinkResponse.fromJson(Map<String, dynamic> json) {
-    return ShareLinkResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      shareLink: json['share_link'] as String?,
-      referralCode: json['referral_code'] as String?,
-      qrCodeUrl: json['qr_code_url'] as String?,
-    );
+  return ShareLinkResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  shareLink: json['share_link'] as String?,
+  referralCode: json['referral_code'] as String?,
+  qrCodeUrl: json['qr_code_url'] as String?,
+ );
   }
 }
 
@@ -480,29 +480,29 @@ class ReferralStatsResponse {
   final double totalInterestSaved;
 
   ReferralStatsResponse({
-    required this.success,
-    this.error,
-    required this.totalReferrals,
-    required this.pendingReferrals,
-    required this.confirmedReferrals,
-    required this.flaggedReferrals,
-    required this.referralsByTier,
-    required this.totalBonusesApplied,
-    required this.totalInterestSaved,
+  required this.success,
+  this.error,
+  required this.totalReferrals,
+  required this.pendingReferrals,
+  required this.confirmedReferrals,
+  required this.flaggedReferrals,
+  required this.referralsByTier,
+  required this.totalBonusesApplied,
+  required this.totalInterestSaved,
   });
 
   factory ReferralStatsResponse.fromJson(Map<String, dynamic> json) {
-    return ReferralStatsResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      totalReferrals: json['total_referrals'] as int? ?? 0,
-      pendingReferrals: json['pending_referrals'] as int? ?? 0,
-      confirmedReferrals: json['confirmed_referrals'] as int? ?? 0,
-      flaggedReferrals: json['flagged_referrals'] as int? ?? 0,
-      referralsByTier: Map<String, int>.from(json['referrals_by_tier'] as Map? ?? {}),
-      totalBonusesApplied: Map<String, double>.from(json['total_bonuses_applied'] as Map? ?? {}),
-      totalInterestSaved: (json['total_interest_saved'] as num?)?.toDouble() ?? 0,
-    );
+  return ReferralStatsResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  totalReferrals: json['total_referrals'] as int? ?? 0,
+  pendingReferrals: json['pending_referrals'] as int? ?? 0,
+  confirmedReferrals: json['confirmed_referrals'] as int? ?? 0,
+  flaggedReferrals: json['flagged_referrals'] as int? ?? 0,
+  referralsByTier: Map<String, int>.from(json['referrals_by_tier'] as Map? ?? {}),
+  totalBonusesApplied: Map<String, double>.from(json['total_bonuses_applied'] as Map? ?? {}),
+  totalInterestSaved: (json['total_interest_saved'] as num?)?.toDouble() ?? 0,
+ );
   }
 }
 
@@ -514,23 +514,23 @@ class AuditLogResponse {
   final int page;
 
   AuditLogResponse({
-    required this.success,
-    this.error,
-    required this.logs,
-    required this.total,
-    required this.page,
+  required this.success,
+  this.error,
+  required this.logs,
+  required this.total,
+  required this.page,
   });
 
   factory AuditLogResponse.fromJson(Map<String, dynamic> json) {
-    return AuditLogResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      logs: (json['logs'] as List<dynamic>)
-          .map((e) => AuditLogEntry.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      total: json['total'] as int? ?? 0,
-      page: json['page'] as int? ?? 1,
-    );
+  return AuditLogResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  logs: (json['logs'] as List<dynamic>)
+  .map((e) => AuditLogEntry.fromJson(e as Map<String, dynamic>))
+  .toList(),
+  total: json['total'] as int? ?? 0,
+  page: json['page'] as int? ?? 1,
+ );
   }
 }
 
@@ -544,25 +544,25 @@ class AuditLogEntry {
   final DateTime createdAt;
 
   AuditLogEntry({
-    required this.id,
-    required this.action,
-    required this.referralId,
-    this.userId,
-    this.adminId,
-    required this.details,
-    required this.createdAt,
+  required this.id,
+  required this.action,
+  required this.referralId,
+  this.userId,
+  this.adminId,
+  required this.details,
+  required this.createdAt,
   });
 
   factory AuditLogEntry.fromJson(Map<String, dynamic> json) {
-    return AuditLogEntry(
-      id: json['id'] as String,
-      action: json['action'] as String,
-      referralId: json['referral_id'] as String,
-      userId: json['user_id'] as String?,
-      adminId: json['admin_id'] as String?,
-      details: json['details'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-    );
+  return AuditLogEntry(
+  id: json['id'] as String,
+  action: json['action'] as String,
+  referralId: json['referral_id'] as String,
+  userId: json['user_id'] as String?,
+  adminId: json['admin_id'] as String?,
+  details: json['details'] as String,
+  createdAt: DateTime.parse(json['created_at'] as String),
+ );
   }
 }
 
@@ -576,28 +576,28 @@ class SettingsResponse {
   final Map<String, double>? minimumInterestFloors;
 
   SettingsResponse({
-    required this.success,
-    this.error,
-    required this.enabled,
-    required this.lockInDays,
-    required this.minimumSavingsMonths,
-    this.minimumSavingsAmount,
-    this.minimumInterestFloors,
+  required this.success,
+  this.error,
+  required this.enabled,
+  required this.lockInDays,
+  required this.minimumSavingsMonths,
+  this.minimumSavingsAmount,
+  this.minimumInterestFloors,
   });
 
   factory SettingsResponse.fromJson(Map<String, dynamic> json) {
-    return SettingsResponse(
-      success: json['success'] as bool,
-      error: json['error'] as String?,
-      enabled: json['enabled'] as bool? ?? true,
-      lockInDays: json['lock_in_days'] as int? ?? 30,
-      minimumSavingsMonths: json['minimum_savings_months'] as int? ?? 3,
-      minimumSavingsAmount: json['minimum_savings_amount'] != null
-          ? (json['minimum_savings_amount'] as num).toDouble()
-          : null,
-      minimumInterestFloors: json['minimum_interest_floors'] != null
-          ? Map<String, double>.from(json['minimum_interest_floors'] as Map)
-          : null,
-    );
+  return SettingsResponse(
+  success: json['success'] as bool,
+  error: json['error'] as String?,
+  enabled: json['enabled'] as bool? ?? true,
+  lockInDays: json['lock_in_days'] as int? ?? 30,
+  minimumSavingsMonths: json['minimum_savings_months'] as int? ?? 3,
+  minimumSavingsAmount: json['minimum_savings_amount'] != null
+  ? (json['minimum_savings_amount'] as num).toDouble()
+  : null,
+  minimumInterestFloors: json['minimum_interest_floors'] != null
+  ? Map<String, double>.from(json['minimum_interest_floors'] as Map)
+  : null,
+ );
   }
 }

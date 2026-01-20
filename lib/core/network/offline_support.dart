@@ -15,31 +15,31 @@ class NetworkNotifier extends StateNotifier<ConnectionStatus> {
   final Connectivity _connectivity;
 
   NetworkNotifier(this._connectivity) : super(ConnectionStatus.unknown) {
-    _initialize();
+  _initialize();
   }
 
   Future<void> _initialize() async {
-    // Check initial status
-    final result = await _connectivity.checkConnectivity();
-    _updateStatus(result);
+  // Check initial status
+  final result = await _connectivity.checkConnectivity();
+  _updateStatus(result);
 
-    // Listen for changes
-    _connectivity.onConnectivityChanged.listen((result) {
-      _updateStatus(result);
-    });
+  // Listen for changes
+  _connectivity.onConnectivityChanged.listen((result) {
+  _updateStatus(result);
+  });
   }
 
   void _updateStatus(ConnectivityResult result) {
-    if (result == ConnectivityResult.none) {
-      state = ConnectionStatus.offline;
-    } else {
-      state = ConnectionStatus.online;
-    }
+  if (result == ConnectivityResult.none) {
+  state = ConnectionStatus.offline;
+  } else {
+  state = ConnectionStatus.online;
+  }
   }
 
   Future<bool> checkInternetConnection() async {
-    final result = await _connectivity.checkConnectivity();
-    return result != ConnectivityResult.none;
+  final result = await _connectivity.checkConnectivity();
+  return result != ConnectivityResult.none;
   }
 }
 
@@ -62,54 +62,54 @@ class OfflineDataManager {
 
   // Save operation to be synced later
   Future<void> savePendingOperation(Map<String, dynamic> operation) async {
-    final prefs = await SharedPreferences.getInstance();
-    final operations = prefs.getStringList(_pendingOperationsKey) ?? [];
-    operations.add(operation.toString());
-    await prefs.setStringList(_pendingOperationsKey, operations);
+  final prefs = await SharedPreferences.getInstance();
+  final operations = prefs.getStringList(_pendingOperationsKey) ?? [];
+  operations.add(operation.toString());
+  await prefs.setStringList(_pendingOperationsKey, operations);
   }
 
   // Get all pending operations
   Future<List<Map<String, dynamic>>> getPendingOperations() async {
-    final prefs = await SharedPreferences.getInstance();
-    final operations = prefs.getStringList(_pendingOperationsKey) ?? [];
-    return operations.map((e) => {'data': e}).toList();
+  final prefs = await SharedPreferences.getInstance();
+  final operations = prefs.getStringList(_pendingOperationsKey) ?? [];
+  return operations.map((e) => {'data': e}).toList();
   }
 
   // Clear pending operations after successful sync
   Future<void> clearPendingOperations() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_pendingOperationsKey);
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove(_pendingOperationsKey);
   }
 
   // Cache data for offline access
   Future<void> cacheData(String key, Map<String, dynamic> data) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('$_cachedDataKey:$key', data.toString());
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('$_cachedDataKey:$key', data.toString());
   }
 
   // Get cached data
   Future<Map<String, dynamic>?> getCachedData(String key) async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString('$_cachedDataKey:$key');
-    if (data != null) {
-      return {'data': data};
-    }
-    return null;
+  final prefs = await SharedPreferences.getInstance();
+  final data = prefs.getString('$_cachedDataKey:$key');
+  if (data != null) {
+  return {'data': data};
+  }
+  return null;
   }
 
   // Clear cached data
   Future<void> clearCache(String key) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('$_cachedDataKey:$key');
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove('$_cachedDataKey:$key');
   }
 
   // Clear all cache
   Future<void> clearAllCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    final keys = prefs.getKeys().where((key) => key.startsWith(_cachedDataKey));
-    for (final key in keys) {
-      await prefs.remove(key);
-    }
+  final prefs = await SharedPreferences.getInstance();
+  final keys = prefs.getKeys().where((key) => key.startsWith(_cachedDataKey));
+  for (final key in keys) {
+  await prefs.remove(key);
+  }
   }
 }
 
@@ -134,36 +134,36 @@ class SyncNotifier extends StateNotifier<SyncStatus> {
   SyncNotifier(this._offlineDataManager, this._syncCallback) : super(SyncStatus.idle);
 
   Future<void> syncPendingOperations() async {
-    state = SyncStatus.syncing;
+  state = SyncStatus.syncing;
 
-    try {
-      final pendingOperations = await _offlineDataManager.getPendingOperations();
-      
-      if (pendingOperations.isEmpty) {
-        state = SyncStatus.success;
-        return;
-      }
+  try {
+  final pendingOperations = await _offlineDataManager.getPendingOperations();
+  
+  if (pendingOperations.isEmpty) {
+  state = SyncStatus.success;
+  return;
+  }
 
-      // Process each pending operation
-      for (final operation in pendingOperations) {
-        try {
-          await _syncCallback(operation);
-        } catch (e) {
-          state = SyncStatus.error;
-          return;
-        }
-      }
+  // Process each pending operation
+  for (final operation in pendingOperations) {
+  try {
+  await _syncCallback(operation);
+  } catch (e) {
+  state = SyncStatus.error;
+  return;
+  }
+  }
 
-      // Clear pending operations after successful sync
-      await _offlineDataManager.clearPendingOperations();
-      state = SyncStatus.success;
-    } catch (e) {
-      state = SyncStatus.error;
-    }
+  // Clear pending operations after successful sync
+  await _offlineDataManager.clearPendingOperations();
+  state = SyncStatus.success;
+  } catch (e) {
+  state = SyncStatus.error;
+  }
   }
 
   void reset() {
-    state = SyncStatus.idle;
+  state = SyncStatus.idle;
   }
 }
 
@@ -172,8 +172,8 @@ final syncProvider = StateNotifierProvider<SyncNotifier, SyncStatus>((ref) {
   final offlineDataManager = ref.read(offlineDataManagerProvider);
   // This would be a callback to sync data with the server
   Future<void> syncCallback(Map<String, dynamic> operation) async {
-    // Simulate sync operation
-    await Future.delayed(const Duration(milliseconds: 100));
+  // Simulate sync operation
+  await Future.delayed(const Duration(milliseconds: 100));
   }
   
   return SyncNotifier(offlineDataManager, syncCallback);
@@ -186,45 +186,45 @@ class ConnectionAwareBuilder extends ConsumerWidget {
   final Widget? loadingWidget;
 
   const ConnectionAwareBuilder({
-    super.key,
-    required this.builder,
-    this.offlineWidget,
-    this.loadingWidget,
+  super.key,
+  required this.builder,
+  this.offlineWidget,
+  this.loadingWidget,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final connectionStatus = ref.watch(networkProvider);
+  final connectionStatus = ref.watch(networkProvider);
 
-    switch (connectionStatus) {
-      case ConnectionStatus.unknown:
-        return loadingWidget ?? const Center(child: CircularProgressIndicator());
-      case ConnectionStatus.offline:
-        return offlineWidget ?? _defaultOfflineWidget();
-      case ConnectionStatus.online:
-        return builder(true);
-    }
+  switch (connectionStatus) {
+  case ConnectionStatus.unknown:
+  return loadingWidget ?? const Center(child: CircularProgressIndicator());
+  case ConnectionStatus.offline:
+  return offlineWidget ?? _defaultOfflineWidget();
+  case ConnectionStatus.online:
+  return builder(true);
+  }
   }
 
   Widget _defaultOfflineWidget() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.wifi_off, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text(
-            'No Internet Connection',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Please check your connection and try again',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
+  return const Center(
+  child: Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+  Icon(Icons.wifi_off, size: 64, color: Colors.grey),
+  SizedBox(height: 16),
+  Text(
+  'No Internet Connection',
+  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+ ),
+  SizedBox(height: 8),
+  Text(
+  'Please check your connection and try again',
+  style: TextStyle(fontSize: 14, color: Colors.grey),
+ ),
+  ],
+ ),
+ );
   }
 }
 
@@ -243,22 +243,22 @@ class _AutoSyncOnReconnectState extends ConsumerState<AutoSyncOnReconnect> {
 
   @override
   void initState() {
-    super.initState();
-    _setupReconnectListener();
+  super.initState();
+  _setupReconnectListener();
   }
 
   void _setupReconnectListener() {
-    ref.listenManual<ConnectionStatus>(networkProvider, (previous, current) {
-      if (_previousStatus == ConnectionStatus.offline && current == ConnectionStatus.online) {
-        // Auto-sync when coming back online
-        ref.read(syncProvider.notifier).syncPendingOperations();
-      }
-      _previousStatus = current;
-    });
+  ref.listenManual<ConnectionStatus>(networkProvider, (previous, current) {
+  if (_previousStatus == ConnectionStatus.offline && current == ConnectionStatus.online) {
+  // Auto-sync when coming back online
+  ref.read(syncProvider.notifier).syncPendingOperations();
+  }
+  _previousStatus = current;
+  });
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+  return widget.child;
   }
 }

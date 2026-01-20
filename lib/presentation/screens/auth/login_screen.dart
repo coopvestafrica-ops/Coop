@@ -30,337 +30,337 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   void initState() {
-    super.initState();
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
+  super.initState();
+  _emailController = TextEditingController();
+  _passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  _emailController.dispose();
+  _passwordController.dispose();
+  super.dispose();
   }
 
   void _validateAndLogin() {
-    setState(() {
-      _emailError = Validators.validateEmail(_emailController.text);
-      _passwordError = Validators.validatePassword(_passwordController.text);
-    });
+  setState(() {
+  _emailError = Validators.validateEmail(_emailController.text);
+  _passwordError = Validators.validatePassword(_passwordController.text);
+  });
 
-    if (_emailError == null && _passwordError == null) {
-      _performLogin();
-    }
+  if (_emailError == null && _passwordError == null) {
+  _performLogin();
+  }
   }
 
   Future<void> _performLogin() async {
-    try {
-      await ref.read(authProvider.notifier).login(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+  try {
+  await ref.read(authProvider.notifier).login(
+  email: _emailController.text,
+  password: _passwordController.text,
+ );
 
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/home');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: CoopvestColors.error,
-          ),
-        );
-      }
-    }
+  if (mounted) {
+  Navigator.of(context).pushReplacementNamed('/home');
+  }
+  } catch (e) {
+  if (mounted) {
+  ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+  content: Text(e.toString()),
+  backgroundColor: CoopvestColors.error,
+ ),
+ );
+  }
+  }
   }
 
   Future<void> _authenticateWithBiometrics() async {
-    try {
-      setState(() {
-        _isAuthenticating = true;
-      });
+  try {
+  setState(() {
+  _isAuthenticating = true;
+  });
 
-      // Check if biometric authentication is available
-      final bool canAuthenticateWithBiometrics = await _localAuth.canCheckBiometrics;
-      
-      if (!canAuthenticateWithBiometrics) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Biometric authentication is not available on this device'),
-              backgroundColor: CoopvestColors.warning,
-            ),
-          );
-        }
-        return;
-      }
+  // Check if biometric authentication is available
+  final bool canAuthenticateWithBiometrics = await _localAuth.canCheckBiometrics;
+  
+  if (!canAuthenticateWithBiometrics) {
+  if (mounted) {
+  ScaffoldMessenger.of(context).showSnackBar(
+  const SnackBar(
+  content: Text('Biometric authentication is not available on this device'),
+  backgroundColor: CoopvestColors.warning,
+ ),
+ );
+  }
+  return;
+  }
 
-      // Authenticate using biometrics
-      final bool didAuthenticate = await _localAuth.authenticate(
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          stickyAuth: true,
-          useErrorDialogs: true,
-        ),
-        localizedReason: 'Authenticate to log in to Coopvest',
-      );
+  // Authenticate using biometrics
+  final bool didAuthenticate = await _localAuth.authenticate(
+  options: const AuthenticationOptions(
+  biometricOnly: true,
+  stickyAuth: true,
+  useErrorDialogs: true,
+ ),
+  localizedReason: 'Authenticate to log in to Coopvest',
+ );
 
-      if (didAuthenticate && mounted) {
-        // Biometric authentication successful - proceed with login
-        // In a real implementation, you would retrieve cached credentials
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Biometric authentication successful'),
-            backgroundColor: CoopvestColors.success,
-          ),
-        );
-        // Navigate to home after successful biometric auth
-        Navigator.of(context).pushReplacementNamed('/home');
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Biometric authentication failed'),
-            backgroundColor: CoopvestColors.error,
-          ),
-        );
-      }
-    } on PlatformException catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Authentication error: ${e.message}'),
-            backgroundColor: CoopvestColors.error,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isAuthenticating = false;
-        });
-      }
-    }
+  if (didAuthenticate && mounted) {
+  // Biometric authentication successful - proceed with login
+  // In a real implementation, you would retrieve cached credentials
+  ScaffoldMessenger.of(context).showSnackBar(
+  const SnackBar(
+  content: Text('Biometric authentication successful'),
+  backgroundColor: CoopvestColors.success,
+ ),
+ );
+  // Navigate to home after successful biometric auth
+  Navigator.of(context).pushReplacementNamed('/home');
+  } else if (mounted) {
+  ScaffoldMessenger.of(context).showSnackBar(
+  const SnackBar(
+  content: Text('Biometric authentication failed'),
+  backgroundColor: CoopvestColors.error,
+ ),
+ );
+  }
+  } on PlatformException catch (e) {
+  if (mounted) {
+  ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+  content: Text('Authentication error: ${e.message}'),
+  backgroundColor: CoopvestColors.error,
+ ),
+ );
+  }
+  } finally {
+  if (mounted) {
+  setState(() {
+  _isAuthenticating = false;
+  });
+  }
+  }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
-    final isLoading = authState.status == AuthStatus.loading;
+  final authState = ref.watch(authProvider);
+  final isLoading = authState.status == AuthStatus.loading;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: CoopvestColors.darkGray),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Text(
-                'Welcome Back',
-                style: CoopvestTypography.displaySmall.copyWith(
-                  color: CoopvestColors.darkGray,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Log in to your Coopvest account',
-                style: CoopvestTypography.bodyMedium.copyWith(
-                  color: CoopvestColors.mediumGray,
-                ),
-              ),
-              const SizedBox(height: 32),
+  return Scaffold(
+  backgroundColor: Colors.white,
+  appBar: AppBar(
+  elevation: 0,
+  backgroundColor: Colors.white,
+  leading: IconButton(
+  icon: const Icon(Icons.arrow_back, color: CoopvestColors.darkGray),
+  onPressed: () => Navigator.of(context).pop(),
+ ),
+ ),
+  body: SafeArea(
+  child: SingleChildScrollView(
+  padding: const EdgeInsets.all(24),
+  child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+  // Header
+  Text(
+  'Welcome Back',
+  style: CoopvestTypography.displaySmall.copyWith(
+  color: CoopvestColors.darkGray,
+ ),
+ ),
+  const SizedBox(height: 8),
+  Text(
+  'Log in to your Coopvest account',
+  style: CoopvestTypography.bodyMedium.copyWith(
+  color: CoopvestColors.mediumGray,
+ ),
+ ),
+  const SizedBox(height: 32),
 
-              // Email/Phone Field
-              AppTextField(
-                text: 'Email or Phone Number',
-                hint: 'Enter your email or phone',
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                errorText: _emailError,
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: Icon(Icons.mail_outline, color: CoopvestColors.primary),
-                ),
-                onChanged: (_) {
-                  if (_emailError != null) {
-                    setState(() {
-                      _emailError = Validators.validateEmail(_emailController.text);
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 20),
+  // Email/Phone Field
+  AppTextField(
+  text: 'Email or Phone Number',
+  hint: 'Enter your email or phone',
+  controller: _emailController,
+  keyboardType: TextInputType.emailAddress,
+  textInputAction: TextInputAction.next,
+  errorText: _emailError,
+  prefixIcon: const Padding(
+  padding: EdgeInsets.only(left: 12),
+  child: Icon(Icons.mail_outline, color: CoopvestColors.primary),
+ ),
+  onChanged: (_) {
+  if (_emailError != null) {
+  setState(() {
+  _emailError = Validators.validateEmail(_emailController.text);
+  });
+  }
+  },
+ ),
+  const SizedBox(height: 20),
 
-              // Password Field
-              AppTextField(
-                text: 'Password',
-                hint: 'Enter your password',
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                textInputAction: TextInputAction.done,
-                errorText: _passwordError,
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: Icon(Icons.lock_outline, color: CoopvestColors.primary),
-                ),
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                  child: Icon(
-                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                    color: CoopvestColors.mediumGray,
-                  ),
-                ),
-                onChanged: (_) {
-                  if (_passwordError != null) {
-                    setState(() {
-                      _passwordError = Validators.validatePassword(_passwordController.text);
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
+  // Password Field
+  AppTextField(
+  text: 'Password',
+  hint: 'Enter your password',
+  controller: _passwordController,
+  obscureText: _obscurePassword,
+  textInputAction: TextInputAction.done,
+  errorText: _passwordError,
+  prefixIcon: const Padding(
+  padding: EdgeInsets.only(left: 12),
+  child: Icon(Icons.lock_outline, color: CoopvestColors.primary),
+ ),
+  suffixIcon: GestureDetector(
+  onTap: () {
+  setState(() {
+  _obscurePassword = !_obscurePassword;
+  });
+  },
+  child: Icon(
+  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+  color: CoopvestColors.mediumGray,
+ ),
+ ),
+  onChanged: (_) {
+  if (_passwordError != null) {
+  setState(() {
+  _passwordError = Validators.validatePassword(_passwordController.text);
+  });
+  }
+  },
+ ),
+  const SizedBox(height: 16),
 
-              // Remember Me & Forgot Password
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Remember Me
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _rememberMe = !_rememberMe;
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              _rememberMe = value ?? false;
-                            });
-                          },
-                          activeColor: CoopvestColors.primary,
-                        ),
-                        Text(
-                          'Remember me',
-                          style: CoopvestTypography.bodySmall.copyWith(
-                            color: CoopvestColors.mediumGray,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+  // Remember Me & Forgot Password
+  Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+  // Remember Me
+  GestureDetector(
+  onTap: () {
+  setState(() {
+  _rememberMe = !_rememberMe;
+  });
+  },
+  child: Row(
+  children: [
+  Checkbox(
+  value: _rememberMe,
+  onChanged: (value) {
+  setState(() {
+  _rememberMe = value ?? false;
+  });
+  },
+  activeColor: CoopvestColors.primary,
+ ),
+  Text(
+  'Remember me',
+  style: CoopvestTypography.bodySmall.copyWith(
+  color: CoopvestColors.mediumGray,
+ ),
+ ),
+  ],
+ ),
+ ),
 
-                  // Forgot Password
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/forgot-password');
-                    },
-                    child: Text(
-                      'Forgot Password?',
-                      style: CoopvestTypography.bodySmall.copyWith(
-                        color: CoopvestColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
+  // Forgot Password
+  TextButton(
+  onPressed: () {
+  Navigator.of(context).pushNamed('/forgot-password');
+  },
+  child: Text(
+  'Forgot Password?',
+  style: CoopvestTypography.bodySmall.copyWith(
+  color: CoopvestColors.primary,
+  fontWeight: FontWeight.w600,
+ ),
+ ),
+ ),
+  ],
+ ),
+  const SizedBox(height: 32),
 
-              // Login Button
-              PrimaryButton(
-                text: 'Log In',
-                onPressed: _validateAndLogin,
-                isLoading: isLoading,
-                isEnabled: !isLoading,
-                width: double.infinity,
-              ),
-              const SizedBox(height: 20),
+  // Login Button
+  PrimaryButton(
+  text: 'Log In',
+  onPressed: _validateAndLogin,
+  isLoading: isLoading,
+  isEnabled: !isLoading,
+  width: double.infinity,
+ ),
+  const SizedBox(height: 20),
 
-              // Biometric Login - Implemented with local_auth package
-              SecondaryButton(
-                label: _isAuthenticating ? 'Authenticating...' : 'Use Biometric',
-                onPressed: _isAuthenticating ? null : () async => await _authenticateWithBiometrics(),
-                isLoading: _isAuthenticating,
-                width: double.infinity,
-                icon: const Icon(Icons.fingerprint),
-              ),
-              const SizedBox(height: 32),
+  // Biometric Login - Implemented with local_auth package
+  SecondaryButton(
+  label: _isAuthenticating ? 'Authenticating...' : 'Use Biometric',
+  onPressed: _isAuthenticating ? null : () async => await _authenticateWithBiometrics(),
+  isLoading: _isAuthenticating,
+  width: double.infinity,
+  icon: const Icon(Icons.fingerprint),
+ ),
+  const SizedBox(height: 32),
 
-              // Divider
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 1,
-                      color: CoopvestColors.lightGray,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      'or',
-                      style: CoopvestTypography.bodySmall.copyWith(
-                        color: CoopvestColors.mediumGray,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: 1,
-                      color: CoopvestColors.lightGray,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
+  // Divider
+  Row(
+  children: [
+  Expanded(
+  child: Container(
+  height: 1,
+  color: CoopvestColors.lightGray,
+ ),
+ ),
+  Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 12),
+  child: Text(
+  'or',
+  style: CoopvestTypography.bodySmall.copyWith(
+  color: CoopvestColors.mediumGray,
+ ),
+ ),
+ ),
+  Expanded(
+  child: Container(
+  height: 1,
+  color: CoopvestColors.lightGray,
+ ),
+ ),
+  ],
+ ),
+  const SizedBox(height: 32),
 
-              // Sign Up Link
-              Center(
-                child: RichText(
-                  text: TextSpan(
-                    text: "Don't have an account? ",
-                    style: CoopvestTypography.bodyMedium.copyWith(
-                      color: CoopvestColors.mediumGray,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: 'Create Account',
-                        style: CoopvestTypography.bodyMedium.copyWith(
-                          color: CoopvestColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        recognizer: TapGestureRecognizer(
-                          onTap: () {
-                            Navigator.of(context).pushReplacementNamed('/register');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  // Sign Up Link
+  Center(
+  child: RichText(
+  text: TextSpan(
+  text: "Don't have an account? ",
+  style: CoopvestTypography.bodyMedium.copyWith(
+  color: CoopvestColors.mediumGray,
+ ),
+  children: [
+  TextSpan(
+  text: 'Create Account',
+  style: CoopvestTypography.bodyMedium.copyWith(
+  color: CoopvestColors.primary,
+  fontWeight: FontWeight.w600,
+ ),
+  recognizer: TapGestureRecognizer(
+  onTap: () {
+  Navigator.of(context).pushReplacementNamed('/register');
+  },
+ ),
+ ),
+  ],
+ ),
+ ),
+ ),
+  ],
+ ),
+ ),
+ ),
+ );
   }
 }

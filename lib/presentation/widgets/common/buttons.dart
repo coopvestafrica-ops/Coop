@@ -15,64 +15,64 @@ class PrimaryButton extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const PrimaryButton({
-    required this.label,
-    required this.onPressed,
-    this.isLoading = false,
-    this.isEnabled = true,
-    this.width,
-    this.height = 48,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    this.textStyle,
-    this.icon,
-    this.mainAxisAlignment = MainAxisAlignment.center,
-    Key? key,
+  required this.label,
+  required this.onPressed,
+  this.isLoading = false,
+  this.isEnabled = true,
+  this.width,
+  this.height = 48,
+  this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  this.textStyle,
+  this.icon,
+  this.mainAxisAlignment = MainAxisAlignment.center,
+  Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: ElevatedButton(
-        onPressed: isEnabled && !isLoading ? onPressed : null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isEnabled
-              ? CoopvestColors.primary
-              : CoopvestColors.lightGray,
-          foregroundColor: Colors.white,
-          disabledBackgroundColor: CoopvestColors.lightGray,
-          disabledForegroundColor: CoopvestColors.mediumGray,
-          padding: padding,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          elevation: 0,
-        ),
-        child: isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: mainAxisAlignment,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null) ...[
-                    icon!,
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    label,
-                    style: textStyle ?? CoopvestTypography.labelLarge,
-                  ),
-                ],
-              ),
-      ),
-    );
+  return SizedBox(
+  width: width,
+  height: height,
+  child: ElevatedButton(
+  onPressed: isEnabled && !isLoading ? onPressed : null,
+  style: ElevatedButton.styleFrom(
+  backgroundColor: isEnabled
+  ? CoopvestColors.primary
+  : CoopvestColors.lightGray,
+  foregroundColor: Colors.white,
+  disabledBackgroundColor: CoopvestColors.lightGray,
+  disabledForegroundColor: CoopvestColors.mediumGray,
+  padding: padding,
+  shape: RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(8),
+ ),
+  elevation: 0,
+ ),
+  child: isLoading
+  ? const SizedBox(
+  height: 20,
+  width: 20,
+  child: CircularProgressIndicator(
+  strokeWidth: 2,
+  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+ ),
+ )
+  : Row(
+  mainAxisAlignment: mainAxisAlignment,
+  mainAxisSize: MainAxisSize.min,
+  children: [
+  if (icon != null) ...[
+  icon!,
+  const SizedBox(width: 8),
+  ],
+  Text(
+  label,
+  style: textStyle ?? CoopvestTypography.labelLarge,
+ ),
+  ],
+ ),
+ ),
+ );
   }
 }
 
@@ -90,66 +90,66 @@ class SecondaryButton extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const SecondaryButton({
-    required this.label,
-    required this.onPressed,
-    this.isLoading = false,
-    this.isEnabled = true,
-    this.width,
-    this.height = 48,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    this.textStyle,
-    this.icon,
-    this.mainAxisAlignment = MainAxisAlignment.center,
-    Key? key,
+  required this.label,
+  required this.onPressed,
+  this.isLoading = false,
+  this.isEnabled = true,
+  this.width,
+  this.height = 48,
+  this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  this.textStyle,
+  this.icon,
+  this.mainAxisAlignment = MainAxisAlignment.center,
+  Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: OutlinedButton(
-        onPressed: isEnabled && !isLoading ? onPressed : null,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: CoopvestColors.primary,
-          disabledForegroundColor: CoopvestColors.mediumGray,
-          side: BorderSide(
-            color: isEnabled
-                ? CoopvestColors.primary
-                : CoopvestColors.lightGray,
-          ),
-          padding: padding,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        child: isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    CoopvestColors.primary,
-                  ),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: mainAxisAlignment,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null) ...[
-                    icon!,
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    label,
-                    style: textStyle ?? CoopvestTypography.labelLarge,
-                  ),
-                ],
-              ),
-      ),
-    );
+  return SizedBox(
+  width: width,
+  height: height,
+  child: OutlinedButton(
+  onPressed: isEnabled && !isLoading ? onPressed : null,
+  style: OutlinedButton.styleFrom(
+  foregroundColor: CoopvestColors.primary,
+  disabledForegroundColor: CoopvestColors.mediumGray,
+  side: BorderSide(
+  color: isEnabled
+  ? CoopvestColors.primary
+  : CoopvestColors.lightGray,
+ ),
+  padding: padding,
+  shape: RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(8),
+ ),
+ ),
+  child: isLoading
+  ? const SizedBox(
+  height: 20,
+  width: 20,
+  child: CircularProgressIndicator(
+  strokeWidth: 2,
+  valueColor: AlwaysStoppedAnimation<Color>(
+  CoopvestColors.primary,
+ ),
+ ),
+ )
+  : Row(
+  mainAxisAlignment: mainAxisAlignment,
+  mainAxisSize: MainAxisSize.min,
+  children: [
+  if (icon != null) ...[
+  icon!,
+  const SizedBox(width: 8),
+  ],
+  Text(
+  label,
+  style: textStyle ?? CoopvestTypography.labelLarge,
+ ),
+  ],
+ ),
+ ),
+ );
   }
 }
 
@@ -167,58 +167,58 @@ class TertiaryButton extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
 
   const TertiaryButton({
-    required this.label,
-    required this.onPressed,
-    this.isLoading = false,
-    this.isEnabled = true,
-    this.width,
-    this.height = 48,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    this.textStyle,
-    this.icon,
-    this.mainAxisAlignment = MainAxisAlignment.center,
-    Key? key,
+  required this.label,
+  required this.onPressed,
+  this.isLoading = false,
+  this.isEnabled = true,
+  this.width,
+  this.height = 48,
+  this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  this.textStyle,
+  this.icon,
+  this.mainAxisAlignment = MainAxisAlignment.center,
+  Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: TextButton(
-        onPressed: isEnabled && !isLoading ? onPressed : null,
-        style: TextButton.styleFrom(
-          foregroundColor: CoopvestColors.primary,
-          disabledForegroundColor: CoopvestColors.mediumGray,
-          padding: padding,
-        ),
-        child: isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    CoopvestColors.primary,
-                  ),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: mainAxisAlignment,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (icon != null) ...[
-                    icon!,
-                    const SizedBox(width: 8),
-                  ],
-                  Text(
-                    label,
-                    style: textStyle ?? CoopvestTypography.labelLarge,
-                  ),
-                ],
-              ),
-      ),
-    );
+  return SizedBox(
+  width: width,
+  height: height,
+  child: TextButton(
+  onPressed: isEnabled && !isLoading ? onPressed : null,
+  style: TextButton.styleFrom(
+  foregroundColor: CoopvestColors.primary,
+  disabledForegroundColor: CoopvestColors.mediumGray,
+  padding: padding,
+ ),
+  child: isLoading
+  ? const SizedBox(
+  height: 20,
+  width: 20,
+  child: CircularProgressIndicator(
+  strokeWidth: 2,
+  valueColor: AlwaysStoppedAnimation<Color>(
+  CoopvestColors.primary,
+ ),
+ ),
+ )
+  : Row(
+  mainAxisAlignment: mainAxisAlignment,
+  mainAxisSize: MainAxisSize.min,
+  children: [
+  if (icon != null) ...[
+  icon!,
+  const SizedBox(width: 8),
+  ],
+  Text(
+  label,
+  style: textStyle ?? CoopvestTypography.labelLarge,
+ ),
+  ],
+ ),
+ ),
+ );
   }
 }
 
@@ -233,40 +233,40 @@ class IconButtonWidget extends StatelessWidget {
   final String? tooltip;
 
   const IconButtonWidget({
-    required this.icon,
-    required this.onPressed,
-    this.color,
-    this.backgroundColor,
-    this.size = 48,
-    this.iconSize = 24,
-    this.tooltip,
-    Key? key,
+  required this.icon,
+  required this.onPressed,
+  this.color,
+  this.backgroundColor,
+  this.size = 48,
+  this.iconSize = 24,
+  this.tooltip,
+  Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(8),
-          child: Tooltip(
-            message: tooltip ?? '',
-            child: Icon(
-              icon,
-              size: iconSize,
-              color: color ?? CoopvestColors.primary,
-            ),
-          ),
-        ),
-      ),
-    );
+  return Container(
+  width: size,
+  height: size,
+  decoration: BoxDecoration(
+  color: backgroundColor ?? Colors.transparent,
+  borderRadius: BorderRadius.circular(8),
+ ),
+  child: Material(
+  color: Colors.transparent,
+  child: InkWell(
+  onTap: onPressed,
+  borderRadius: BorderRadius.circular(8),
+  child: Tooltip(
+  message: tooltip ?? '',
+  child: Icon(
+  icon,
+  size: iconSize,
+  color: color ?? CoopvestColors.primary,
+ ),
+ ),
+ ),
+ ),
+ );
   }
 }

@@ -17,248 +17,248 @@ class KYCCubit extends StateNotifier<KYCState> {
 
   /// Initialize KYC
   Future<void> initializeKYC() async {
-    state = state.copyWith(status: KYCStatus.loading);
-    
-    try {
-      final submission = await _repository.getKYCStatus();
-      final organizations = await _repository.getOrganizations();
-      
-      state = state.copyWith(
-        status: KYCStatus.loaded,
-        submission: submission,
-        organizations: organizations,
-      );
-    } catch (e) {
-      logger.e('Initialize KYC error: $e');
-      state = state.copyWith(
-        status: KYCStatus.error,
-        error: e.toString(),
-      );
-    }
+  state = state.copyWith(status: KYCStatus.loading);
+  
+  try {
+  final submission = await _repository.getKYCStatus();
+  final organizations = await _repository.getOrganizations();
+  
+  state = state.copyWith(
+  status: KYCStatus.loaded,
+  submission: submission,
+  organizations: organizations,
+ );
+  } catch (e) {
+  logger.e('Initialize KYC error: $e');
+  state = state.copyWith(
+  status: KYCStatus.error,
+  error: e.toString(),
+ );
+  }
   }
 
   /// Update personal details
   void updatePersonalDetails({
-    String? dateOfBirth,
-    String? gender,
+  String? dateOfBirth,
+  String? gender,
   }) {
-    final current = state.submission;
-    if (current == null) return;
-    
-    state = state.copyWith(
-      submission: current.copyWith(
-        dateOfBirth: dateOfBirth,
-        gender: gender,
-      ),
-    );
+  final current = state.submission;
+  if (current == null) return;
+  
+  state = state.copyWith(
+  submission: current.copyWith(
+  dateOfBirth: dateOfBirth,
+  gender: gender,
+ ),
+ );
   }
 
   /// Update employment details
   void updateEmploymentDetails({
-    String? employmentType,
-    String? organizationId,
-    String? organizationName,
-    String? jobTitle,
-    String? monthlyIncomeRange,
+  String? employmentType,
+  String? organizationId,
+  String? organizationName,
+  String? jobTitle,
+  String? monthlyIncomeRange,
   }) {
-    final current = state.submission;
-    if (current == null) return;
-    
-    state = state.copyWith(
-      submission: current.copyWith(
-        employmentType: employmentType ?? current.employmentType,
-        organizationId: organizationId,
-        organizationName: organizationName,
-        jobTitle: jobTitle ?? current.jobTitle,
-        monthlyIncomeRange: monthlyIncomeRange ?? current.monthlyIncomeRange,
-      ),
-    );
+  final current = state.submission;
+  if (current == null) return;
+  
+  state = state.copyWith(
+  submission: current.copyWith(
+  employmentType: employmentType ?? current.employmentType,
+  organizationId: organizationId,
+  organizationName: organizationName,
+  jobTitle: jobTitle ?? current.jobTitle,
+  monthlyIncomeRange: monthlyIncomeRange ?? current.monthlyIncomeRange,
+ ),
+ );
   }
 
   /// Update address
   void updateAddress({
-    String? residentialAddress,
-    String? city,
-    String? state,
-    String? country,
+  String? residentialAddress,
+  String? city,
+  String? state,
+  String? country,
   }) {
-    final current = state.submission;
-    if (current == null) return;
-    
-    state = state.copyWith(
-      submission: current.copyWith(
-        residentialAddress: residentialAddress ?? current.residentialAddress,
-        city: city,
-        state: state,
-        country: country,
-      ),
-    );
+  final current = state.submission;
+  if (current == null) return;
+  
+  state = state.copyWith(
+  submission: current.copyWith(
+  residentialAddress: residentialAddress ?? current.residentialAddress,
+  city: city,
+  state: state,
+  country: country,
+ ),
+ );
   }
 
   /// Update ID details
   void updateIDDetails({
-    String? idType,
-    String? idNumber,
-    String? idPhotoPath,
+  String? idType,
+  String? idNumber,
+  String? idPhotoPath,
   }) {
-    final current = state.submission;
-    if (current == null) return;
-    
-    state = state.copyWith(
-      submission: current.copyWith(
-        idType: idType ?? current.idType,
-        idNumber: idNumber,
-        idPhotoPath: idPhotoPath,
-      ),
-    );
+  final current = state.submission;
+  if (current == null) return;
+  
+  state = state.copyWith(
+  submission: current.copyWith(
+  idType: idType ?? current.idType,
+  idNumber: idNumber,
+  idPhotoPath: idPhotoPath,
+ ),
+ );
   }
 
   /// Update selfie
   void updateSelfie(String selfiePath) {
-    final current = state.submission;
-    if (current == null) return;
-    
-    state = state.copyWith(
-      submission: current.copyWith(selfiePhotoPath: selfiePath),
-    );
+  final current = state.submission;
+  if (current == null) return;
+  
+  state = state.copyWith(
+  submission: current.copyWith(selfiePhotoPath: selfiePath),
+ );
   }
   
   /// Update bank details
   void updateBankDetails({
-    String? bankName,
-    String? bankCode,
-    String? accountNumber,
-    String? accountName,
-    String? accountType,
-    String? bvn,
+  String? bankName,
+  String? bankCode,
+  String? accountNumber,
+  String? accountName,
+  String? accountType,
+  String? bvn,
   }) {
-    final current = state.submission;
-    if (current == null) return;
-    
-    state = state.copyWith(
-      submission: current.copyWith(
-        bankName: bankName ?? current.bankName,
-        bankCode: bankCode ?? current.bankCode,
-        accountNumber: accountNumber,
-        accountName: accountName,
-        accountType: accountType ?? current.accountType,
-        bvn: bvn,
-      ),
-    );
+  final current = state.submission;
+  if (current == null) return;
+  
+  state = state.copyWith(
+  submission: current.copyWith(
+  bankName: bankName ?? current.bankName,
+  bankCode: bankCode ?? current.bankCode,
+  accountNumber: accountNumber,
+  accountName: accountName,
+  accountType: accountType ?? current.accountType,
+  bvn: bvn,
+ ),
+ );
   }
 
   /// Search organizations
   Future<void> searchOrganizations(String query) async {
-    try {
-      final organizations = await _repository.getOrganizations(search: query);
-      state = state.copyWith(organizations: organizations);
-    } catch (e) {
-      logger.e('Search organizations error: $e');
-    }
+  try {
+  final organizations = await _repository.getOrganizations(search: query);
+  state = state.copyWith(organizations: organizations);
+  } catch (e) {
+  logger.e('Search organizations error: $e');
+  }
   }
 
   /// Request organization approval
   Future<void> requestOrganizationApproval(String organizationName) async {
-    try {
-      await _repository.requestOrganizationApproval(organizationName);
-    } catch (e) {
-      logger.e('Request organization approval error: $e');
-      rethrow;
-    }
+  try {
+  await _repository.requestOrganizationApproval(organizationName);
+  } catch (e) {
+  logger.e('Request organization approval error: $e');
+  rethrow;
+  }
   }
 
   /// Upload ID document
   Future<void> uploadIDDocument(String filePath) async {
-    try {
-      final path = await _repository.uploadIDDocument(filePath);
-      updateIDDetails(idPhotoPath: path);
-    } catch (e) {
-      logger.e('Upload ID document error: $e');
-      rethrow;
-    }
+  try {
+  final path = await _repository.uploadIDDocument(filePath);
+  updateIDDetails(idPhotoPath: path);
+  } catch (e) {
+  logger.e('Upload ID document error: $e');
+  rethrow;
+  }
   }
 
   /// Upload selfie
   Future<void> uploadSelfie(String filePath) async {
-    try {
-      final path = await _repository.uploadSelfie(filePath);
-      updateSelfie(path);
-    } catch (e) {
-      logger.e('Upload selfie error: $e');
-      rethrow;
-    }
+  try {
+  final path = await _repository.uploadSelfie(filePath);
+  updateSelfie(path);
+  } catch (e) {
+  logger.e('Upload selfie error: $e');
+  rethrow;
+  }
   }
 
   /// Submit KYC
   Future<void> submitKYC() async {
-    final submission = state.submission;
-    if (submission == null) {
-      state = state.copyWith(error: 'No submission data');
-      return;
-    }
+  final submission = state.submission;
+  if (submission == null) {
+  state = state.copyWith(error: 'No submission data');
+  return;
+  }
 
-    if (!submission.isComplete) {
-      state = state.copyWith(
-        error: 'Please complete all required fields',
-      );
-      return;
-    }
+  if (!submission.isComplete) {
+  state = state.copyWith(
+  error: 'Please complete all required fields',
+ );
+  return;
+  }
 
-    state = state.copyWith(status: KYCStatus.submitting);
-    
-    try {
-      await _repository.submitKYC(submission);
-      
-      state = state.copyWith(
-        status: KYCStatus.loaded,
-        submission: submission.copyWith(
-          status: 'submitted',
-          submittedAt: DateTime.now(),
-        ),
-      );
-    } catch (e) {
-      logger.e('Submit KYC error: $e');
-      state = state.copyWith(
-        status: KYCStatus.error,
-        error: e.toString(),
-      );
-      rethrow;
-    }
+  state = state.copyWith(status: KYCStatus.submitting);
+  
+  try {
+  await _repository.submitKYC(submission);
+  
+  state = state.copyWith(
+  status: KYCStatus.loaded,
+  submission: submission.copyWith(
+  status: 'submitted',
+  submittedAt: DateTime.now(),
+ ),
+ );
+  } catch (e) {
+  logger.e('Submit KYC error: $e');
+  state = state.copyWith(
+  status: KYCStatus.error,
+  error: e.toString(),
+ );
+  rethrow;
+  }
   }
 
   /// Navigate to next step
   void nextStep() {
-    if (state.currentStep < state.totalSteps - 1) {
-      state = state.copyWith(
-        currentStep: state.currentStep + 1,
-      );
-    }
+  if (state.currentStep < state.totalSteps - 1) {
+  state = state.copyWith(
+  currentStep: state.currentStep + 1,
+ );
+  }
   }
 
   /// Navigate to previous step
   void previousStep() {
-    if (state.currentStep > 0) {
-      state = state.copyWith(
-        currentStep: state.currentStep - 1,
-      );
-    }
+  if (state.currentStep > 0) {
+  state = state.copyWith(
+  currentStep: state.currentStep - 1,
+ );
+  }
   }
 
   /// Go to specific step
   void goToStep(int step) {
-    if (step >= 0 && step < state.totalSteps) {
-      state = state.copyWith(currentStep: step);
-    }
+  if (step >= 0 && step < state.totalSteps) {
+  state = state.copyWith(currentStep: step);
+  }
   }
 
   /// Clear error
   void clearError() {
-    state = state.copyWith(error: null);
+  state = state.copyWith(error: null);
   }
 
   /// Reset KYC
   void resetKYC() {
-    state = const KYCState();
+  state = const KYCState();
   }
 }
 

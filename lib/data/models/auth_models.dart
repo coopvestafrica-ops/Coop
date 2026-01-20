@@ -20,122 +20,122 @@ class User extends Equatable {
   final DateTime updatedAt;
 
   const User({
-    required this.id,
-    required this.email,
-    this.phone,
-    required this.name,
-    this.dateOfBirth,
-    this.gender,
-    this.occupation,
-    required this.kycStatus,
-    this.idType,
-    this.idNumber,
-    this.address,
-    this.city,
-    this.state,
-    this.country,
-    required this.createdAt,
-    required this.updatedAt,
+  required this.id,
+  required this.email,
+  this.phone,
+  required this.name,
+  this.dateOfBirth,
+  this.gender,
+  this.occupation,
+  required this.kycStatus,
+  this.idType,
+  this.idNumber,
+  this.address,
+  this.city,
+  this.state,
+  this.country,
+  required this.createdAt,
+  required this.updatedAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as String?,
-      name: json['name'] as String,
-      dateOfBirth: json['date_of_birth'] as String?,
-      gender: json['gender'] as String?,
-      occupation: json['occupation'] as String?,
-      kycStatus: json['kyc_status'] as String? ?? 'pending',
-      idType: json['id_type'] as String?,
-      idNumber: json['id_number'] as String?,
-      address: json['address'] as String?,
-      city: json['city'] as String?,
-      state: json['state'] as String?,
-      country: json['country'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-    );
+  return User(
+  id: json['id'] as String,
+  email: json['email'] as String,
+  phone: json['phone'] as String?,
+  name: json['name'] as String,
+  dateOfBirth: json['date_of_birth'] as String?,
+  gender: json['gender'] as String?,
+  occupation: json['occupation'] as String?,
+  kycStatus: json['kyc_status'] as String? ?? 'pending',
+  idType: json['id_type'] as String?,
+  idNumber: json['id_number'] as String?,
+  address: json['address'] as String?,
+  city: json['city'] as String?,
+  state: json['state'] as String?,
+  country: json['country'] as String?,
+  createdAt: DateTime.parse(json['created_at'] as String),
+  updatedAt: DateTime.parse(json['updated_at'] as String),
+ );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'email': email,
-      'phone': phone,
-      'name': name,
-      'date_of_birth': dateOfBirth,
-      'gender': gender,
-      'occupation': occupation,
-      'kyc_status': kycStatus,
-      'id_type': idType,
-      'id_number': idNumber,
-      'address': address,
-      'city': city,
-      'state': state,
-      'country': country,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-    };
+  return {
+  'id': id,
+  'email': email,
+  'phone': phone,
+  'name': name,
+  'date_of_birth': dateOfBirth,
+  'gender': gender,
+  'occupation': occupation,
+  'kyc_status': kycStatus,
+  'id_type': idType,
+  'id_number': idNumber,
+  'address': address,
+  'city': city,
+  'state': state,
+  'country': country,
+  'created_at': createdAt.toIso8601String(),
+  'updated_at': updatedAt.toIso8601String(),
+  };
   }
 
   User copyWith({
-    String? id,
-    String? email,
-    String? phone,
-    String? name,
-    String? dateOfBirth,
-    String? gender,
-    String? occupation,
-    String? kycStatus,
-    String? idType,
-    String? idNumber,
-    String? address,
-    String? city,
-    String? state,
-    String? country,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+  String? id,
+  String? email,
+  String? phone,
+  String? name,
+  String? dateOfBirth,
+  String? gender,
+  String? occupation,
+  String? kycStatus,
+  String? idType,
+  String? idNumber,
+  String? address,
+  String? city,
+  String? state,
+  String? country,
+  DateTime? createdAt,
+  DateTime? updatedAt,
   }) {
-    return User(
-      id: id ?? this.id,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
-      name: name ?? this.name,
-      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-      gender: gender ?? this.gender,
-      occupation: occupation ?? this.occupation,
-      kycStatus: kycStatus ?? this.kycStatus,
-      idType: idType ?? this.idType,
-      idNumber: idNumber ?? this.idNumber,
-      address: address ?? this.address,
-      city: city ?? this.city,
-      state: state ?? this.state,
-      country: country ?? this.country,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
+  return User(
+  id: id ?? this.id,
+  email: email ?? this.email,
+  phone: phone ?? this.phone,
+  name: name ?? this.name,
+  dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+  gender: gender ?? this.gender,
+  occupation: occupation ?? this.occupation,
+  kycStatus: kycStatus ?? this.kycStatus,
+  idType: idType ?? this.idType,
+  idNumber: idNumber ?? this.idNumber,
+  address: address ?? this.address,
+  city: city ?? this.city,
+  state: state ?? this.state,
+  country: country ?? this.country,
+  createdAt: createdAt ?? this.createdAt,
+  updatedAt: updatedAt ?? this.updatedAt,
+ );
   }
 
   @override
   List<Object?> get props => [
-    id,
-    email,
-    phone,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-    kycStatus,
-    idType,
-    idNumber,
-    address,
-    city,
-    state,
-    country,
-    createdAt,
-    updatedAt,
+  id,
+  email,
+  phone,
+  name,
+  dateOfBirth,
+  gender,
+  occupation,
+  kycStatus,
+  idType,
+  idNumber,
+  address,
+  city,
+  state,
+  country,
+  createdAt,
+  updatedAt,
   ];
 }
 
@@ -147,28 +147,28 @@ class AuthResponse extends Equatable {
   final DateTime expiresAt;
 
   const AuthResponse({
-    required this.accessToken,
-    required this.refreshToken,
-    required this.user,
-    required this.expiresAt,
+  required this.accessToken,
+  required this.refreshToken,
+  required this.user,
+  required this.expiresAt,
   });
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
-    return AuthResponse(
-      accessToken: json['access_token'] as String,
-      refreshToken: json['refresh_token'] as String,
-      user: User.fromJson(json['user'] as Map<String, dynamic>),
-      expiresAt: DateTime.parse(json['expires_at'] as String),
-    );
+  return AuthResponse(
+  accessToken: json['access_token'] as String,
+  refreshToken: json['refresh_token'] as String,
+  user: User.fromJson(json['user'] as Map<String, dynamic>),
+  expiresAt: DateTime.parse(json['expires_at'] as String),
+ );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'access_token': accessToken,
-      'refresh_token': refreshToken,
-      'user': user.toJson(),
-      'expires_at': expiresAt.toIso8601String(),
-    };
+  return {
+  'access_token': accessToken,
+  'refresh_token': refreshToken,
+  'user': user.toJson(),
+  'expires_at': expiresAt.toIso8601String(),
+  };
   }
 
   @override
@@ -182,17 +182,17 @@ class LoginRequest extends Equatable {
   final String? deviceId;
 
   const LoginRequest({
-    required this.email,
-    required this.password,
-    this.deviceId,
+  required this.email,
+  required this.password,
+  this.deviceId,
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-      'device_id': deviceId,
-    };
+  return {
+  'email': email,
+  'password': password,
+  'device_id': deviceId,
+  };
   }
 
   @override
@@ -208,21 +208,21 @@ class RegisterRequest extends Equatable {
   final String? deviceId;
 
   const RegisterRequest({
-    required this.email,
-    required this.password,
-    required this.name,
-    this.phone,
-    this.deviceId,
+  required this.email,
+  required this.password,
+  required this.name,
+  this.phone,
+  this.deviceId,
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-      'name': name,
-      'phone': phone,
-      'device_id': deviceId,
-    };
+  return {
+  'email': email,
+  'password': password,
+  'name': name,
+  'phone': phone,
+  'device_id': deviceId,
+  };
   }
 
   @override
@@ -253,11 +253,11 @@ class AuthState extends Equatable {
   final String? refreshToken;
 
   const AuthState({
-    this.status = AuthStatus.initial,
-    this.user,
-    this.error,
-    this.accessToken,
-    this.refreshToken,
+  this.status = AuthStatus.initial,
+  this.user,
+  this.error,
+  this.accessToken,
+  this.refreshToken,
   });
 
   bool get isAuthenticated => status == AuthStatus.authenticated;
@@ -266,19 +266,19 @@ class AuthState extends Equatable {
   bool get isKycRejected => status == AuthStatus.kycRejected;
 
   AuthState copyWith({
-    AuthStatus? status,
-    User? user,
-    String? error,
-    String? accessToken,
-    String? refreshToken,
+  AuthStatus? status,
+  User? user,
+  String? error,
+  String? accessToken,
+  String? refreshToken,
   }) {
-    return AuthState(
-      status: status ?? this.status,
-      user: user ?? this.user,
-      error: error,
-      accessToken: accessToken ?? this.accessToken,
-      refreshToken: refreshToken ?? this.refreshToken,
-    );
+  return AuthState(
+  status: status ?? this.status,
+  user: user ?? this.user,
+  error: error,
+  accessToken: accessToken ?? this.accessToken,
+  refreshToken: refreshToken ?? this.refreshToken,
+ );
   }
 
   @override

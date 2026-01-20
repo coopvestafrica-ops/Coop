@@ -18,119 +18,119 @@ class WalletRepository {
 
   /// Get wallet
   Future<Wallet> getWallet() async {
-    try {
-      final response = await _apiClient.get('/wallet');
-      return Wallet.fromJson(response as Map<String, dynamic>);
-    } catch (e) {
-      logger.e('Get wallet error: $e');
-      rethrow;
-    }
+  try {
+  final response = await _apiClient.get('/wallet');
+  return Wallet.fromJson(response as Map<String, dynamic>);
+  } catch (e) {
+  logger.e('Get wallet error: $e');
+  rethrow;
+  }
   }
 
   /// Get transactions
   Future<List<Transaction>> getTransactions({
-    int page = 1,
-    int pageSize = 20,
-    String? type,
-    String? status,
+  int page = 1,
+  int pageSize = 20,
+  String? type,
+  String? status,
   }) async {
-    try {
-      final response = await _apiClient.get(
-        '/wallet/transactions',
-        queryParameters: {
-          'page': page,
-          'page_size': pageSize,
-          if (type != null) 'type': type,
-          if (status != null) 'status': status,
-        },
-      );
+  try {
+  final response = await _apiClient.get(
+  '/wallet/transactions',
+  queryParameters: {
+  'page': page,
+  'page_size': pageSize,
+  if (type != null) 'type': type,
+  if (status != null) 'status': status,
+  },
+ );
 
-      final data = response as Map<String, dynamic>;
-      final transactions = (data['data'] as List)
-          .map((item) => Transaction.fromJson(item as Map<String, dynamic>))
-          .toList();
+  final data = response as Map<String, dynamic>;
+  final transactions = (data['data'] as List)
+  .map((item) => Transaction.fromJson(item as Map<String, dynamic>))
+  .toList();
 
-      return transactions;
-    } catch (e) {
-      logger.e('Get transactions error: $e');
-      rethrow;
-    }
+  return transactions;
+  } catch (e) {
+  logger.e('Get transactions error: $e');
+  rethrow;
+  }
   }
 
   /// Make contribution
   Future<Transaction> makeContribution(double amount) async {
-    try {
-      final response = await _apiClient.post(
-        '/wallet/contribute',
-        data: {'amount': amount},
-      );
+  try {
+  final response = await _apiClient.post(
+  '/wallet/contribute',
+  data: {'amount': amount},
+ );
 
-      return Transaction.fromJson(response as Map<String, dynamic>);
-    } catch (e) {
-      logger.e('Make contribution error: $e');
-      rethrow;
-    }
+  return Transaction.fromJson(response as Map<String, dynamic>);
+  } catch (e) {
+  logger.e('Make contribution error: $e');
+  rethrow;
+  }
   }
 
   /// Get contributions
   Future<List<Contribution>> getContributions({
-    int page = 1,
-    int pageSize = 20,
+  int page = 1,
+  int pageSize = 20,
   }) async {
-    try {
-      final response = await _apiClient.get(
-        '/wallet/contributions',
-        queryParameters: {
-          'page': page,
-          'page_size': pageSize,
-        },
-      );
+  try {
+  final response = await _apiClient.get(
+  '/wallet/contributions',
+  queryParameters: {
+  'page': page,
+  'page_size': pageSize,
+  },
+ );
 
-      final data = response as Map<String, dynamic>;
-      final contributions = (data['data'] as List)
-          .map((item) => Contribution.fromJson(item as Map<String, dynamic>))
-          .toList();
+  final data = response as Map<String, dynamic>;
+  final contributions = (data['data'] as List)
+  .map((item) => Contribution.fromJson(item as Map<String, dynamic>))
+  .toList();
 
-      return contributions;
-    } catch (e) {
-      logger.e('Get contributions error: $e');
-      rethrow;
-    }
+  return contributions;
+  } catch (e) {
+  logger.e('Get contributions error: $e');
+  rethrow;
+  }
   }
 
   /// Generate statement
   Future<String> generateStatement({
-    required DateTime startDate,
-    required DateTime endDate,
+  required DateTime startDate,
+  required DateTime endDate,
   }) async {
-    try {
-      final response = await _apiClient.post(
-        '/wallet/statement',
-        data: {
-          'start_date': startDate.toIso8601String(),
-          'end_date': endDate.toIso8601String(),
-        },
-      );
+  try {
+  final response = await _apiClient.post(
+  '/wallet/statement',
+  data: {
+  'start_date': startDate.toIso8601String(),
+  'end_date': endDate.toIso8601String(),
+  },
+ );
 
-      return response['statement_url'] as String;
-    } catch (e) {
-      logger.e('Generate statement error: $e');
-      rethrow;
-    }
+  return response['statement_url'] as String;
+  } catch (e) {
+  logger.e('Generate statement error: $e');
+  rethrow;
+  }
   }
 
   /// Get transaction receipt
   Future<String> getTransactionReceipt(String transactionId) async {
-    try {
-      final response = await _apiClient.get(
-        '/wallet/transactions/$transactionId/receipt',
-      );
+  try {
+  final response = await _apiClient.get(
+  '/wallet/transactions/$transactionId/receipt',
+ );
 
-      return response['receipt_url'] as String;
-    } catch (e) {
-      logger.e('Get transaction receipt error: $e');
-      rethrow;
-    }
+  return response['receipt_url'] as String;
+  } catch (e) {
+  logger.e('Get transaction receipt error: $e');
+  rethrow;
+  }
   }
 }
 
@@ -142,78 +142,78 @@ class WalletNotifier extends StateNotifier<WalletState> {
 
   /// Load wallet
   Future<void> loadWallet() async {
-    state = state.copyWith(status: WalletStatus.loading);
-    try {
-      final wallet = await _walletRepository.getWallet();
-      state = state.copyWith(
-        status: WalletStatus.loaded,
-        wallet: wallet,
-      );
-    } catch (e) {
-      logger.e('Load wallet error: $e');
-      state = state.copyWith(
-        status: WalletStatus.error,
-        error: e.toString(),
-      );
-    }
+  state = state.copyWith(status: WalletStatus.loading);
+  try {
+  final wallet = await _walletRepository.getWallet();
+  state = state.copyWith(
+  status: WalletStatus.loaded,
+  wallet: wallet,
+ );
+  } catch (e) {
+  logger.e('Load wallet error: $e');
+  state = state.copyWith(
+  status: WalletStatus.error,
+  error: e.toString(),
+ );
+  }
   }
 
   /// Load transactions
   Future<void> loadTransactions({
-    int page = 1,
-    int pageSize = 20,
-    String? type,
-    String? status,
+  int page = 1,
+  int pageSize = 20,
+  String? type,
+  String? status,
   }) async {
-    state = state.copyWith(status: WalletStatus.loading);
-    try {
-      final transactions = await _walletRepository.getTransactions(
-        page: page,
-        pageSize: pageSize,
-        type: type,
-        status: status,
-      );
+  state = state.copyWith(status: WalletStatus.loading);
+  try {
+  final transactions = await _walletRepository.getTransactions(
+  page: page,
+  pageSize: pageSize,
+  type: type,
+  status: status,
+ );
 
-      state = state.copyWith(
-        status: WalletStatus.loaded,
-        transactions: transactions,
-      );
-    } catch (e) {
-      logger.e('Load transactions error: $e');
-      state = state.copyWith(
-        status: WalletStatus.error,
-        error: e.toString(),
-      );
-    }
+  state = state.copyWith(
+  status: WalletStatus.loaded,
+  transactions: transactions,
+ );
+  } catch (e) {
+  logger.e('Load transactions error: $e');
+  state = state.copyWith(
+  status: WalletStatus.error,
+  error: e.toString(),
+ );
+  }
   }
 
   /// Make contribution
   Future<void> makeContribution(double amount) async {
-    state = state.copyWith(status: WalletStatus.loading);
-    try {
-      final transaction = await _walletRepository.makeContribution(amount);
+  state = state.copyWith(status: WalletStatus.loading);
+  try {
+  final transaction = await _walletRepository.makeContribution(amount);
 
-      // Reload wallet
-      await loadWallet();
+  // Reload wallet
+  await loadWallet();
 
-      // Add transaction to list
-      state = state.copyWith(
-        status: WalletStatus.loaded,
-        transactions: [transaction, ...state.transactions],
-      );
-    } catch (e) {
-      logger.e('Make contribution error: $e');
-      state = state.copyWith(
-        status: WalletStatus.error,
-        error: e.toString(),
-      );
-      rethrow;
-    }
+  // Add transaction to list
+  state = state.copyWith(
+  status: WalletStatus.loaded,
+  transactions: [transaction, ...state.transactions],
+ );
+  } catch (e) {
+  logger.e('Make contribution error: $e');
+  state = state.copyWith(
+  status: WalletStatus.error,
+  error: e.toString(),
+ );
+  rethrow;
+  }
   }
 
   /// Clear error
   void clearError() {
-    state = state.copyWith(error: null);
+  state = state.copyWith(error: null);
   }
 }
 

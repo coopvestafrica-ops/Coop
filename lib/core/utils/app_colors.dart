@@ -35,19 +35,19 @@ class AppColors {
   static Color get transparent => Colors.transparent;
   // Helper method to get color from string name
   static Color? fromName(String name) {
-    switch (name.toLowerCase()) {
-      case 'primary': return primary;
-      case 'secondary': return secondary;
-      case 'success': return success;
-      case 'warning': return warning;
-      case 'error': return error;
-      case 'info': return info;
-      case 'textprimary': return textPrimary;
-      case 'textsecondary': return textSecondary;
-      case 'background': return background;
-      case 'surface': return surface;
-      default: return null;
-    }
+  switch (name.toLowerCase()) {
+  case 'primary': return primary;
+  case 'secondary': return secondary;
+  case 'success': return success;
+  case 'warning': return warning;
+  case 'error': return error;
+  case 'info': return info;
+  case 'textprimary': return textPrimary;
+  case 'textsecondary': return textSecondary;
+  case 'background': return background;
+  case 'surface': return surface;
+  default: return null;
+  }
   }
 }
 /// Currency formatting utilities
@@ -58,53 +58,53 @@ class AppCurrencyFormatter {
   static const String euroSymbol = '€';
   /// Format number with thousand separators
   static String formatNumber(dynamic value, {int decimalPlaces = 0}) {
-    if (value == null) return '';
-    
-    double numValue = 0.0;
-    if (value is int) {
-      numValue = value.toDouble();
-    } else if (value is double) {
-      numValue = value;
-    } else if (value is String) {
-      numValue = double.tryParse(value) ?? 0.0;
-    final formatString = decimalPlaces > 0 
-        ? '#,##0.${'0' * decimalPlaces}' 
-        : '#,##0';
-    // Using NumberFormat
-    final formatter = NumberFormat(formatString, 'en_US');
-    return formatter.format(numValue);
+  if (value == null) return '';
+  
+  double numValue = 0.0;
+  if (value is int) {
+  numValue = value.toDouble();
+  } else if (value is double) {
+  numValue = value;
+  } else if (value is String) {
+  numValue = double.tryParse(value) ?? 0.0;
+  final formatString = decimalPlaces > 0 
+  ? '#,##0.${'0' * decimalPlaces}' 
+  : '#,##0';
+  // Using NumberFormat
+  final formatter = NumberFormat(formatString, 'en_US');
+  return formatter.format(numValue);
   /// Format as currency (Naira)
   static String formatNaira(dynamic value, {bool showSymbol = true}) {
-    final formatted = formatNumber(value);
-    return showSymbol ? '$nairaSymbol $formatted' : formatted;
+  final formatted = formatNumber(value);
+  return showSymbol ? '$nairaSymbol $formatted' : formatted;
   /// Format as currency (USD)
   static String formatUSD(dynamic value, {bool showSymbol = true}) {
-    return showSymbol ? '$dollarSymbol $formatted' : formatted;
+  return showSymbol ? '$dollarSymbol $formatted' : formatted;
   /// Parse currency string to double
   static double parseCurrency(String value) {
-    final cleaned = value.replaceAll(RegExp(r'[^\d.]'), '');
-    return double.tryParse(cleaned) ?? 0.0;
+  final cleaned = value.replaceAll(RegExp(r'[^\d.]'), '');
+  return double.tryParse(cleaned) ?? 0.0;
 /// Extension methods for number formatting
 extension NumberExtension on double {
   String format({int decimalPlaces = 0}) {
-    return AppCurrencyFormatter.format(this, decimalPlaces: decimalPlaces);
+  return AppCurrencyFormatter.format(this, decimalPlaces: decimalPlaces);
   String toNaira({bool showSymbol = true}) {
-    return AppCurrencyFormatter.formatNaira(this, showSymbol: showSymbol);
+  return AppCurrencyFormatter.formatNaira(this, showSymbol: showSymbol);
   String toUSD({bool showSymbol = true}) {
-    return AppCurrencyFormatter.formatUSD(this, showSymbol: showSymbol);
+  return AppCurrencyFormatter.formatUSD(this, showSymbol: showSymbol);
 extension IntExtension on int {
 /// String extension for common operations
 extension StringExtension on String {
   /// Capitalize first letter
   String capitalize() {
-    if (isEmpty) return this;
-    return '${this[0].toUpperCase()}${substring(1).toLowerCase()}';
+  if (isEmpty) return this;
+  return '${this[0].toUpperCase()}${substring(1).toLowerCase()}';
   /// Capitalize each word
   String capitalizeWords() {
-    return split(' ').map((word) => word.capitalize()).join(' ');
+  return split(' ').map((word) => word.capitalize()).join(' ');
   /// Check if string is numeric
   bool get isNumeric {
-    if (isEmpty) return false;
-    return double.tryParse(this) != null;
+  if (isEmpty) return false;
+  return double.tryParse(this) != null;
   /// Get numeric value
   double? get numericValue => double.tryParse(this);

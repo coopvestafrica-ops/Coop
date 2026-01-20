@@ -19,148 +19,148 @@ class Loan extends Equatable {
   final DateTime? disbursedAt;
 
   const Loan({
-    required this.id,
-    required this.userId,
-    required this.amount,
-    required this.tenure,
-    required this.interestRate,
-    required this.monthlyRepayment,
-    required this.totalRepayment,
-    required this.status,
-    this.purpose,
-    required this.guarantorsAccepted,
-    required this.guarantorsRequired,
-    required this.createdAt,
-    required this.updatedAt,
-    this.approvedAt,
-    this.disbursedAt,
+  required this.id,
+  required this.userId,
+  required this.amount,
+  required this.tenure,
+  required this.interestRate,
+  required this.monthlyRepayment,
+  required this.totalRepayment,
+  required this.status,
+  this.purpose,
+  required this.guarantorsAccepted,
+  required this.guarantorsRequired,
+  required this.createdAt,
+  required this.updatedAt,
+  this.approvedAt,
+  this.disbursedAt,
   });
 
   factory Loan.fromJson(Map<String, dynamic> json) {
-    return Loan(
-      id: json['id'] as String,
-      userId: json['user_id'] as String,
-      amount: (json['amount'] as num).toDouble(),
-      tenure: json['tenure'] as int,
-      interestRate: (json['interest_rate'] as num).toDouble(),
-      monthlyRepayment: (json['monthly_repayment'] as num).toDouble(),
-      totalRepayment: (json['total_repayment'] as num).toDouble(),
-      status: json['status'] as String,
-      purpose: json['purpose'] as String?,
-      guarantorsAccepted: json['guarantors_accepted'] as int? ?? 0,
-      guarantorsRequired: json['guarantors_required'] as int? ?? 3,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      approvedAt: json['approved_at'] != null
-          ? DateTime.parse(json['approved_at'] as String)
-          : null,
-      disbursedAt: json['disbursed_at'] != null
-          ? DateTime.parse(json['disbursed_at'] as String)
-          : null,
-    );
+  return Loan(
+  id: json['id'] as String,
+  userId: json['user_id'] as String,
+  amount: (json['amount'] as num).toDouble(),
+  tenure: json['tenure'] as int,
+  interestRate: (json['interest_rate'] as num).toDouble(),
+  monthlyRepayment: (json['monthly_repayment'] as num).toDouble(),
+  totalRepayment: (json['total_repayment'] as num).toDouble(),
+  status: json['status'] as String,
+  purpose: json['purpose'] as String?,
+  guarantorsAccepted: json['guarantors_accepted'] as int? ?? 0,
+  guarantorsRequired: json['guarantors_required'] as int? ?? 3,
+  createdAt: DateTime.parse(json['created_at'] as String),
+  updatedAt: DateTime.parse(json['updated_at'] as String),
+  approvedAt: json['approved_at'] != null
+  ? DateTime.parse(json['approved_at'] as String)
+  : null,
+  disbursedAt: json['disbursed_at'] != null
+  ? DateTime.parse(json['disbursed_at'] as String)
+  : null,
+ );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'amount': amount,
-      'tenure': tenure,
-      'interest_rate': interestRate,
-      'monthly_repayment': monthlyRepayment,
-      'total_repayment': totalRepayment,
-      'status': status,
-      'purpose': purpose,
-      'guarantors_accepted': guarantorsAccepted,
-      'guarantors_required': guarantorsRequired,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-      'approved_at': approvedAt?.toIso8601String(),
-      'disbursed_at': disbursedAt?.toIso8601String(),
-    };
+  return {
+  'id': id,
+  'user_id': userId,
+  'amount': amount,
+  'tenure': tenure,
+  'interest_rate': interestRate,
+  'monthly_repayment': monthlyRepayment,
+  'total_repayment': totalRepayment,
+  'status': status,
+  'purpose': purpose,
+  'guarantors_accepted': guarantorsAccepted,
+  'guarantors_required': guarantorsRequired,
+  'created_at': createdAt.toIso8601String(),
+  'updated_at': updatedAt.toIso8601String(),
+  'approved_at': approvedAt?.toIso8601String(),
+  'disbursed_at': disbursedAt?.toIso8601String(),
+  };
   }
 
   Loan copyWith({
-    String? id,
-    String? userId,
-    double? amount,
-    int? tenure,
-    double? interestRate,
-    double? monthlyRepayment,
-    double? totalRepayment,
-    String? status,
-    String? purpose,
-    int? guarantorsAccepted,
-    int? guarantorsRequired,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    DateTime? approvedAt,
-    DateTime? disbursedAt,
+  String? id,
+  String? userId,
+  double? amount,
+  int? tenure,
+  double? interestRate,
+  double? monthlyRepayment,
+  double? totalRepayment,
+  String? status,
+  String? purpose,
+  int? guarantorsAccepted,
+  int? guarantorsRequired,
+  DateTime? createdAt,
+  DateTime? updatedAt,
+  DateTime? approvedAt,
+  DateTime? disbursedAt,
   }) {
-    return Loan(
-      id: id ?? this.id,
-      userId: userId ?? this.userId,
-      amount: amount ?? this.amount,
-      tenure: tenure ?? this.tenure,
-      interestRate: interestRate ?? this.interestRate,
-      monthlyRepayment: monthlyRepayment ?? this.monthlyRepayment,
-      totalRepayment: totalRepayment ?? this.totalRepayment,
-      status: status ?? this.status,
-      purpose: purpose ?? this.purpose,
-      guarantorsAccepted: guarantorsAccepted ?? this.guarantorsAccepted,
-      guarantorsRequired: guarantorsRequired ?? this.guarantorsRequired,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      approvedAt: approvedAt ?? this.approvedAt,
-      disbursedAt: disbursedAt ?? this.disbursedAt,
-    );
+  return Loan(
+  id: id ?? this.id,
+  userId: userId ?? this.userId,
+  amount: amount ?? this.amount,
+  tenure: tenure ?? this.tenure,
+  interestRate: interestRate ?? this.interestRate,
+  monthlyRepayment: monthlyRepayment ?? this.monthlyRepayment,
+  totalRepayment: totalRepayment ?? this.totalRepayment,
+  status: status ?? this.status,
+  purpose: purpose ?? this.purpose,
+  guarantorsAccepted: guarantorsAccepted ?? this.guarantorsAccepted,
+  guarantorsRequired: guarantorsRequired ?? this.guarantorsRequired,
+  createdAt: createdAt ?? this.createdAt,
+  updatedAt: updatedAt ?? this.updatedAt,
+  approvedAt: approvedAt ?? this.approvedAt,
+  disbursedAt: disbursedAt ?? this.disbursedAt,
+ );
   }
 
   DateTime? get nextRepaymentDate {
-    if (disbursedAt == null) return null;
-    final nextPayment = disbursedAt!.add(Duration(days: 30 * 1));
-    return nextPayment;
+  if (disbursedAt == null) return null;
+  final nextPayment = disbursedAt!.add(Duration(days: 30 * 1));
+  return nextPayment;
   }
 
   /// Get a demo loan for testing/development
   static Loan _getDemoLoan(String loanId) {
-    final now = DateTime.now();
-    return Loan(
-      id: loanId,
-      userId: 'demo-user',
-      amount: 50000,
-      tenure: 4,
-      interestRate: 5.0,
-      monthlyRepayment: 13125,
-      totalRepayment: 52500,
-      status: 'Active',
-      purpose: 'Business expansion',
-      guarantorsAccepted: 3,
-      guarantorsRequired: 3,
-      createdAt: now.subtract(const Duration(days: 30)),
-      updatedAt: now.subtract(const Duration(days: 25)),
-      approvedAt: now.subtract(const Duration(days: 25)),
-      disbursedAt: now.subtract(const Duration(days: 24)),
-    );
+  final now = DateTime.now();
+  return Loan(
+  id: loanId,
+  userId: 'demo-user',
+  amount: 50000,
+  tenure: 4,
+  interestRate: 5.0,
+  monthlyRepayment: 13125,
+  totalRepayment: 52500,
+  status: 'Active',
+  purpose: 'Business expansion',
+  guarantorsAccepted: 3,
+  guarantorsRequired: 3,
+  createdAt: now.subtract(const Duration(days: 30)),
+  updatedAt: now.subtract(const Duration(days: 25)),
+  approvedAt: now.subtract(const Duration(days: 25)),
+  disbursedAt: now.subtract(const Duration(days: 24)),
+ );
   }
 
   @override
   List<Object?> get props => [
-    id,
-    userId,
-    amount,
-    tenure,
-    interestRate,
-    monthlyRepayment,
-    totalRepayment,
-    status,
-    purpose,
-    guarantorsAccepted,
-    guarantorsRequired,
-    createdAt,
-    updatedAt,
-    approvedAt,
-    disbursedAt,
+  id,
+  userId,
+  amount,
+  tenure,
+  interestRate,
+  monthlyRepayment,
+  totalRepayment,
+  status,
+  purpose,
+  guarantorsAccepted,
+  guarantorsRequired,
+  createdAt,
+  updatedAt,
+  approvedAt,
+  disbursedAt,
   ];
 }
 
@@ -176,54 +176,54 @@ class Guarantor extends Equatable {
   final DateTime createdAt;
 
   const Guarantor({
-    required this.id,
-    required this.loanId,
-    required this.guarantorId,
-    required this.guarantorName,
-    this.guarantorPhone,
-    required this.status,
-    this.acceptedAt,
-    required this.createdAt,
+  required this.id,
+  required this.loanId,
+  required this.guarantorId,
+  required this.guarantorName,
+  this.guarantorPhone,
+  required this.status,
+  this.acceptedAt,
+  required this.createdAt,
   });
 
   factory Guarantor.fromJson(Map<String, dynamic> json) {
-    return Guarantor(
-      id: json['id'] as String,
-      loanId: json['loan_id'] as String,
-      guarantorId: json['guarantor_id'] as String,
-      guarantorName: json['guarantor_name'] as String,
-      guarantorPhone: json['guarantor_phone'] as String?,
-      status: json['status'] as String,
-      acceptedAt: json['accepted_at'] != null
-          ? DateTime.parse(json['accepted_at'] as String)
-          : null,
-      createdAt: DateTime.parse(json['created_at'] as String),
-    );
+  return Guarantor(
+  id: json['id'] as String,
+  loanId: json['loan_id'] as String,
+  guarantorId: json['guarantor_id'] as String,
+  guarantorName: json['guarantor_name'] as String,
+  guarantorPhone: json['guarantor_phone'] as String?,
+  status: json['status'] as String,
+  acceptedAt: json['accepted_at'] != null
+  ? DateTime.parse(json['accepted_at'] as String)
+  : null,
+  createdAt: DateTime.parse(json['created_at'] as String),
+ );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'loan_id': loanId,
-      'guarantor_id': guarantorId,
-      'guarantor_name': guarantorName,
-      'guarantor_phone': guarantorPhone,
-      'status': status,
-      'accepted_at': acceptedAt?.toIso8601String(),
-      'created_at': createdAt.toIso8601String(),
-    };
+  return {
+  'id': id,
+  'loan_id': loanId,
+  'guarantor_id': guarantorId,
+  'guarantor_name': guarantorName,
+  'guarantor_phone': guarantorPhone,
+  'status': status,
+  'accepted_at': acceptedAt?.toIso8601String(),
+  'created_at': createdAt.toIso8601String(),
+  };
   }
 
   @override
   List<Object?> get props => [
-    id,
-    loanId,
-    guarantorId,
-    guarantorName,
-    guarantorPhone,
-    status,
-    acceptedAt,
-    createdAt,
+  id,
+  loanId,
+  guarantorId,
+  guarantorName,
+  guarantorPhone,
+  status,
+  acceptedAt,
+  createdAt,
   ];
 }
 
@@ -234,17 +234,17 @@ class LoanApplication extends Equatable {
   final String? purpose;
 
   const LoanApplication({
-    required this.amount,
-    required this.tenure,
-    this.purpose,
+  required this.amount,
+  required this.tenure,
+  this.purpose,
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'amount': amount,
-      'tenure': tenure,
-      'purpose': purpose,
-    };
+  return {
+  'amount': amount,
+  'tenure': tenure,
+  'purpose': purpose,
+  };
   }
 
   @override
@@ -267,30 +267,30 @@ class LoansState extends Equatable {
   final String? error;
 
   const LoansState({
-    this.status = LoanStatus.initial,
-    this.loans = [],
-    this.selectedLoan,
-    this.guarantors = [],
-    this.error,
+  this.status = LoanStatus.initial,
+  this.loans = [],
+  this.selectedLoan,
+  this.guarantors = [],
+  this.error,
   });
 
   bool get isLoading => status == LoanStatus.loading;
   bool get isLoaded => status == LoanStatus.loaded;
 
   LoansState copyWith({
-    LoanStatus? status,
-    List<Loan>? loans,
-    Loan? selectedLoan,
-    List<Guarantor>? guarantors,
-    String? error,
+  LoanStatus? status,
+  List<Loan>? loans,
+  Loan? selectedLoan,
+  List<Guarantor>? guarantors,
+  String? error,
   }) {
-    return LoansState(
-      status: status ?? this.status,
-      loans: loans ?? this.loans,
-      selectedLoan: selectedLoan ?? this.selectedLoan,
-      guarantors: guarantors ?? this.guarantors,
-      error: error,
-    );
+  return LoansState(
+  status: status ?? this.status,
+  loans: loans ?? this.loans,
+  selectedLoan: selectedLoan ?? this.selectedLoan,
+  guarantors: guarantors ?? this.guarantors,
+  error: error,
+ );
   }
 
   @override
