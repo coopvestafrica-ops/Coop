@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../network/api_client.dart';
 
+/// class ApiService {
 class ApiService {
   final ApiClient _apiClient;
 

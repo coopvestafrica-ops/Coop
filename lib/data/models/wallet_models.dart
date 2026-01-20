@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../data/models/wallet_models.dart';
 
 /// Wallet Model
 class Wallet extends Equatable {

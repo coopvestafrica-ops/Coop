@@ -1,5 +1,6 @@
 part of 'kyc_repository.dart';
 
+/// class KYCSubmission {
 class KYCSubmission {
   final String id;
   final String userId;
@@ -30,6 +31,7 @@ class KYCSubmission {
   };
 }
 
+/// class Organization {
 class Organization {
   final String id;
   final String name;

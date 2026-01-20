@@ -1,5 +1,6 @@
 part of 'rollover_api_service.dart';
 
+/// class RolloverEligibility {
 class RolloverEligibility {
   final bool isEligible;
   final String? reason;
@@ -26,6 +27,7 @@ class RolloverEligibility {
   };
 }
 
+/// class LoanRollover {
 class LoanRollover {
   final String id;
   final String loanId;
@@ -60,6 +62,7 @@ class LoanRollover {
   };
 }
 
+/// class RolloverGuarantor {
 class RolloverGuarantor {
   final String id;
   final String name;

@@ -410,4 +410,26 @@ class RolloverNotifier extends StateNotifier<RolloverState> {
   void setEligibility(RolloverEligibility eligibility) {
     state = state.copyWith(eligibility: eligibility);
   }
+
+  
+  Future<void> addGuarantor(RolloverGuarantor guarantor) async {
+    final current = state;
+    if (current != null) {
+      final updated = current.copyWith(
+        guarantors: [...current.guarantors, guarantor],
+      );
+      state = updated;
+    }
+  }
+  
+  Future<void> removeGuarantor(String guarantorId) async {
+    final current = state;
+    if (current != null) {
+      final updated = current.copyWith(
+        guarantors: current.guarantors.where((g) => g.id != guarantorId).toList(),
+      );
+      state = updated;
+    }
+  }
+
 }
