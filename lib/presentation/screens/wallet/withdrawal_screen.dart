@@ -178,7 +178,7 @@ class _WithdrawalScreenState extends ConsumerState<WithdrawalScreen> {
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
-                  prefixText: '₦ ',
+                  prefix: '₦ ',
                   onChanged: (value) {
                     setState(() {});
                   },
@@ -226,7 +226,7 @@ class _WithdrawalScreenState extends ConsumerState<WithdrawalScreen> {
                           ),
                         ),
                         child: Text(
-                          '₦${amount.formatNumber()}',
+                          '₦${amount.format()}',
                           style: TextStyle(
                             color: amount <= _availableBalance
                                 ? (isSelected ? Colors.white : CoopvestColors.darkGray)

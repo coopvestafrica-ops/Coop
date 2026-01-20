@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
+import '../../core/services/logger_service.dart';
 import '../../data/api/referral_api_service.dart';
 import '../../data/models/referral_models.dart';
 import '../../data/repositories/referral_repository.dart' hide ShareLinkResponse;

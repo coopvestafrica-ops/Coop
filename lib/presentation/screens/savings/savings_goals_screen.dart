@@ -124,7 +124,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                   hint: 'Enter target amount',
                   controller: _targetController,
                   keyboardType: TextInputType.number,
-                  prefixText: '₦ ',
+                  prefix: '₦ ',
                   textInputAction: TextInputAction.next,
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Required';
@@ -139,7 +139,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                   hint: 'How much can you save monthly?',
                   controller: _monthlyController,
                   keyboardType: TextInputType.number,
-                  prefixText: '₦ ',
+                  prefix: '₦ ',
                   textInputAction: TextInputAction.next,
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Required';
@@ -313,14 +313,14 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '₦${goal.currentAmount.formatNumber()}',
+                      '₦${goal.currentAmount.format()}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                     ),
                     Text(
-                      'of ₦${goal.targetAmount.formatNumber()}',
+                      'of ₦${goal.targetAmount.format()}',
                       style: TextStyle(color: CoopvestColors.mediumGray),
                     ),
                   ],
@@ -329,7 +329,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '₦${goal.monthlyContribution.formatNumber()}/mo',
+                      '₦${goal.monthlyContribution.format()}/mo',
                       style: CoopvestTypography.bodyMedium.copyWith(
                         color: CoopvestColors.primary,
                         fontWeight: FontWeight.w600,

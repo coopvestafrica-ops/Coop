@@ -310,7 +310,7 @@ class _KYCBasicInfoScreenState extends ConsumerState<KYCBasicInfoScreen> {
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.next,
                 maxLength: 11,
-                prefixText: '+234 ',
+                prefix: '+234 ',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Phone number is required';

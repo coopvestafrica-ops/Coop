@@ -151,7 +151,7 @@ class _DepositScreenState extends ConsumerState<DepositScreen> {
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
-                  prefixText: '₦ ',
+                  prefix: '₦ ',
                   onChanged: (value) {
                     setState(() {});
                   },
@@ -188,7 +188,7 @@ class _DepositScreenState extends ConsumerState<DepositScreen> {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: CoopvestColors.lightGray),
                         ),
-                        child: Text('₦${amount.formatNumber()}'),
+                        child: Text('₦${amount.format()}'),
                       ),
                     );
                   }).toList(),

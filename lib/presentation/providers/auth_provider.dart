@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 import '../../core/utils/utils.dart';
+import '../../core/auth/auth_state.dart';
 import '../../data/models/auth_models.dart';
 import '../../data/models/kyc_models.dart';
 import '../../data/repositories/auth_repository.dart';
@@ -88,7 +89,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       state = state.copyWith(
         status: AuthStatus.kycPending,
-        user: state.user?.copyWith(kycStatus: 'pending'),
+        user: state.user!.copyWith(kycStatus: 'pending'),
       );
     } catch (e) {
       logger.e('Submit KYC error: $e');
@@ -108,17 +109,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (status == 'approved') {
         state = state.copyWith(
           status: AuthStatus.authenticated,
-          user: state.user?.copyWith(kycStatus: 'approved'),
+          user: state.user!.copyWith(kycStatus: 'approved'),
         );
       } else if (status == 'rejected') {
         state = state.copyWith(
           status: AuthStatus.kycRejected,
-          user: state.user?.copyWith(kycStatus: 'rejected'),
+          user: state.user!.copyWith(kycStatus: 'rejected'),
         );
       } else {
         state = state.copyWith(
           status: AuthStatus.kycPending,
-          user: state.user?.copyWith(kycStatus: 'pending'),
+          user: state.user!.copyWith(kycStatus: 'pending'),
         );
       }
     } catch (e) {

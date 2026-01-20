@@ -69,7 +69,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                   Expanded(
                     child: _buildStatCard(
                       'Total Savings',
-                      '\u20a6${(wallet?.balance ?? 0).formatNumber()}',
+                      '\u20a6${(wallet?.balance ?? 0).format()}',
                       Icons.savings,
                       CoopvestColors.success,
                     ),
@@ -100,7 +100,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                   Expanded(
                     child: _buildStatCard(
                       'Pending',
-                      '\u20a6${(wallet?.pendingContributions ?? 0).formatNumber()}',
+                      '\u20a6${(wallet?.pendingContributions ?? 0).format()}',
                       Icons.pending,
                       Colors.blue,
                     ),
@@ -312,7 +312,7 @@ class HomeDashboardScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '\u20a6${goal.currentAmount.formatNumber()} of \u20a6${goal.targetAmount.formatNumber()}',
+              '\u20a6${goal.currentAmount.format()} of \u20a6${goal.targetAmount.format()}',
               style: TextStyle(color: CoopvestColors.mediumGray),
             ),
           ],
@@ -371,7 +371,7 @@ class HomeDashboardScreen extends ConsumerWidget {
             ),
           ),
           Text(
-            '${isCredit ? '+' : '-'}\u20a6${txn.amount.formatNumber()}',
+            '${isCredit ? '+' : '-'}\u20a6${txn.amount.format()}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: isCredit ? CoopvestColors.success : CoopvestColors.error,

@@ -262,8 +262,8 @@ class LoanDashboardScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildLoanDetail('Amount', '\u20a6${loan.amount.formatNumber()}'),
-                  _buildLoanDetail('Monthly', '\u20a6${loan.monthlyRepayment.formatNumber()}'),
+                  _buildLoanDetail('Amount', '\u20a6${loan.amount.format()}'),
+                  _buildLoanDetail('Monthly', '\u20a6${loan.monthlyRepayment.format()}'),
                   _buildLoanDetail('Guarantors', '${loan.guarantorsAccepted}/${loan.guarantorsRequired}'),
                 ],
               ),

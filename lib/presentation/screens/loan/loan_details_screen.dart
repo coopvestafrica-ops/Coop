@@ -99,7 +99,7 @@ class LoanDetailsScreen extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _buildDetailItem('Loan ID', loan.id),
-                        _buildDetailItem('Amount', '\u20a6${loan.amount.formatNumber()}'),
+                        _buildDetailItem('Amount', '\u20a6${loan.amount.format()}'),
                         _buildDetailItem('Tenure', '${loan.tenure} months'),
                       ],
                     ),
@@ -120,9 +120,9 @@ class LoanDetailsScreen extends ConsumerWidget {
               AppCard(
                 child: Column(
                   children: [
-                    _buildSummaryRow('Monthly Repayment', '\u20a6${loan.monthlyRepayment.formatNumber()}'),
+                    _buildSummaryRow('Monthly Repayment', '\u20a6${loan.monthlyRepayment.format()}'),
                     const Divider(height: 24),
-                    _buildSummaryRow('Total Repayment', '\u20a6${loan.totalRepayment.formatNumber()}'),
+                    _buildSummaryRow('Total Repayment', '\u20a6${loan.totalRepayment.format()}'),
                     const Divider(height: 24),
                     _buildSummaryRow('Interest Rate', '${loan.interestRate}%'),
                     const Divider(height: 24),
@@ -262,7 +262,7 @@ class LoanDetailsScreen extends ConsumerWidget {
               ),
             ),
             Text(
-              '\u20a6${(installment['amount'] as double).formatNumber()}',
+              '\u20a6${(installment['amount'] as double).format()}',
               style: CoopvestTypography.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
                 color: statusColor,

@@ -425,7 +425,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
-                prefixText: '\u20a6 ',
+                prefix: '\u20a6 ',
                 onChanged: (value) {
                   setState(() {});
                 },
@@ -456,7 +456,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
                 controller: _monthlySavingsController,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
-                prefixText: '\u20a6 ',
+                prefix: '\u20a6 ',
                 onChanged: (value) {
                   setState(() {});
                 },
