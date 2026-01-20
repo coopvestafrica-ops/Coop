@@ -330,8 +330,7 @@ class RolloverProgressSteps extends StatelessWidget {
   const RolloverProgressSteps({
     super.key,
     required this.currentStep,
-    this.steps = const [
-      'Eligibility',
+    this.steps = ['Eligibility',
       'Request',
       'Guarantors',
       'Approval',

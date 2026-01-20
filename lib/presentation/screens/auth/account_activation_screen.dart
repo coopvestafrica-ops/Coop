@@ -99,7 +99,7 @@ class _AccountActivationScreenState extends State<AccountActivationScreen> {
                 child: Column(
                   children: [
                     _buildConfirmationItem(
-                      icon: Icons.check_circle_outline,
+                      icon: Icon(Icons.check_circle_outline),
                       title: 'Account Created',
                       subtitle: 'Your account has been successfully created',
                     ),
@@ -110,7 +110,7 @@ class _AccountActivationScreenState extends State<AccountActivationScreen> {
                     ),
                     const SizedBox(height: 16),
                     _buildConfirmationItem(
-                      icon: Icons.verified_user_outlined,
+                      icon: Icon(Icons.verified_user_outlined),
                       title: 'Salary Deduction Consent',
                       subtitle: 'Your consent has been recorded and logged',
                     ),
@@ -121,7 +121,7 @@ class _AccountActivationScreenState extends State<AccountActivationScreen> {
                     ),
                     const SizedBox(height: 16),
                     _buildConfirmationItem(
-                      icon: Icons.info_outline,
+                      icon: Icon(Icons.info_outline),
                       title: 'Important Notice',
                       subtitle: 'Loans are subject to eligibility and guarantor approval',
                     ),
@@ -170,7 +170,7 @@ class _AccountActivationScreenState extends State<AccountActivationScreen> {
 
               // Login Button
               PrimaryButton(
-                label: 'Go to Login',
+                text: 'Go to Login',
                 onPressed: () {
                   Navigator.of(context).pushReplacementNamed('/login');
                 },

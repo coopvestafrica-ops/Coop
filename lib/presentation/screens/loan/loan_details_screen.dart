@@ -160,7 +160,7 @@ class LoanDetailsScreen extends ConsumerWidget {
               // Make Repayment Button
               if (loan.status == 'Active' || loan.status == 'Repaying')
                 PrimaryButton(
-                  label: 'Make Repayment',
+                  text: 'Make Repayment',
                   onPressed: () {
                     // TODO: Navigate to repayment screen
                   },
@@ -335,8 +335,7 @@ class LoanDetailsScreen extends ConsumerWidget {
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.check_circle, color: CoopvestColors.success, size: 14),
+                children: [Icon(Icons.check_circle, color: CoopvestColors.success, size: 14),
                   SizedBox(width: 4),
                   Text(
                     'Confirmed',

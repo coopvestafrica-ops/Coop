@@ -117,8 +117,7 @@ class WalletDashboardScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
-                  children: const [
-                    Icon(Icons.visibility, color: Colors.white, size: 16),
+                  children: [Icon(Icons.visibility, color: Colors.white, size: 16),
                     SizedBox(width: 4),
                     Text(
                       'Hidden',
@@ -197,8 +196,8 @@ class WalletDashboardScreen extends ConsumerWidget {
             Expanded(
               child: _buildQuickActionButton(
                 context,
-                icon: Icons.add,
-                label: 'Deposit',
+                icon: Icon(Icons.add),
+                text: 'Deposit',
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -212,8 +211,8 @@ class WalletDashboardScreen extends ConsumerWidget {
             Expanded(
               child: _buildQuickActionButton(
                 context,
-                icon: Icons.remove,
-                label: 'Withdraw',
+                icon: Icon(Icons.remove),
+                text: 'Withdraw',
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -227,8 +226,8 @@ class WalletDashboardScreen extends ConsumerWidget {
             Expanded(
               child: _buildQuickActionButton(
                 context,
-                icon: Icons.savings,
-                label: 'Save',
+                icon: Icon(Icons.savings),
+                text: 'Save',
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -317,7 +316,7 @@ class WalletDashboardScreen extends ConsumerWidget {
         SizedBox(
           width: double.infinity,
           child: SecondaryButton(
-            label: '+ Create New Goal',
+            text: '+ Create New Goal',
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(

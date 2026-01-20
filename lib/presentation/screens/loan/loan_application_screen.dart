@@ -201,8 +201,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Row(
-          children: const [
-            Icon(Icons.check_circle, color: CoopvestColors.success),
+          children: [Icon(Icons.check_circle, color: CoopvestColors.success),
             SizedBox(width: 8),
             Text('Congratulations!'),
           ],
@@ -236,8 +235,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Row(
-          children: const [
-            Icon(Icons.hourglass_top, color: Colors.orange),
+          children: [Icon(Icons.hourglass_top, color: Colors.orange),
             SizedBox(width: 8),
             Text('Under Review'),
           ],
@@ -420,7 +418,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
 
               // Loan Amount
               AppTextField(
-                label: 'Loan Amount (\u20a6) *',
+                text: 'Loan Amount (\u20a6) *',
                 hint: 'Enter amount between \u20a6${minAmount.toStringAsFixed(0)} - \u20a6${maxAmount.toStringAsFixed(0)}',
                 controller: _amountController,
                 keyboardType: TextInputType.number,
@@ -451,7 +449,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
 
               // Monthly Savings While on Loan
               AppTextField(
-                label: 'Monthly Savings While On Loan (\u20a6) *',
+                text: 'Monthly Savings While On Loan (\u20a6) *',
                 hint: 'Minimum 10% of loan amount required',
                 controller: _monthlySavingsController,
                 keyboardType: TextInputType.number,
@@ -485,7 +483,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
 
               // Loan Purpose
               AppTextField(
-                label: 'Loan Purpose *',
+                text: 'Loan Purpose *',
                 hint: 'Briefly describe why you need this loan',
                 controller: _purposeController,
                 keyboardType: TextInputType.text,
@@ -539,7 +537,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
                       ),
                     )
                   : PrimaryButton(
-                      label: 'Submit Application',
+                      text: 'Submit Application',
                       onPressed: _submitApplication,
                       width: double.infinity,
                     ),
@@ -548,7 +546,7 @@ class _LoanApplicationScreenState extends State<LoanApplicationScreen> {
 
               // Back Button
               SecondaryButton(
-                label: 'Go Back',
+                text: 'Go Back',
                 onPressed: _goBack,
                 width: double.infinity,
               ),
@@ -1135,8 +1133,7 @@ class _ReferralInfoScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: const [
-                        Icon(Icons.stars, color: CoopvestColors.primary),
+                      children: [Icon(Icons.stars, color: CoopvestColors.primary),
                         SizedBox(width: 8),
                         Text(
                           'Earn Interest Reduction',
@@ -1184,8 +1181,7 @@ class _ReferralInfoScreen extends StatelessWidget {
                 backgroundColor: Colors.orange.withOpacity(0.1),
                 border: Border.all(color: Colors.orange.withOpacity(0.3)),
                 child: Row(
-                  children: const [
-                    Icon(Icons.lock_clock, color: Colors.orange),
+                  children: [Icon(Icons.lock_clock, color: Colors.orange),
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -1203,8 +1199,7 @@ class _ReferralInfoScreen extends StatelessWidget {
                 backgroundColor: CoopvestColors.success.withOpacity(0.1),
                 border: Border.all(color: CoopvestColors.success.withOpacity(0.3)),
                 child: Row(
-                  children: const [
-                    Icon(Icons.info, color: CoopvestColors.success),
+                  children: [Icon(Icons.info, color: CoopvestColors.success),
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(

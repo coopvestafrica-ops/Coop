@@ -205,8 +205,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          CircularProgressIndicator(
+                        children: [CircularProgressIndicator(
                             color: CoopvestColors.primary,
                           ),
                           SizedBox(height: 16),
@@ -262,8 +261,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                   child: Column(
                     children: [
                       Row(
-                        children: const [
-                          Icon(Icons.info, color: CoopvestColors.primary),
+                        children: [Icon(Icons.info, color: CoopvestColors.primary),
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(

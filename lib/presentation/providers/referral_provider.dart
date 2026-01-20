@@ -19,7 +19,7 @@ class ReferralState {
   const ReferralState({
     this.status = ReferralStatus.initial,
     this.summary,
-    this.referrals = const [],
+    this.referrals = [],
     this.interestCalculation,
     this.referralCode,
     this.shareLink,

@@ -69,8 +69,7 @@ class RolloverRequestScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: const [
-              Icon(Icons.info_outline, color: AppColors.info),
+            children: [Icon(Icons.info_outline, color: AppColors.info),
               SizedBox(width: 8),
               Text(
                 'Rollover Details',
@@ -231,8 +230,7 @@ class RolloverRequestScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
-                children: const [
-                  Icon(Icons.warning, color: AppColors.warning, size: 18),
+                children: [Icon(Icons.warning, color: AppColors.warning, size: 18),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -265,8 +263,7 @@ class RolloverRequestScreen extends ConsumerWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
+        children: [Text(
             'Important Information',
             style: TextStyle(
               fontSize: 14,
@@ -535,7 +532,7 @@ class GuarantorSelection {
 
 /// State extension for guarantor selection
 extension RolloverStateExtension on RolloverState {
-  List<GuarantorSelection> get selectedGuarantors => const [];
+  List<GuarantorSelection> get selectedGuarantors => [];
   int get newTenure => 6;
   int get acceptedGuarantorsCount => guarantors
       .where((g) => g.status == GuarantorConsentStatus.accepted)

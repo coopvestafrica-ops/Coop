@@ -99,7 +99,7 @@ class ReferralDashboardScreen extends ConsumerWidget {
 
               // Share Button
               PrimaryButton(
-                label: 'Share My Referral Code',
+                text: 'Share My Referral Code',
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -111,7 +111,7 @@ class ReferralDashboardScreen extends ConsumerWidget {
                   );
                 },
                 width: double.infinity,
-                icon: Icons.share,
+                icon: Icon(Icons.share),
               ),
             ],
           ),
@@ -162,15 +162,15 @@ class ReferralDashboardScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SecondaryButton(
-                label: 'Copy',
+                text: 'Copy',
                 onPressed: () {
                   _copyToClipboard(context, referralCode);
                 },
-                icon: Icons.copy,
+                icon: Icon(Icons.copy),
               ),
               const SizedBox(width: 12),
               SecondaryButton(
-                label: 'Share QR',
+                text: 'Share QR',
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -181,7 +181,7 @@ class ReferralDashboardScreen extends ConsumerWidget {
                     ),
                   );
                 },
-                icon: Icons.qr_code,
+                icon: Icon(Icons.qr_code),
               ),
             ],
           ),

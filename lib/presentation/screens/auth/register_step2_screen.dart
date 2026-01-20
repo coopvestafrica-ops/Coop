@@ -337,7 +337,7 @@ class _RegisterStep2ScreenState extends ConsumerState<RegisterStep2Screen> {
 
               // Verify Button
               PrimaryButton(
-                label: 'Verify',
+                text: 'Verify',
                 onPressed: _isVerifying ? null : () async => await _verifyOTP(),
                 isLoading: _isVerifying,
                 isEnabled: !_isVerifying,

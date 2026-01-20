@@ -166,7 +166,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
                 // Email Field
                 AppTextField(
-                  label: 'Email Address',
+                  text: 'Email Address',
                   hint: 'Enter your registered email',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -188,7 +188,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
                 // Submit Button
                 PrimaryButton(
-                  label: 'Send Reset Link',
+                  text: 'Send Reset Link',
                   onPressed: _validateAndSubmit,
                   isLoading: _isLoading,
                   isEnabled: !_isLoading,
@@ -274,7 +274,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
                 // Back to Login Button
                 SecondaryButton(
-                  label: 'Back to Login',
+                  text: 'Back to Login',
                   onPressed: () => Navigator.of(context).pop(),
                   width: double.infinity,
                 ),

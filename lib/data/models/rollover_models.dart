@@ -148,7 +148,7 @@ class LoanRollover extends Equatable {
       guarantors.any((g) => g.status == GuarantorConsentStatus.declined);
 
   /// List of guarantors (populated after fetching)
-  final List<RolloverGuarantor> guarantors = const [];
+  final List<RolloverGuarantor> guarantors = [];
 
   factory LoanRollover.fromJson(Map<String, dynamic> json) {
     return LoanRollover(
@@ -447,8 +447,8 @@ class RolloverEligibility extends Equatable {
     this.status = RolloverEligibilityStatus.unknown,
     this.hasMinimum50PercentRepayment = false,
     this.hasConsistentSavings = false,
-    this.eligibilityErrors = const [],
-    this.eligibilityWarnings = const [],
+    this.eligibilityErrors = [],
+    this.eligibilityWarnings = [],
     this.repaymentPercentage = 0,
     this.consecutiveSavingsMonths = 0,
   }) : isEligible = hasMinimum50PercentRepayment && hasConsistentSavings;
@@ -525,9 +525,9 @@ class RolloverState extends Equatable {
   const RolloverState({
     this.status = RolloverStatus.initial,
     this.currentRollover,
-    this.rolloverHistory = const [],
+    this.rolloverHistory = [],
     this.eligibility,
-    this.guarantors = const [],
+    this.guarantors = [],
     this.error,
     this.isLoading = false,
   });

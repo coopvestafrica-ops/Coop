@@ -65,8 +65,7 @@ class _DepositScreenState extends ConsumerState<DepositScreen> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Row(
-          children: const [
-            Icon(Icons.check_circle, color: CoopvestColors.success),
+          children: [Icon(Icons.check_circle, color: CoopvestColors.success),
             SizedBox(width: 8),
             Text('Deposit Successful'),
           ],
@@ -146,7 +145,7 @@ class _DepositScreenState extends ConsumerState<DepositScreen> {
               children: [
                 // Amount Input
                 AppTextField(
-                  label: 'Amount',
+                  text: 'Amount',
                   hint: 'Enter deposit amount',
                   controller: _amountController,
                   keyboardType: TextInputType.number,
@@ -256,8 +255,7 @@ class _DepositScreenState extends ConsumerState<DepositScreen> {
                   backgroundColor: CoopvestColors.info.withOpacity(0.1),
                   border: Border.all(color: CoopvestColors.info.withOpacity(0.3)),
                   child: Row(
-                    children: const [
-                      Icon(Icons.info, color: CoopvestColors.info),
+                    children: [Icon(Icons.info, color: CoopvestColors.info),
                       SizedBox(width: 12),
                       Expanded(
                         child: Text(

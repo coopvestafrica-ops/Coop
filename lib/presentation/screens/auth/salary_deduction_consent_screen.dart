@@ -215,7 +215,7 @@ class _SalaryDeductionConsentScreenState
 
               // Accept Button
               PrimaryButton(
-                label: 'Accept & Continue',
+                text: 'Accept & Continue',
                 onPressed: _isSubmitting ? null : () async => await _submitConsent(),
                 isLoading: _isSubmitting,
                 isEnabled: !_isSubmitting,
@@ -225,7 +225,7 @@ class _SalaryDeductionConsentScreenState
 
               // Decline Button
               SecondaryButton(
-                label: 'Decline',
+                text: 'Decline',
                 onPressed: () {
                   showDialog(
                     context: context,

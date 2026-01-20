@@ -12,7 +12,7 @@ class LoanState {
   final String? error;
 
   const LoanState({
-    this.loans = const [],
+    this.loans = [],
     this.status = LoanStatus.initial,
     this.error,
   });

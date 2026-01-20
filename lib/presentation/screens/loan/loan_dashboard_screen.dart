@@ -105,7 +105,7 @@ class LoanDashboardScreen extends ConsumerWidget {
 
               // Apply New Loan Button
               PrimaryButton(
-                label: '+ Apply for New Loan',
+                text: '+ Apply for New Loan',
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(

@@ -213,7 +213,7 @@ class _KYCPersonalDetailsScreenState extends ConsumerState<KYCPersonalDetailsScr
 
               // Residential Address
               AppTextField(
-                label: 'Residential Address *',
+                text: 'Residential Address *',
                 hint: 'Enter your full address',
                 controller: _addressController,
                 keyboardType: TextInputType.streetAddress,
@@ -231,7 +231,7 @@ class _KYCPersonalDetailsScreenState extends ConsumerState<KYCPersonalDetailsScr
 
               // City
               AppTextField(
-                label: 'City *',
+                text: 'City *',
                 hint: 'Enter your city',
                 controller: _cityController,
                 keyboardType: TextInputType.text,
@@ -376,7 +376,7 @@ class _KYCPersonalDetailsScreenState extends ConsumerState<KYCPersonalDetailsScr
 
               // Continue Button
               PrimaryButton(
-                label: 'Continue',
+                text: 'Continue',
                 onPressed: _validateAndContinue,
                 width: double.infinity,
               ),
@@ -385,7 +385,7 @@ class _KYCPersonalDetailsScreenState extends ConsumerState<KYCPersonalDetailsScr
 
               // Back Button
               SecondaryButton(
-                label: 'Go Back',
+                text: 'Go Back',
                 onPressed: _goBack,
                 width: double.infinity,
               ),

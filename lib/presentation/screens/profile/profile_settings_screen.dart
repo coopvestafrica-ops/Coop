@@ -234,8 +234,7 @@ class _ProfileSettingsScreenState extends ConsumerState<ProfileSettingsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Row(
-          children: const [
-            Icon(Icons.warning, color: Colors.orange),
+          children: [Icon(Icons.warning, color: Colors.orange),
             SizedBox(width: 8),
             Text('Logout'),
           ],

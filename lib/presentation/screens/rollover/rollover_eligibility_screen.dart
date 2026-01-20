@@ -282,8 +282,7 @@ class RolloverEligibilityScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: const [
-                        Icon(Icons.error, color: CoopvestColors.error, size: 18),
+                      children: [Icon(Icons.error, color: CoopvestColors.error, size: 18),
                         SizedBox(width: 8),
                         Text(
                           'Issues Found',

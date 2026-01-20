@@ -224,9 +224,9 @@ class WalletState extends Equatable {
   const WalletState({
     this.status = WalletStatus.initial,
     this.wallet,
-    this.transactions = const [],
-    this.contributions = const [],
-    this.savingsGoals = const [],
+    this.transactions = [],
+    this.contributions = [],
+    this.savingsGoals = [],
     this.error,
   });
 

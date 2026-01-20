@@ -268,9 +268,9 @@ class LoansState extends Equatable {
 
   const LoansState({
     this.status = LoanStatus.initial,
-    this.loans = const [],
+    this.loans = [],
     this.selectedLoan,
-    this.guarantors = const [],
+    this.guarantors = [],
     this.error,
   });
 

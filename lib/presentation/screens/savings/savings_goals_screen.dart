@@ -111,7 +111,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                 const SizedBox(height: 24),
                 
                 AppTextField(
-                  label: 'Goal Name',
+                  text: 'Goal Name',
                   hint: 'e.g., New Phone, Vacation',
                   controller: _nameController,
                   textInputAction: TextInputAction.next,
@@ -120,7 +120,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                 const SizedBox(height: 16),
                 
                 AppTextField(
-                  label: 'Target Amount',
+                  text: 'Target Amount',
                   hint: 'Enter target amount',
                   controller: _targetController,
                   keyboardType: TextInputType.number,
@@ -135,7 +135,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                 const SizedBox(height: 16),
                 
                 AppTextField(
-                  label: 'Monthly Contribution',
+                  text: 'Monthly Contribution',
                   hint: 'How much can you save monthly?',
                   controller: _monthlyController,
                   keyboardType: TextInputType.number,
@@ -257,7 +257,7 @@ class _SavingsGoalsScreenState extends ConsumerState<SavingsGoalsScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: SecondaryButton(
-                        label: '+ Create New Goal',
+                        text: '+ Create New Goal',
                         onPressed: _showCreateGoalDialog,
                       ),
                     ),

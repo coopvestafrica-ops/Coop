@@ -238,7 +238,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
               // Email Input
               if (!_isVerified) ...[
                 AppTextField(
-                  label: 'Email Address',
+                  text: 'Email Address',
                   hint: 'Enter your registered email',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -346,7 +346,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
                         : Column(
                             children: [
                               PrimaryButton(
-                                label: 'Resend Verification Email',
+                                text: 'Resend Verification Email',
                                 onPressed: _resendVerificationEmail,
                                 width: double.infinity,
                               ),
@@ -368,7 +368,7 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
               if (_isVerified) ...[
                 const SizedBox(height: 32),
                 PrimaryButton(
-                  label: 'Go to Dashboard',
+                  text: 'Go to Dashboard',
                   onPressed: () {
                     Navigator.of(context).pushReplacementNamed('/home');
                   },

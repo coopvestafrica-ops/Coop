@@ -69,8 +69,7 @@ class SupportHomeScreen extends ConsumerWidget {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
+                        children: [Text(
                             'How can we help?',
                             style: TextStyle(
                               color: Colors.white,
@@ -180,7 +179,7 @@ class SupportHomeScreen extends ConsumerWidget {
               const SizedBox(height: 16),
 
               _buildHelpTopic(
-                icon: Icons.account_balance_wallet,
+                icon: Icon(Icons.account_balance_wallet),
                 title: 'Loans & Credit',
                 description: 'Loan applications, repayments, guarantor requests',
                 onTap: () => _createTicketWithCategory(
@@ -192,7 +191,7 @@ class SupportHomeScreen extends ConsumerWidget {
               const SizedBox(height: 12),
 
               _buildHelpTopic(
-                icon: Icons.group_add,
+                icon: Icon(Icons.group_add),
                 title: 'Guarantor Requests',
                 description: 'Being a guarantor, consent issues',
                 onTap: () => _createTicketWithCategory(
@@ -204,7 +203,7 @@ class SupportHomeScreen extends ConsumerWidget {
               const SizedBox(height: 12),
 
               _buildHelpTopic(
-                icon: Icons.share,
+                icon: Icon(Icons.share),
                 title: 'Referrals & Bonuses',
                 description: 'Referral codes, bonus tracking',
                 onTap: () => _createTicketWithCategory(
@@ -216,7 +215,7 @@ class SupportHomeScreen extends ConsumerWidget {
               const SizedBox(height: 12),
 
               _buildHelpTopic(
-                icon: Icons.payment,
+                icon: Icon(Icons.payment),
                 title: 'Repayments',
                 description: 'Payment issues, transaction history',
                 onTap: () => _createTicketWithCategory(
@@ -228,7 +227,7 @@ class SupportHomeScreen extends ConsumerWidget {
               const SizedBox(height: 12),
 
               _buildHelpTopic(
-                icon: Icons.verified_user,
+                icon: Icon(Icons.verified_user),
                 title: 'Account & KYC',
                 description: 'Profile updates, identity verification',
                 onTap: () => _createTicketWithCategory(
@@ -240,7 +239,7 @@ class SupportHomeScreen extends ConsumerWidget {
               const SizedBox(height: 12),
 
               _buildHelpTopic(
-                icon: Icons.bug_report,
+                icon: Icon(Icons.bug_report),
                 title: 'Technical Issues',
                 description: 'App bugs, login problems',
                 onTap: () => _createTicketWithCategory(

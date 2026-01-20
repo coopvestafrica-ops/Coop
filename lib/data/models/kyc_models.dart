@@ -405,7 +405,7 @@ class KYCState extends Equatable {
   const KYCState({
     this.status = KYCStatus.initial,
     this.submission,
-    this.organizations = const [],
+    this.organizations = [],
     this.error,
     this.currentStep = 0,
     this.totalSteps = 3,

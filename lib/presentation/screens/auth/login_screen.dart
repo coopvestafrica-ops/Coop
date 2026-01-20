@@ -182,7 +182,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               // Email/Phone Field
               AppTextField(
-                label: 'Email or Phone Number',
+                text: 'Email or Phone Number',
                 hint: 'Enter your email or phone',
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -204,7 +204,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               // Password Field
               AppTextField(
-                label: 'Password',
+                text: 'Password',
                 hint: 'Enter your password',
                 controller: _passwordController,
                 obscureText: _obscurePassword,
@@ -286,7 +286,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               // Login Button
               PrimaryButton(
-                label: 'Log In',
+                text: 'Log In',
                 onPressed: _validateAndLogin,
                 isLoading: isLoading,
                 isEnabled: !isLoading,

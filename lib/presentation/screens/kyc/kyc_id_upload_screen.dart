@@ -72,8 +72,7 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Column(
-                          children: const [
-                            Icon(
+                          children: [Icon(
                               Icons.camera_alt,
                               color: CoopvestColors.primary,
                               size: 48,
@@ -102,8 +101,7 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Column(
-                          children: const [
-                            Icon(
+                          children: [Icon(
                               Icons.photo_library,
                               color: CoopvestColors.primary,
                               size: 48,
@@ -412,7 +410,7 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
               // ID Number Input
               if (_selectedIDType != null)
                 AppTextField(
-                  label: '${IDTypes.getLabel(_selectedIDType!)} Number *',
+                  text: '${IDTypes.getLabel(_selectedIDType!)} Number *',
                   hint: 'Enter your ${IDTypes.getLabel(_selectedIDType!)} number',
                   controller: _idNumberController,
                   keyboardType: TextInputType.text,
@@ -520,8 +518,7 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(Icons.check_circle, color: Colors.white, size: 14),
+                          children: [Icon(Icons.check_circle, color: Colors.white, size: 14),
                             SizedBox(width: 4),
                             Text(
                               'Uploaded',
@@ -593,7 +590,7 @@ class _KYCIDUploadScreenState extends ConsumerState<KYCIDUploadScreen> {
 
               // Continue Button
               PrimaryButton(
-                label: 'Continue',
+                text: 'Continue',
                 onPressed: _validateAndContinue,
                 width: double.infinity,
               ),

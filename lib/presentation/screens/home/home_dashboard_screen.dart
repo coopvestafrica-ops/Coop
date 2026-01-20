@@ -186,8 +186,8 @@ class HomeDashboardScreen extends ConsumerWidget {
             Expanded(
               child: _buildActionButton(
                 context,
-                icon: Icons.account_balance_wallet,
-                label: 'Wallet',
+                icon: Icon(Icons.account_balance_wallet),
+                text: 'Wallet',
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -201,8 +201,8 @@ class HomeDashboardScreen extends ConsumerWidget {
             Expanded(
               child: _buildActionButton(
                 context,
-                icon: Icons.savings,
-                label: 'Save',
+                icon: Icon(Icons.savings),
+                text: 'Save',
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -216,8 +216,8 @@ class HomeDashboardScreen extends ConsumerWidget {
             Expanded(
               child: _buildActionButton(
                 context,
-                icon: Icons.request_quote,
-                label: 'Loans',
+                icon: Icon(Icons.request_quote),
+                text: 'Loans',
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -428,8 +428,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        children: const [
-                          Icon(
+                        children: [Icon(
                             Icons.refresh,
                             color: Colors.white,
                             size: 24,

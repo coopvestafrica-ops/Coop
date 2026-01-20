@@ -211,7 +211,7 @@ class _RegisterStep1ScreenState extends ConsumerState<RegisterStep1Screen> {
 
               // Full Name
               AppTextField(
-                label: 'Full Name',
+                text: 'Full Name',
                 hint: 'As per your official ID',
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
@@ -232,7 +232,7 @@ class _RegisterStep1ScreenState extends ConsumerState<RegisterStep1Screen> {
 
               // Phone Number
               AppTextField(
-                label: 'Phone Number',
+                text: 'Phone Number',
                 hint: '+234 801 234 5678',
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
@@ -254,7 +254,7 @@ class _RegisterStep1ScreenState extends ConsumerState<RegisterStep1Screen> {
 
               // Email
               AppTextField(
-                label: 'Email Address',
+                text: 'Email Address',
                 hint: 'your.email@example.com',
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -276,7 +276,7 @@ class _RegisterStep1ScreenState extends ConsumerState<RegisterStep1Screen> {
 
               // Password
               AppTextField(
-                label: 'Password',
+                text: 'Password',
                 hint: 'Create a strong password',
                 controller: _passwordController,
                 obscureText: _obscurePassword,
@@ -348,7 +348,7 @@ class _RegisterStep1ScreenState extends ConsumerState<RegisterStep1Screen> {
 
               // Confirm Password
               AppTextField(
-                label: 'Confirm Password',
+                text: 'Confirm Password',
                 hint: 'Re-enter your password',
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
@@ -438,7 +438,7 @@ class _RegisterStep1ScreenState extends ConsumerState<RegisterStep1Screen> {
 
               // Continue Button
               PrimaryButton(
-                label: 'Continue',
+                text: 'Continue',
                 onPressed: _validateAndContinue,
                 width: double.infinity,
               ),

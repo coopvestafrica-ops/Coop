@@ -91,8 +91,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Row(
-          children: const [
-            Icon(Icons.check_circle, color: CoopvestColors.success, size: 32),
+          children: [Icon(Icons.check_circle, color: CoopvestColors.success, size: 32),
             SizedBox(width: 12),
             Text('Guarantee Confirmed'),
           ],
@@ -160,8 +159,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
       context: context,
       builder: (context) => AlertDialog(
         title: Row(
-          children: const [
-            Icon(Icons.warning, color: Colors.orange),
+          children: [Icon(Icons.warning, color: Colors.orange),
             SizedBox(width: 8),
             Text('Decline Guarantee'),
           ],
@@ -296,8 +294,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                children: const [
-                  Icon(Icons.description, color: CoopvestColors.primary),
+                children: [Icon(Icons.description, color: CoopvestColors.primary),
                   SizedBox(width: 8),
                   Text(
                     'Loan Summary',
@@ -335,8 +332,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
+                  children: [Text(
                       '3 Guarantors Required',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -358,7 +354,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
         const SizedBox(height: 32),
 
         PrimaryButton(
-          label: 'Review Liability Terms',
+          text: 'Review Liability Terms',
           onPressed: () {
             setState(() {
               _verificationStatus = 'consent';
@@ -369,7 +365,7 @@ class _GuarantorVerificationScreenState extends State<GuarantorVerificationScree
 
         const SizedBox(height: 16),
         SecondaryButton(
-          label: 'Decline',
+          text: 'Decline',
           onPressed: _declineGuarantee,
           width: double.infinity,
         ),

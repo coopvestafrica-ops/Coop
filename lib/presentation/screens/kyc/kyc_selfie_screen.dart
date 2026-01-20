@@ -199,8 +199,7 @@ class _KYCSelfieScreenState extends ConsumerState<KYCSelfieScreen> {
                   else
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.check_circle, color: CoopvestColors.success),
+                      children: [Icon(Icons.check_circle, color: CoopvestColors.success),
                         SizedBox(width: 8),
                         Text(
                           'Selfie captured successfully',
@@ -247,7 +246,7 @@ class _KYCSelfieScreenState extends ConsumerState<KYCSelfieScreen> {
                       children: [
                         Expanded(
                           child: SecondaryButton(
-                            label: 'Retake',
+                            text: 'Retake',
                             onPressed: _retakeSelfie,
                             textStyle: const TextStyle(color: Colors.white),
                           ),
@@ -255,7 +254,7 @@ class _KYCSelfieScreenState extends ConsumerState<KYCSelfieScreen> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: PrimaryButton(
-                            label: 'Submit',
+                            text: 'Submit',
                             onPressed: _validateAndSubmit,
                             isEnabled: !ref.watch(kycProvider).isSubmitting,
                           ),
@@ -353,8 +352,7 @@ class _KYCSelfieScreenState extends ConsumerState<KYCSelfieScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
-                    children: const [
-                      Icon(Icons.lightbulb, color: Colors.amber),
+                    children: [Icon(Icons.lightbulb, color: Colors.amber),
                       SizedBox(width: 8),
                       Text(
                         'Selfie Guidelines',
@@ -611,7 +609,7 @@ class KYCSuccessScreen extends StatelessWidget {
 
               // Go to Dashboard Button
               PrimaryButton(
-                label: 'Go to Dashboard',
+                text: 'Go to Dashboard',
                 onPressed: () {
                   Navigator.of(context).pushReplacementNamed('/home');
                 },

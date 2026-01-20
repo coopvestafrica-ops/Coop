@@ -200,8 +200,7 @@ class GuarantorConsentScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: const [
-                Icon(Icons.warning, color: AppColors.warning),
+              children: [Icon(Icons.warning, color: AppColors.warning),
                 SizedBox(width: 8),
                 Text(
                   'Action Required',
@@ -265,8 +264,7 @@ class GuarantorConsentScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: const [
-              Icon(Icons.hourglass_empty, color: AppColors.info),
+            children: [Icon(Icons.hourglass_empty, color: AppColors.info),
               SizedBox(width: 8),
               Text(
                 'Awaiting Responses',

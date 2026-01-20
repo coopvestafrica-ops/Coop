@@ -377,7 +377,7 @@ class _TicketCreationScreenState extends ConsumerState<TicketCreationScreen> {
 
                 // Title
                 AppTextField(
-                  label: 'Title *',
+                  text: 'Title *',
                   hint: 'Brief summary of your issue',
                   controller: _titleController,
                   textInputAction: TextInputAction.next,
@@ -451,7 +451,7 @@ class _TicketCreationScreenState extends ConsumerState<TicketCreationScreen> {
                 const SizedBox(height: 8),
                 
                 AppTextField(
-                  label: 'Loan ID',
+                  text: 'Loan ID',
                   hint: 'Related loan ID',
                   controller: _loanIdController,
                   textInputAction: TextInputAction.next,
@@ -459,7 +459,7 @@ class _TicketCreationScreenState extends ConsumerState<TicketCreationScreen> {
                 const SizedBox(height: 12),
                 
                 AppTextField(
-                  label: 'Referral ID',
+                  text: 'Referral ID',
                   hint: 'Related referral ID',
                   controller: _referralIdController,
                   textInputAction: TextInputAction.done,
@@ -542,7 +542,7 @@ class _TicketCreationScreenState extends ConsumerState<TicketCreationScreen> {
 
                 // Submit Button
                 PrimaryButton(
-                  label: 'Submit Ticket',
+                  text: 'Submit Ticket',
                   onPressed: _isSubmitting ? null : () async => await _submitTicket(),
                   isLoading: _isSubmitting,
                   isEnabled: !_isSubmitting && _errorMessage == null,

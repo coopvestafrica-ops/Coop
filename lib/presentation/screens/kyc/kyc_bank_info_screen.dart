@@ -298,7 +298,7 @@ class _KYCBankInfoScreenState extends ConsumerState<KYCBankInfoScreen> {
 
               // Account Number
               AppTextField(
-                label: 'Account Number *',
+                text: 'Account Number *',
                 hint: 'Enter your 10-digit account number',
                 controller: _accountNumberController,
                 keyboardType: TextInputType.number,
@@ -352,7 +352,7 @@ class _KYCBankInfoScreenState extends ConsumerState<KYCBankInfoScreen> {
 
               // Account Name (Read-only after verification)
               AppTextField(
-                label: 'Account Name *',
+                text: 'Account Name *',
                 hint: 'Verified account name',
                 controller: _accountNameController,
                 enabled: false,
@@ -427,7 +427,7 @@ class _KYCBankInfoScreenState extends ConsumerState<KYCBankInfoScreen> {
 
               // BVN
               AppTextField(
-                label: 'Bank Verification Number (BVN) *',
+                text: 'Bank Verification Number (BVN) *',
                 hint: 'Enter your 11-digit BVN',
                 controller: _bvnController,
                 keyboardType: TextInputType.number,
@@ -473,7 +473,7 @@ class _KYCBankInfoScreenState extends ConsumerState<KYCBankInfoScreen> {
 
               // Continue Button
               PrimaryButton(
-                label: 'Continue',
+                text: 'Continue',
                 onPressed: _validateAndContinue,
                 width: double.infinity,
               ),
@@ -482,7 +482,7 @@ class _KYCBankInfoScreenState extends ConsumerState<KYCBankInfoScreen> {
 
               // Back Button
               SecondaryButton(
-                label: 'Go Back',
+                text: 'Go Back',
                 onPressed: _goBack,
                 width: double.infinity,
               ),

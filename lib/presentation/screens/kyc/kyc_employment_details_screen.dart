@@ -273,7 +273,7 @@ class _KYCEmploymentDetailsScreenState
 
               // Date of Birth
               AppTextField(
-                label: 'Date of Birth *',
+                text: 'Date of Birth *',
                 hint: 'Select your date of birth',
                 controller: _dateOfBirthController,
                 readOnly: true,
@@ -288,7 +288,7 @@ class _KYCEmploymentDetailsScreenState
 
               // Gender
               AppDropdown<String>(
-                label: 'Gender (Optional)',
+                text: 'Gender (Optional)',
                 value: _selectedGender,
                 items: _genders.map((gender) => DropdownMenuItem(
                   value: gender,
@@ -314,7 +314,7 @@ class _KYCEmploymentDetailsScreenState
 
               // Employment Type
               AppDropdown<String>(
-                label: 'Employment Type *',
+                text: 'Employment Type *',
                 value: _selectedEmploymentType,
                 items: _employmentTypes.map((type) => DropdownMenuItem(
                   value: type,
@@ -412,7 +412,7 @@ class _KYCEmploymentDetailsScreenState
 
               // Job Title
               AppTextField(
-                label: 'Job Title / Designation *',
+                text: 'Job Title / Designation *',
                 hint: 'e.g., Administrative Officer',
                 controller: _jobTitleController,
                 textInputAction: TextInputAction.next,
@@ -478,7 +478,7 @@ class _KYCEmploymentDetailsScreenState
 
               // Residential Address
               AppTextField(
-                label: 'Residential Address *',
+                text: 'Residential Address *',
                 hint: 'Enter your full address',
                 controller: _addressController,
                 maxLines: 3,
@@ -492,7 +492,7 @@ class _KYCEmploymentDetailsScreenState
                 children: [
                   Expanded(
                     child: AppDropdown<String>(
-                      label: 'City (Optional)',
+                      text: 'City (Optional)',
                       value: _selectedCity,
                       items: _cities.map((city) => DropdownMenuItem(
                         value: city,
@@ -509,7 +509,7 @@ class _KYCEmploymentDetailsScreenState
                   const SizedBox(width: 16),
                   Expanded(
                     child: AppDropdown<String>(
-                      label: 'State (Optional)',
+                      text: 'State (Optional)',
                       value: _selectedState,
                       items: _states.map((state) => DropdownMenuItem(
                         value: state,
@@ -529,7 +529,7 @@ class _KYCEmploymentDetailsScreenState
 
               // Continue Button
               PrimaryButton(
-                label: 'Continue',
+                text: 'Continue',
                 onPressed: _validateAndContinue,
                 width: double.infinity,
               ),
@@ -752,7 +752,7 @@ class _KYCEmploymentDetailsScreenState
             ),
             const SizedBox(height: 16),
             AppTextField(
-              label: 'Organization Name',
+              text: 'Organization Name',
               controller: organizationController,
               hint: 'Enter your organization name',
             ),

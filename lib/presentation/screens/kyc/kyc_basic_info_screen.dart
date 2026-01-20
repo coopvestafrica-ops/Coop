@@ -250,7 +250,7 @@ class _KYCBasicInfoScreenState extends ConsumerState<KYCBasicInfoScreen> {
 
               // First Name
               AppTextField(
-                label: 'First Name *',
+                text: 'First Name *',
                 hint: 'Enter your first name',
                 controller: _firstNameController,
                 keyboardType: TextInputType.name,
@@ -267,7 +267,7 @@ class _KYCBasicInfoScreenState extends ConsumerState<KYCBasicInfoScreen> {
 
               // Last Name
               AppTextField(
-                label: 'Last Name *',
+                text: 'Last Name *',
                 hint: 'Enter your last name',
                 controller: _lastNameController,
                 keyboardType: TextInputType.name,
@@ -284,7 +284,7 @@ class _KYCBasicInfoScreenState extends ConsumerState<KYCBasicInfoScreen> {
 
               // Email
               AppTextField(
-                label: 'Email Address *',
+                text: 'Email Address *',
                 hint: 'Enter your email address',
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -304,7 +304,7 @@ class _KYCBasicInfoScreenState extends ConsumerState<KYCBasicInfoScreen> {
 
               // Phone
               AppTextField(
-                label: 'Phone Number *',
+                text: 'Phone Number *',
                 hint: 'Enter your phone number',
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
@@ -323,7 +323,7 @@ class _KYCBasicInfoScreenState extends ConsumerState<KYCBasicInfoScreen> {
 
               // Date of Birth
               AppTextField(
-                label: 'Date of Birth *',
+                text: 'Date of Birth *',
                 hint: 'Select your date of birth',
                 controller: _dobController,
                 readOnly: true,
@@ -413,7 +413,7 @@ class _KYCBasicInfoScreenState extends ConsumerState<KYCBasicInfoScreen> {
 
               // Continue Button
               PrimaryButton(
-                label: 'Continue',
+                text: 'Continue',
                 onPressed: _validateAndContinue,
                 width: double.infinity,
               ),
@@ -422,7 +422,7 @@ class _KYCBasicInfoScreenState extends ConsumerState<KYCBasicInfoScreen> {
 
               // Back Button
               SecondaryButton(
-                label: 'Go Back',
+                text: 'Go Back',
                 onPressed: _goBack,
                 width: double.infinity,
               ),

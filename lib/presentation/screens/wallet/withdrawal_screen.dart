@@ -59,8 +59,7 @@ class _WithdrawalScreenState extends ConsumerState<WithdrawalScreen> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Row(
-          children: const [
-            Icon(Icons.check_circle, color: CoopvestColors.success),
+          children: [Icon(Icons.check_circle, color: CoopvestColors.success),
             SizedBox(width: 8),
             Text('Withdrawal Successful'),
           ],
@@ -173,7 +172,7 @@ class _WithdrawalScreenState extends ConsumerState<WithdrawalScreen> {
 
                 // Amount Input
                 AppTextField(
-                  label: 'Amount',
+                  text: 'Amount',
                   hint: 'Enter withdrawal amount',
                   controller: _amountController,
                   keyboardType: TextInputType.number,
@@ -250,8 +249,7 @@ class _WithdrawalScreenState extends ConsumerState<WithdrawalScreen> {
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
+                          children: [Text(
                               'Withdrawal to:',
                               style: TextStyle(fontWeight: FontWeight.w500),
                             ),
@@ -277,8 +275,7 @@ class _WithdrawalScreenState extends ConsumerState<WithdrawalScreen> {
                   backgroundColor: CoopvestColors.warning.withOpacity(0.1),
                   border: Border.all(color: CoopvestColors.warning.withOpacity(0.3)),
                   child: Row(
-                    children: const [
-                      Icon(Icons.info, color: CoopvestColors.warning),
+                    children: [Icon(Icons.info, color: CoopvestColors.warning),
                       SizedBox(width: 12),
                       Expanded(
                         child: Text(
@@ -303,7 +300,7 @@ class _WithdrawalScreenState extends ConsumerState<WithdrawalScreen> {
 
                 const SizedBox(height: 16),
                 SecondaryButton(
-                  label: 'Go Back',
+                  text: 'Go Back',
                   onPressed: _goBack,
                   width: double.infinity,
                 ),
